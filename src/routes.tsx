@@ -4,10 +4,9 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import { Login } from './components/Auth/Login';
 import { Register } from './components/Auth/Register';
-import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
-import { CourseDetail } from './components/Course/CourseDetail';
-import { CreateCourse } from './components/Course/CreateCourse';
+import { LessonView } from './components/Course/LessonView';
+import { CreateLesson } from './components/Course/CreateLesson';
 
 export const AppRoutes = () => {
   return (
@@ -16,10 +15,9 @@ export const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/course/:id" element={<CourseDetail />} />
-        <Route path="/create-course" element={<CreateCourse />} />
+        <Route path="/lesson/:id" element={<LessonView />} />
+        <Route path="/create-lesson" element={<CreateLesson />} />
       </Routes>
     </Layout>
   );
