@@ -4,6 +4,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { supabase } from '../../utils/supabaseClient';
 import styles from './Login.module.css';
+import bs58 from 'bs58';
+import { sign } from 'tweetnacl';
 
 export const Register = () => {
   const { publicKey } = useWallet();
@@ -30,14 +32,59 @@ export const Register = () => {
     setError(null);
 
     try {
-      // เช็คว่า username ซ้ำหรือไม่
+      // เชิ่มกยืนยันตัวตนด้วย wallet
+      const message = `ยืนยันการลงทะเบียนบัญชี ${username.trim()}`;
+      const encodedMessage = new TextEncoder().encode(message);
+      
+      // ขอลายเซ็นจากผู้ใช้
+      let signature: Uint8Array;
+      try {
+        // แก้ไขกรับลายเซ็นและแปลงเป็น Uint8Array
+        const signatureResponse = await (window as any).solana.signMessage(encodedMessage, 'utf8');
+        signature = new Uint8Array(signatureResponse.signature);
+      } catch (signError) {
+        setError('กรุณายืนยันการลงทะเบียนด้วยการเซ็นข้อความ');
+        return;
+      }
+
+      // ตรวจสอบลายเซ็น
+      const verified = sign.detached.verify(
+        encodedMessage,
+        signature,
+        publicKey.toBytes()
+      );
+
+      if (!verified) {
+        setError('การยืนยันตัวตนล้มเหลว');
+        return;
+      }
+
+      // ตรวจสอบ wallet address
+      const { data: existingWallet, error: walletError } = await supabase
+        .from('users')
+        .select('wallet_address')
+        .eq('wallet_address', publicKey.toString())
+        .maybeSingle();
+
+      if (walletError) {
+        console.error('Error checking wallet:', walletError);
+        setError(`เกิดข้อผิดพลาดในการตรวจสอบกระเป๋าเงิน: ${walletError.message}`);
+        return;
+      }
+
+      if (existingWallet) {
+        setError('กระเป๋าเงินนี้ได้ลงทะเบียนไปแล้ว');
+        return;
+      }
+
+      // ตรวจสอบ username
       const { data: existingUser, error: checkError } = await supabase
         .from('users')
         .select('username')
         .eq('username', username.trim())
-        .single();
+        .maybeSingle();
 
-      if (checkError && checkError.code !== 'PGRST116') {
+      if (checkError) {
         console.error('Error checking username:', checkError);
         setError(`เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้: ${checkError.message}`);
         return;
@@ -48,7 +95,7 @@ export const Register = () => {
         return;
       }
 
-      // เพิ่มข้อมูลผู้ใช้ใหม่
+      // เพิ่มข้อมูลผู้ใช้ใหม่ร้อมลายเซ็น
       const { error: insertError } = await supabase
         .from('users')
         .insert([
@@ -56,6 +103,7 @@ export const Register = () => {
             wallet_address: publicKey.toString(),
             username: username.trim(),
             role,
+            signature: bs58.encode(signature), // แลง Uint8Array เป็น base58 string
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           }
