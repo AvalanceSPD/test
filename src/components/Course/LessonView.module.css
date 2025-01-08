@@ -1,0 +1,275 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  font-size: 2em;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.header p {
+  color: #666;
+  font-size: 1.1em;
+}
+
+.navigation {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.navButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.navButton:hover {
+  background: #e0e0e0;
+}
+
+.navButton.active {
+  background: #007bff;
+  color: white;
+}
+
+.sectionContent {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  margin-bottom: 20px;
+  min-height: 400px;
+}
+
+/* Video Section */
+.videoContainer {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.videoPlayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+}
+
+/* Content Section */
+.contentSection {
+  line-height: 1.6;
+}
+
+.contentSection h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.content {
+  font-size: 1.1em;
+  color: #444;
+}
+
+/* Quiz Section */
+.quizSection {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.question {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.question h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.option:hover {
+  background: #f0f0f0;
+}
+
+.option input[type="radio"] {
+  margin-right: 10px;
+}
+
+.timer {
+  text-align: center;
+  margin-top: 15px;
+  padding: 10px;
+  background: #fff3cd;
+  color: #856404;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 15px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1em;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  margin-top: 20px;
+}
+
+.submitButton:hover {
+  background: #218838;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 20px 0;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+/* Error State */
+.error {
+  text-align: center;
+  padding: 30px;
+  background: #fff3cd;
+  color: #856404;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .sectionContent {
+    padding: 15px;
+  }
+
+  .navigation {
+    flex-wrap: wrap;
+  }
+
+  .navButton {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
+  .question {
+    padding: 15px;
+  }
+
+  .option {
+    padding: 8px 12px;
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sectionContent {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Quiz Results */
+.quizResults {
+  background: #e8f5e9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.quizResults h3 {
+  color: #2e7d32;
+  margin-bottom: 15px;
+}
+
+.resultItem {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #c8e6c9;
+}
+
+.resultItem:last-child {
+  border-bottom: none;
+}
+
+.score {
+  font-weight: bold;
+  color: #1b5e20;
+}
+
+/* Progress Indicator */
+.progressBar {
+  height: 4px;
+  background: #e0e0e0;
+  border-radius: 2px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #007bff;
+  transition: width 0.3s ease;
+} 
