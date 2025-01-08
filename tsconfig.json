@@ -1,13 +1,38 @@
 {
   "compilerOptions": {
-    "jsx": "react-jsx",
+    "jsx": "react-jsx", 
     "esModuleInterop": true,
-    "target": "es5",
+    "target": "es2020",
+    "types": [
+      "aria-query",
+      "bonjour",
+      "history",
+      "html-minifier-terser", 
+      "http-proxy",
+      "jest",
+      "node",
+      "parse-json",
+      "prettier",
+      "q",
+      "trusted-types",
+      "w3c-web-usb",
+      "web"
+    ],
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "moduleResolution": "node",
     "plugins": [
       { "name": "typescript-plugin-css-modules" }
-    ]
-  }
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 } 
