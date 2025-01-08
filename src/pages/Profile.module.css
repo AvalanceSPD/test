@@ -108,4 +108,24 @@
 
 .walletButton:hover {
   background-color: #5a6268 !important;
+}
+
+.debugInfo {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 15px;
+  margin: 15px 0;
+  font-size: 14px;
+}
+
+.debugInfo h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #495057;
+}
+
+.debugInfo p {
+  margin: 5px 0;
+  color: #6c757d;
 } 
