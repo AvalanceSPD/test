@@ -56,8 +56,34 @@ export const Login = () => {
     checkUser();
   }, [publicKey]);
 
-  const handleLogin = () => {
-    navigate('/profile');
+  const handleLogin = async () => {
+    if (!publicKey) return;
+    
+    try {
+      const { data: user, error } = await supabase
+        .from('users')
+        .select('role')
+        .eq('wallet_address', publicKey.toString())
+        .single();
+      
+      if (error) throw error;
+      
+      if (user) {
+        switch (user.role) {
+          case 'student':
+            navigate('/student-profile');
+            break;
+          case 'teacher':
+            navigate('/teacher-profile');
+            break;
+          default:
+            navigate('/profile');
+        }
+      }
+    } catch (err) {
+      console.error('Error during login:', err);
+      setError('เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+    }
   };
 
   const handleRegister = () => {
