@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import { CourseDetail } from './components/Course/CourseDetail';
 import { CreateCourse } from './components/Course/CreateCourse';
+import { StudentProfile, TeacherProfile } from './pages/index';
 
 export const AppRoutes = () => {
   return (
@@ -20,7 +21,9 @@ export const AppRoutes = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="/course/:id" element={<CourseDetail />} />
         <Route path="/create-course" element={<CreateCourse />} />
+        <Route path="/student-profile" element={<StudentProfile />} />
+        <Route path="/teacher-profile" element={<TeacherProfile />} />
       </Routes>
     </Layout>
   );
-}; 
+};
