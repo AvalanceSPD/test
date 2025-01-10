@@ -27,12 +27,35 @@ interface Lesson {
   sections: LessonSection[];
 }
 
+interface NewCategory {
+  name: string;
+  description: string;
+  group_id: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  type: 'subject' | 'grade';
+  group_id?: string;
+}
+
 export const CreateLesson = () => {
   const { publicKey } = useWallet();
   const navigate = useNavigate();
   const [lessons, setLessons] = useState<Lesson[]>([createNewLesson()]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState<NewCategory>({
+    name: '',
+    description: '',
+    group_id: ''
+  });
+  const [error, setError] = useState<string | null>(null);
 
   function createNewLesson(): Lesson {
     return {
@@ -160,6 +183,46 @@ export const CreateLesson = () => {
       alert('เกิดข้อผิดพลาดในการบันทึกบทเรียน');
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleAddNewCategory = async () => {
+    if (!newCategory.name || !newCategory.group_id) {
+      setError('กรุณากรอกชื่อหมวดหมู่และเลือกกลุ่ม');
+      return;
+    }
+
+    try {
+      const { data, error: categoryError } = await supabase
+        .from('subject_categories')
+        .insert([{
+          name: newCategory.name,
+          description: newCategory.description,
+          group_id: newCategory.group_id,
+          type: 'subject'
+        }])
+        .select()
+        .single();
+
+      if (categoryError) throw categoryError;
+
+      // เพิ่มหมวดหมู่ใหม่เข้าไปใน state
+      setCategories(prev => [...prev, data]);
+      
+      // เลือกหมวดหมู่ที่เพิ่มใหม่
+      setSelectedCategories(prev => [...prev, data]);
+      
+      // รีเซ็ตฟอร์ม
+      setNewCategory({
+        name: '',
+        description: '',
+        group_id: ''
+      });
+      setShowAddCategory(false);
+      setError(null);
+    } catch (err) {
+      console.error('Error adding category:', err);
+      setError('ไม่สามารถเพิ่มหมวดหมู่ไได้');
     }
   };
 
@@ -332,7 +395,7 @@ export const CreateLesson = () => {
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <p>ยังไม่มีบทเรียน กรุณาคลิกปุ่ม "เพิ่มบทเรียน" เพื่อเริ่มสร้างบทเรียนใหม่</p>
+          <p>ยังไม่มีบบทเรียน กรุณาคลิกปุ่ม "เพิ่มบทเรียน" เพื่อเริ่มสร้างบบทเรียนใหม่</p>
         </div>
       )}
     </div>

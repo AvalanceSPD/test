@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { supabase } from '../../utils/supabaseClient';
@@ -8,6 +8,7 @@ import styles from './Login.module.css';
 export const Login = () => {
   const { publicKey } = useWallet();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isNewUser, setIsNewUser] = useState(false);
@@ -65,48 +66,55 @@ export const Login = () => {
   };
 
   return (
-    <div className={styles.loginContainer}>
-      <div className={styles.loginBox}>
-        <h1>เข้าสู่ระบบ</h1>
-        <p>กรุณาเชื่อมต่อกระเป๋า Phantom เพื่อเข้าสู่ระบบ</p>
-        
-        {error && <div className={styles.errorMessage}>{error}</div>}
-        
-        <div className={styles.buttonContainer}>
-          <WalletMultiButton className={styles.walletButton} />
+    <div className={styles.container}>
+      <h1>�ข้าสู่ระบบ</h1>
+      {location.state?.from && (
+        <div className={styles.message}>
+          กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ
+        </div>
+      )}
+      <div className={styles.loginContainer}>
+        <div className={styles.loginBox}>
+          <p>กรุณาเชื่อมต่อกระเป๋า Phantom เพื่อเข้าสู่ระบบ</p>
           
-          {isLoading && (
-            <div className={styles.loadingMessage}>
-              กำลังตรวจสอบข้อมูล...
-            </div>
-          )}
+          {error && <div className={styles.errorMessage}>{error}</div>}
+          
+          <div className={styles.buttonContainer}>
+            <WalletMultiButton className={styles.walletButton} />
+            
+            {isLoading && (
+              <div className={styles.loadingMessage}>
+                กำลังตรวจสอบข้อมูล...
+              </div>
+            )}
 
-          {publicKey && !isLoading && (
-            <>
-              {hasAccount && (
-                <button 
-                  onClick={handleLogin}
-                  className={styles.loginButton}
-                >
-                  เข้าสู่ระบบ
-                </button>
-              )}
-              
-              {isNewUser && (
-                <>
+            {publicKey && !isLoading && (
+              <>
+                {hasAccount && (
                   <button 
-                    onClick={handleRegister}
-                    className={styles.registerButton}
+                    onClick={handleLogin}
+                    className={styles.loginButton}
                   >
-                    ลงทะเบียนผู้ใช้ใหม่
+                    เข้าสู่ระบบ
                   </button>
-                  <div className={styles.newUserMessage}>
-                    คุณยังไม่มีบัญชีผู้ใช้ กรุณาลงทะเบียนเพื่อเข้าใช้งาน
-                  </div>
-                </>
-              )}
-            </>
-          )}
+                )}
+                
+                {isNewUser && (
+                  <>
+                    <button 
+                      onClick={handleRegister}
+                      className={styles.registerButton}
+                    >
+                      ลงทะเบียนผู้ใช้ใหม่
+                    </button>
+                    <div className={styles.newUserMessage}>
+                      คุณยังไม่มีบัญชีผู้ใช้ กรุณาลงทะเบียนเพื่อเข้าใช้งาน
+                    </div>
+                  </>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

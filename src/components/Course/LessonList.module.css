@@ -1,0 +1,146 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tabButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: #f0f0f0;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.tabButton.active {
+  background: #007bff;
+  color: white;
+}
+
+.categoriesContainer {
+  margin-bottom: 30px;
+}
+
+.categoryGroup {
+  margin-bottom: 20px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.categoryGroup h2 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 1.2em;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.categoryButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.categoryButton {
+  padding: 8px 16px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  background: white;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.categoryButton:hover {
+  background: #f0f0f0;
+}
+
+.categoryButton.active {
+  background: #007bff;
+  color: white;
+  border-color: #0056b3;
+}
+
+.lessonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.lessonCard {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.lessonCard:hover {
+  transform: translateY(-5px);
+}
+
+.lessonCard h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.lessonCard p {
+  color: #666;
+  margin: 0 0 15px 0;
+  line-height: 1.4;
+}
+
+.lessonMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.error {
+  text-align: center;
+  padding: 20px;
+  background: #fff3cd;
+  color: #856404;
+  border-radius: 8px;
+}
+
+.noLessons {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .categoryButtons {
+    overflow-x: auto;
+    padding-bottom: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lessonGrid {
+    grid-template-columns: 1fr;
+  }
+} 

@@ -7,6 +7,7 @@ import { Register } from './components/Auth/Register';
 import Profile from './pages/Profile';
 import { LessonView } from './components/Course/LessonView';
 import { CreateLesson } from './components/Course/CreateLesson';
+import { LessonList } from './components/Course/LessonList';   
 
 export const AppRoutes = () => {
   return (
@@ -16,8 +17,9 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/lesson/:id" element={<LessonView />} />
+        <Route path="/lessons/:id" element={<LessonView />} />
         <Route path="/create-lesson" element={<CreateLesson />} />
+        <Route path="/lessons" element={<LessonList />} />
       </Routes>
     </Layout>
   );
