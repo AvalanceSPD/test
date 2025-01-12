@@ -8,10 +8,12 @@ import Profile from './pages/Profile';
 import { LessonView } from './components/Course/LessonView';
 import { CreateLesson } from './components/Course/CreateLesson';
 import { LessonList } from './components/Course/LessonList';   
+import Navbar from './components/Navbar'; // นำเข้า Navbar
 
 export const AppRoutes = () => {
   return (
     <Layout>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
