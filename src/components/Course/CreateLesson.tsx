@@ -30,14 +30,12 @@ interface Lesson {
 interface NewCategory {
   name: string;
   description: string;
-  group_id: string;
 }
 
 interface Category {
   id: string;
   name: string;
   description: string;
-  type: 'subject' | 'grade';
   group_id?: string;
 }
 
@@ -52,8 +50,7 @@ export const CreateLesson = () => {
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategory, setNewCategory] = useState<NewCategory>({
     name: '',
-    description: '',
-    group_id: ''
+    description: ''
   });
   const [error, setError] = useState<string | null>(null);
 
@@ -187,8 +184,8 @@ export const CreateLesson = () => {
   };
 
   const handleAddNewCategory = async () => {
-    if (!newCategory.name || !newCategory.group_id) {
-      setError('กรุณากรอกชื่อหมวดหมู่และเลือกกลุ่ม');
+    if (!newCategory.name) {
+      setError('กรุณากรอกชื่อหมวดหมู่');
       return;
     }
 
@@ -198,8 +195,7 @@ export const CreateLesson = () => {
         .insert([{
           name: newCategory.name,
           description: newCategory.description,
-          group_id: newCategory.group_id,
-          type: 'subject'
+          group_id: null // ลบการอ้างอิงถึงระดับการศึกษา
         }])
         .select()
         .single();
@@ -215,14 +211,13 @@ export const CreateLesson = () => {
       // รีเซ็ตฟอร์ม
       setNewCategory({
         name: '',
-        description: '',
-        group_id: ''
+        description: ''
       });
       setShowAddCategory(false);
       setError(null);
     } catch (err) {
       console.error('Error adding category:', err);
-      setError('ไม่สามารถเพิ่มหมวดหมู่ไได้');
+      setError('ไม่สามารถเพิ่มหมวดหมู่ได้');
     }
   };
 
@@ -249,7 +244,7 @@ export const CreateLesson = () => {
           </div>
         ))}
         <button onClick={addNewLesson} className={styles.addButton}>
-          + เพิ่มบทเรียน
+          + 
         </button>
       </div>
 
@@ -264,7 +259,7 @@ export const CreateLesson = () => {
           />
 
           <textarea
-            placeholder="คำอธิบยบทเรียน"
+            placeholder="คำอธิบายบทเรียน"
             value={lessons[currentLessonIndex].description}
             onChange={(e) => updateLesson('description', e.target.value)}
             className={styles.textarea}
@@ -299,7 +294,7 @@ export const CreateLesson = () => {
 
                 {section.type === 'content' && (
                   <textarea
-                    placeholder="เนื้อหบทเรียน"
+                    placeholder="เนื้อหาบทเรียน"
                     value={section.content}
                     onChange={(e) => updateSection(sectionIndex, 'content', e.target.value)}
                     className={styles.textarea}
@@ -395,7 +390,7 @@ export const CreateLesson = () => {
         </div>
       ) : (
         <div className={styles.emptyState}>
-          <p>ยังไม่มีบบทเรียน กรุณาคลิกปุ่ม "เพิ่มบทเรียน" เพื่อเริ่มสร้างบบทเรียนใหม่</p>
+          <p>ยังไม่มีบทเรียน กรุณาคลิกปุ่ม "เพิ่มบทเรียน" เพื่อเริ่มสร้างบทเรียนใหม่</p>
         </div>
       )}
     </div>
