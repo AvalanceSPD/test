@@ -7,7 +7,11 @@ import { Register } from './components/Auth/Register';
 import Profile from './pages/Profile';
 import { LessonView } from './components/Course/LessonView';
 import { CreateLesson } from './components/Course/CreateLesson';
+<<<<<<< HEAD
 import { StudentProfile, TeacherProfile } from './pages/index';
+=======
+import { LessonList } from './components/Course/LessonList';   
+>>>>>>> kong
 
 export const AppRoutes = () => {
   return (
@@ -17,10 +21,14 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/lesson/:id" element={<LessonView />} />
+        <Route path="/lessons/:id" element={<LessonView />} />
         <Route path="/create-lesson" element={<CreateLesson />} />
+<<<<<<< HEAD
         <Route path="/student-profile" element={<StudentProfile />} />
         <Route path="/teacher-profile" element={<TeacherProfile />} />
+=======
+        <Route path="/lessons" element={<LessonList />} />
+>>>>>>> kong
       </Routes>
     </Layout>
   );

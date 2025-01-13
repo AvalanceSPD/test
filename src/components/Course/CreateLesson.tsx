@@ -27,12 +27,32 @@ interface Lesson {
   sections: LessonSection[];
 }
 
+interface NewCategory {
+  name: string;
+  description: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  description: string;
+  group_id?: string;
+}
+
 export const CreateLesson = () => {
   const { publicKey } = useWallet();
   const navigate = useNavigate();
   const [lessons, setLessons] = useState<Lesson[]>([createNewLesson()]);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<Category[]>([]);
   const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategory, setNewCategory] = useState<NewCategory>({
+    name: '',
+    description: ''
+  });
+  const [error, setError] = useState<string | null>(null);
 
   function createNewLesson(): Lesson {
     return {
@@ -163,6 +183,44 @@ export const CreateLesson = () => {
     }
   };
 
+  const handleAddNewCategory = async () => {
+    if (!newCategory.name) {
+      setError('กรุณากรอกชื่อหมวดหมู่');
+      return;
+    }
+
+    try {
+      const { data, error: categoryError } = await supabase
+        .from('subject_categories')
+        .insert([{
+          name: newCategory.name,
+          description: newCategory.description,
+          group_id: null // ลบการอ้างอิงถึงระดับการศึกษา
+        }])
+        .select()
+        .single();
+
+      if (categoryError) throw categoryError;
+
+      // เพิ่มหมวดหมู่ใหม่เข้าไปใน state
+      setCategories(prev => [...prev, data]);
+      
+      // เลือกหมวดหมู่ที่เพิ่มใหม่
+      setSelectedCategories(prev => [...prev, data]);
+      
+      // รีเซ็ตฟอร์ม
+      setNewCategory({
+        name: '',
+        description: ''
+      });
+      setShowAddCategory(false);
+      setError(null);
+    } catch (err) {
+      console.error('Error adding category:', err);
+      setError('ไม่สามารถเพิ่มหมวดหมู่ได้');
+    }
+  };
+
   return (
     <div className={styles.container}>
       <h1>สร้างบทเรียนใหม่</h1>
@@ -186,7 +244,7 @@ export const CreateLesson = () => {
           </div>
         ))}
         <button onClick={addNewLesson} className={styles.addButton}>
-          + เพิ่มบทเรียน
+          + 
         </button>
       </div>
 
@@ -201,7 +259,7 @@ export const CreateLesson = () => {
           />
 
           <textarea
-            placeholder="คำอธิบยบทเรียน"
+            placeholder="คำอธิบายบทเรียน"
             value={lessons[currentLessonIndex].description}
             onChange={(e) => updateLesson('description', e.target.value)}
             className={styles.textarea}
@@ -236,7 +294,7 @@ export const CreateLesson = () => {
 
                 {section.type === 'content' && (
                   <textarea
-                    placeholder="เนื้อหบทเรียน"
+                    placeholder="เนื้อหาบทเรียน"
                     value={section.content}
                     onChange={(e) => updateSection(sectionIndex, 'content', e.target.value)}
                     className={styles.textarea}

@@ -1,0 +1,118 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 10px 0;
+  background-color: #007bff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subjectGroup {
+  background: transparent;
+}
+
+.groupTitle {
+  cursor: pointer;
+  color: white;
+  transition: color 0.3s;
+  white-space: nowrap;
+  padding: 10px 15px;
+  border-radius: 20px;
+}
+
+.groupTitle:hover {
+  color: #e0e0e0;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 5px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
+.categoryButton {
+  padding: 5px 10px;
+  border: 1px solid white;
+  border-radius: 20px;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9em;
+  min-width: 100px;
+  text-align: center;
+}
+
+.categoryButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.categoryButton.active {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+  border-color: #e0e0e0;
+}
+
+.lessonGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lessonCard {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.lessonCard:hover {
+  transform: translateY(-5px);
+}
+
+.lessonCard h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.lessonCard p {
+  color: #666;
+  margin: 0 0 15px 0;
+  line-height: 1.4;
+}
+
+.lessonMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  color: #888;
+}
+
+.noLessons {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .lessonGrid {
+    grid-template-columns: 1fr;
+  }
+} 
