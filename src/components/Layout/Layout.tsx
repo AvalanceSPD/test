@@ -1,10 +1,11 @@
 import React, { PropsWithChildren } from 'react';
+import { Navbar } from './Navbar';
 
 const Layout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <div className="app-layout">
-      {/* Add header, navigation, etc. here if needed */}
-      <main>
+      <Navbar />
+      <main style={{ marginTop: '80px' }}>
         {children}
       </main>
     </div>

@@ -7,7 +7,11 @@ import styles from './Login.module.css';
 import bs58 from 'bs58';
 import { sign } from 'tweetnacl';
 
-export const Register = () => {
+interface RegisterProps {
+  onLoginClick: () => void;
+}
+
+export const Register = ({ onLoginClick }: RegisterProps) => {
   const { publicKey } = useWallet();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -170,6 +174,9 @@ export const Register = () => {
             </button>
           </div>
         )}
+        <button onClick={onLoginClick}>
+          มีบัญชีอยู่แล้ว? เข้าสู่ระบบ
+        </button>
       </div>
     </div>
   );
