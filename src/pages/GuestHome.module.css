@@ -1,0 +1,67 @@
+.container {
+  text-align: center;
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.slider {
+  position: relative;
+  overflow: hidden;
+  height: 500px;
+  margin-bottom: 20px;
+}
+
+.slideImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.courseWrapper {
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 50px;
+}
+
+.courseGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+}
+
+.courseCard {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.courseImage {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.infoButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.infoButton:hover {
+  background-color: #0056b3;
+}
+
+.infoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
