@@ -5,7 +5,11 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { supabase } from '../../utils/supabaseClient';
 import styles from './Login.module.css';
 
-export const Login = () => {
+interface LoginProps {
+  onRegisterClick: () => void;
+}
+
+export const Login = ({ onRegisterClick }: LoginProps) => {
   const { publicKey } = useWallet();
   const navigate = useNavigate();
   const location = useLocation();

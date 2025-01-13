@@ -23,7 +23,7 @@ const StudentProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!publicKey) {
-        navigate('/login');
+        navigate('/');
         return;
       }
 
@@ -66,7 +66,7 @@ const StudentProfile = () => {
   const handleLogout = async () => {
     try {
       await disconnect();
-      navigate('/login');
+      navigate('/');
     } catch (error) {
       console.error('Logout error:', error);
     }
