@@ -86,7 +86,7 @@ const Home = () => {
               <h2>คอร์สที่สอน</h2>
               <button 
                 className={styles.createButton}
-                onClick={() => navigate('/create-course')}
+                onClick={() => navigate('/create-lesson')}
               >
                 สร้างคอร์สใหม่
               </button>
@@ -95,7 +95,7 @@ const Home = () => {
                 {/* ตัวอย่างคอร์ส */}
                 <div className={styles.courseCard}>
                   <h3>คอร์ส X</h3>
-                  <button onClick={() => navigate('/course/1/edit')}>
+                  <button onClick={() => navigate('/lessons/1')}>
                     จัดการคอร์ส
                   </button>
                 </div>

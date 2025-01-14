@@ -133,6 +133,32 @@ export const Navbar = () => {
               className={styles.logo}
             />
           </Link>
+
+          {userRole === 'teacher' && (
+            <button 
+              onClick={() => navigate('/create-lesson')}
+              className={styles.navButton}
+            >
+              สร้างบทเรียน
+            </button>
+          )}
+
+          {userRole === 'student' && (
+            <div className={styles.studentNav}>
+              <button 
+                onClick={() => navigate('/')}
+                className={styles.navButton}
+              >
+                หน้าแรก
+              </button>
+              <button 
+                onClick={() => navigate('/all-lessons')}
+                className={styles.navButton}
+              >
+                บทเรียนทั้งหมด
+              </button>
+            </div>
+          )}
         </div>
 
         <div className={styles.rightSection}>
