@@ -69,7 +69,7 @@ export const Navbar = () => {
       await disconnect();
       setShowDropdown(false);
       setTimeout(() => {
-        navigate('/', { replace: true });
+        navigate('/home_1', { replace: true });
       }, 0);
     } catch (error) {
       console.error('Disconnect error:', error);
