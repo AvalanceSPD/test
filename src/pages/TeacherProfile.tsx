@@ -63,14 +63,14 @@ const TeacherProfile = () => {
     fetchUserProfile();
   }, [connected, publicKey, navigate]);
 
-  const handleLogout = async () => {
-    try {
-      await disconnect();
-      navigate('/');
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await disconnect();
+  //     navigate('/');
+  //   } catch (error) {
+  //     console.error('Logout error:', error);
+  //   }
+  // };
 
   return (
     <div className={styles.container}>
@@ -111,9 +111,7 @@ const TeacherProfile = () => {
         )}
 
         {connected && (
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            ออกจากระบบ
-          </button>
+          <div></div>
         )}
       </div>
     </div>
