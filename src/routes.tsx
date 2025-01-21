@@ -8,7 +8,7 @@ import { CreateLesson } from './components/Course/CreateLesson';
 import { StudentProfile, TeacherProfile, Home_1 } from './pages/index';
 import { LessonList } from './components/Course/LessonList';
 import { GuestHome } from './pages/GuestHome';
-import TestPages from "./test/TestPages";
+import TestPages from "./test/TestPages1";
 
 export const AppRoutes = () => {
   return (
