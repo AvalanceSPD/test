@@ -1,24 +1,29 @@
-import React, { useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { supabase } from '../../utils/supabaseClient';
-import styles from './ModalAuth.module.css';
+import React, { useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { supabase } from "../../utils/supabaseClient";
+import styles from "./ModalAuth.module.css";
+import bs58 from "bs58";
+import { sign } from "tweetnacl";
 
 interface RegisterModalProps {
   onLoginClick: () => void;
   onRegisterSuccess: (redirectPath: string) => Promise<void>;
 }
 
-export const RegisterModal = ({ onLoginClick, onRegisterSuccess }: RegisterModalProps) => {
+export const RegisterModal = ({
+  onLoginClick,
+  onRegisterSuccess,
+}: RegisterModalProps) => {
   const { publicKey } = useWallet();
-  const [username, setUsername] = useState('');
-  const [role, setRole] = useState<'student' | 'teacher'>('student');
+  const [username, setUsername] = useState("");
+  const [role, setRole] = useState<"student" | "teacher">("student");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleRegister = async () => {
     if (!publicKey || !username || !role) {
-      setError('กรุณากรอกข้อมูลให้ครบถ้วน');
+      setError("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
 
@@ -26,36 +31,94 @@ export const RegisterModal = ({ onLoginClick, onRegisterSuccess }: RegisterModal
       setIsLoading(true);
       setError(null);
 
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('*')
-        .eq('wallet_address', publicKey.toString())
-        .single();
+      const message = `ยืนยันการลงทะเบียนบัญชี ${username.trim()}`;
+      const encodedMessage = new TextEncoder().encode(message);
 
-      if (existingUser) {
-        setError('กระเป๋านี้ได้ลงทะเบียนไว้แล้ว');
+      // ขอลายเซ็นจากผู้ใช้
+      let signature: Uint8Array;
+      try {
+        // แก้ไขกรับลายเซ็นและแปลงเป็น Uint8Array
+        const signatureResponse = await (window as any).solana.signMessage(
+          encodedMessage,
+          "utf8"
+        );
+        signature = new Uint8Array(signatureResponse.signature);
+      } catch (signError) {
+        setError("กรุณายืนยันการลงทะเบียนด้วยการเซ็นข้อความ");
         return;
       }
 
-      const { error: insertError } = await supabase
-        .from('users')
-        .insert([
-          {
-            username,
-            role,
-            wallet_address: publicKey.toString(),
-          },
-        ]);
+      // ตรวจสอบลายเซ็น
+      const verified = sign.detached.verify(
+        encodedMessage,
+        signature,
+        publicKey.toBytes()
+      );
 
-      if (insertError) throw insertError;
+      if (!verified) {
+        setError("การยืนยันตัวตนล้มเหลว");
+        return;
+      }
+
+      const { data: existingWallet, error: walletError } = await supabase
+        .from("users")
+        .select("wallet_address")
+        .eq("wallet_address", publicKey.toString())
+        .maybeSingle();
+
+      if (walletError) {
+        console.error("Error checking wallet:", walletError);
+        setError(
+          `เกิดข้อผิดพลาดในการตรวจสอบกระเป๋าเงิน: ${walletError.message}`
+        );
+        return;
+      }
+
+      if (existingWallet) {
+        setError("กระเป๋าเงินนี้ได้ลงทะเบียนไปแล้ว");
+        return;
+      }
+
+      // ตรวจสอบ username
+      const { data: existingUser, error: checkError } = await supabase
+        .from("users")
+        .select("username")
+        .eq("username", username.trim())
+        .maybeSingle();
+
+      if (checkError) {
+        console.error("Error checking username:", checkError);
+        setError(`เกิดข้อผิดพลาดในการตรวจสอบชื่อผู้ใช้: ${checkError.message}`);
+        return;
+      }
+
+      if (existingUser) {
+        setError("ชื่อผู้ใช้นี้ถูกใช้งานแล้ว");
+        return;
+      }
+
+      const { error: insertError } = await supabase.from("users").insert([
+        {
+          wallet_address: publicKey.toString(),
+          username: username.trim(),
+          role,
+          signature: bs58.encode(signature), // แลง Uint8Array เป็น base58 string
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ]);
+
+      if (insertError) {
+        throw insertError;
+      }
 
       // Redirect ตาม role
-      const redirectPath = role === 'student' ? '/student-profile' : '/teacher-profile';
+      const redirectPath =
+        role === "student" ? "/student-profile" : "/teacher-profile";
       await onRegisterSuccess(redirectPath);
-
     } catch (err) {
-      console.error('Registration error:', err);
-      setError('เกิดข้อผิดพลาดในการลงทะเบียน');
+      console.error("Registration error:", err);
+      setError("เกิดข้อผิดพลาดในการลงทะเบียน");
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +146,7 @@ export const RegisterModal = ({ onLoginClick, onRegisterSuccess }: RegisterModal
 
             <select
               value={role}
-              onChange={(e) => setRole(e.target.value as 'student' | 'teacher')}
+              onChange={(e) => setRole(e.target.value as "student" | "teacher")}
               className={styles.select}
             >
               <option value="student">นักเรียน</option>
@@ -95,12 +158,11 @@ export const RegisterModal = ({ onLoginClick, onRegisterSuccess }: RegisterModal
               disabled={isLoading}
               className={styles.registerButton}
             >
-              {isLoading ? 'กำลังลงทะเบียน...' : 'ลงทะเบียน'}
+              {isLoading ? "กำลังลงทะเบียน..." : "ลงทะเบียน"}
             </button>
-
           </>
         )}
       </div>
     </div>
   );
-}; 
+};
