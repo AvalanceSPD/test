@@ -16,102 +16,12 @@ interface UserData {
   username: string;
 }
 
-interface Map_role {
-  role: number;
-}
-
-interface InstructorData {
-  name: string;
-}
-
 interface CourseData {
   id: number;
   title: string;
   description: string;
-  thumbnail: string | null;
-  create_by: number;
+  thumbnail: string;
 }
-
-interface SumData {
-  users: UserData[];
-  role: Map_role[];
-  ins_name: InstructorData[];
-  course: CourseData[];
-}
-
-const courseimage = "/logo192.png";
-
-interface CourseDataProps {
-  items: string;
-}
-// const courseArray = [{}];
-
-const courses = [
-  {
-    id: 1,
-    name: "Course 1",
-    instructor: "Instructor 1",
-    students: 30,
-    description: "This is a brief description of Course 1.",
-    image: "/logo192.png",
-  },
-  {
-    id: 2,
-    name: "Course 2",
-    instructor: "Instructor 2",
-    students: 25,
-    description: "This is a brief description of Course 2.",
-    image: "/logo192.png",
-  },
-  {
-    id: 3,
-    name: "Course 3",
-    instructor: "Instructor 3",
-    students: 20,
-    description: "This is a brief description of Course 3.",
-    image: "/logo192.png",
-  },
-  {
-    id: 4,
-    name: "Course 4",
-    instructor: "Instructor 4",
-    students: 15,
-    description: "This is a brief description of Course 4.",
-    image: "/logo192.png",
-  },
-  {
-    id: 5,
-    name: "Course 5",
-    instructor: "Instructor 5",
-    students: 10,
-    description: "This is a brief description of Course 5.",
-    image: "/logo192.png",
-  },
-  {
-    id: 6,
-    name: "Course 6",
-    instructor: "Instructor 6",
-    students: 5,
-    description: "This is a brief description of Course 6.",
-    image: "/logo192.png",
-  },
-  {
-    id: 7,
-    name: "Course 7",
-    instructor: "Instructor 7",
-    students: 8,
-    description: "This is a brief description of Course 7.",
-    image: "/logo192.png",
-  },
-  {
-    id: 8,
-    name: "Course 8",
-    instructor: "Instructor 8",
-    students: 12,
-    description: "This is a brief description of Course 8.",
-    image: "/logo192.png",
-  },
-];
 
 const slides = ["/1.jpg", "/1.jpg", "/1.jpg"];
 
@@ -143,43 +53,17 @@ const Home_1 = () => {
         //> supabase api for fetch related course data
         const { data: course, error } = await supabase
           .from("course")
-          .select("id, title, description, thumbnail, create_by");
+          .select("id, title, description, thumbnail");
         if (course) {
           setCourseData(course);
         } else {
           console.log("can't see any courses");
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching course data:", error);
+      }
     };
     fetchCoursedata();
-  }, []);
-
-  //: fetch instructor data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: instructor_list, error } = await supabase
-          .from("instructor_list")
-          .select("*")
-
-          // Filters
-          .eq("id", "Equal to")
-          .gt("column", "Greater than")
-          .lt("column", "Less than")
-          .gte("column", "Greater than or equal to")
-          .lte("column", "Less than or equal to")
-          .like("column", "%CaseSensitive%")
-          .ilike("column", "%CaseInsensitive%")
-          .is("column", null)
-          .in("column", ["Array", "Values"])
-          .neq("column", "Not equal to")
-
-          // Arrays
-          .contains("array_column", ["array", "contains"])
-          .containedBy("array_column", ["contained", "by"]);
-      } catch (error) {}
-    };
-    fetchData();
   }, []);
 
   //: fetch users data function
@@ -208,6 +92,11 @@ const Home_1 = () => {
 
     fetchUserData();
   }, [publicKey, connected]);
+
+  // courseData.forEach((course) => {
+  //   console.log(course.thumbnail);
+  // });
+  console.log(courseData);
 
   if (isLoading) {
     return <div className={styles.loading}>กำลังโหลด...</div>;
@@ -296,105 +185,28 @@ const Home_1 = () => {
         <div className={styles.course_card}>
           <Grid fluid>
             <Row className="show-grid">
-              <Col xs={24} sm={24} md={8}>
-                <div className={styles.divcard}>
-                  <Card width={320} shaded>
-                    <img
-                      src="https://images.unsplash.com/photo-1576606539605-b2a44fa58467?q=80&w=1974"
-                      alt="Shadow"
-                      width={200}
-                      height={300}
-                      // sizes=""
-                      className={styles.imagecard}
-                    />
-                    <Card.Header as="h5">Shadow</Card.Header>
-                    <Card.Body>
-                      Meet Shadow, a spirited little explorer with a heart full
-                      of adventure! This charming pup loves to roam the fields,
-                      soaking up the sights and sounds of nature.
-                    </Card.Body>
-                    <Card.Footer>
-                      <TagGroup>
-                        <Tag size="sm">🐶 Dog</Tag>
-                        <Tag size="sm">☀️ Sunny</Tag>
-                        <Tag size="sm">🌈 Rainbow</Tag>
-                      </TagGroup>
-                    </Card.Footer>
-                  </Card>
-                </div>
-              </Col>
-              <Col xs={24} sm={24} md={8}>
-                <div className={styles.divcard}>
-                  <Card width={320} shaded>
-                    <img
-                      src="https://images.unsplash.com/photo-1576606539605-b2a44fa58467?q=80&w=1974"
-                      alt="Shadow"
-                      width={200}
-                      height={300}
-                      className={styles.imagecard}
-                    />
-                    <Card.Header as="h5">Shadow</Card.Header>
-                    <Card.Body>
-                      Meet Shadow, a spirited little explorer with a heart full
-                      of adventure! This charming pup loves to roam the fields,
-                      soaking up the sights and sounds of nature.
-                    </Card.Body>
-                    <Card.Footer>
-                      <TagGroup>
-                        <Tag size="sm">🐶 Dog</Tag>
-                        <Tag size="sm">☀️ Sunny</Tag>
-                        <Tag size="sm">🌈 Rainbow</Tag>
-                      </TagGroup>
-                    </Card.Footer>
-                  </Card>
-                </div>
-              </Col>
-              <Col xs={24} sm={24} md={8}>
-                <div className={styles.divcard}>
-                  <Card width={320} shaded>
-                    <img
-                      src="https://images.unsplash.com/photo-1576606539605-b2a44fa58467?q=80&w=1974"
-                      alt="Shadow"
-                      width={200}
-                      height={300}
-                      className={styles.imagecard}
-                    />
-                    <Card.Header as="h5">Shadow</Card.Header>
-                    <Card.Body>
-                      Meet Shadow, a spirited little explorer with a heart full
-                      of adventure! This charming pup loves to roam the fields,
-                      soaking up the sights and sounds of nature.
-                    </Card.Body>
-                    <Card.Footer>
-                      <TagGroup>
-                        <Tag size="sm">🐶 Dog</Tag>
-                        <Tag size="sm">☀️ Sunny</Tag>
-                        <Tag size="sm">🌈 Rainbow</Tag>
-                      </TagGroup>
-                    </Card.Footer>
-                  </Card>
-                </div>
-              </Col>
+              {courseData.map((course) => (
+                <Col xs={24} sm={24} md={6}>
+                  <div key={course.id} className={styles.divcard}>
+                    <Card width={320} shaded bordered size="sm">
+                      <img
+                        // fit="contain"
+                        src={course.thumbnail}
+                        alt={course.title}
+                        width={200}
+                        height={160}
+                        className={styles.imagecard}
+                      />
+                      <Card.Header as="h5">{course.title}</Card.Header>
+                      <Card.Body>{course.description}</Card.Body>
+                      <Card.Footer></Card.Footer>
+                    </Card>
+                    <button>info</button>
+                  </div>
+                </Col>
+              ))}
             </Row>
           </Grid>
-        </div>
-        <div className={styles.courseGrid}>
-          {courseData.map((course) => (
-            <div key={course.id} className={styles.courseCard}>
-              <img
-                src={courseimage}
-                alt={course.title}
-                className={styles.courseImage}
-              />
-              <h2>{course.title}</h2>
-              <p>Instructor: {/* {course.instructor}*/}</p>
-              <p>Description: {course.description}</p>
-              <div className={styles.infoContainer}>
-                <span>Students: {/* {course.students}*/}</span>
-                <button className={styles.infoButton}>Info</button>
-              </div>
-            </div>
-          ))}
         </div>
       </div>
     </div>
