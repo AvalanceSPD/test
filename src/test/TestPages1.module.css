@@ -1,0 +1,705 @@
+body {
+    background-color: #ffffff; /* สีพื้นหลังของทั้งหน้า */
+}
+
+.container {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    width: 100%;
+    height: 230px;
+    background: #f8f9fa;
+    padding: 40px 20px;
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    box-shadow: none;
+}
+
+.headerContent {
+    max-width: 100%;
+    margin: 0 auto;
+    width: 90%;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+.thumbnailContainer {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.lessonTitle {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.titleInput {
+    width: 50%;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 2px solid #e0e0e0;
+    background: transparent;
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+}
+
+.titleInput:focus {
+    outline: none;
+    border-bottom-color: #4263eb;
+}
+
+.headerDescription {
+    width: 50%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.headerDescription:focus {
+    outline: none;
+    border-color: #4263eb;
+}
+
+.uploadLabel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: white;
+}
+
+.uploadPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+}
+
+.uploadPlaceholder svg {
+    width: 40px;
+    height: 40px;
+    color: #999;
+}
+
+/* ปรับ mainContent ให้อยู่ตรงกับ header */
+.mainContent {
+    max-width: 85%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: 70% 28%;
+    gap: 2%;
+    padding: 0 20px;
+}
+
+/* ส่วนคอลัมน์ซ้าย */
+.leftSection {
+    background: white;
+    max-width: 90%;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.videoContainer {
+    aspect-ratio: 16/9;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #dee2e6;
+    position: relative;
+}
+
+.descriptionInput {
+    width: 96%;
+    min-height: 120px;
+    padding: 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ส่วนคอลัมน์ขวา */
+.rightSection {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navigationSection {
+    margin-bottom: 24px;
+}
+
+.navigationSection h4 {
+    color: #495057;
+    margin: 0 0 12px 0;
+    font-size: 16px;
+}
+
+/* Session Items */
+.sessionItem {
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.sessionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+}
+
+.sessionActions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.actionButton {
+    width: 30px;
+    height: 30px;
+    background: #4263eb;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.deleteButton {
+    width: 24px;
+    height: 24px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.actionButton:hover {
+    background: #364fc7;
+}
+
+.deleteButton:hover {
+    background: #c82333;
+}
+
+.subSessionItem {
+    padding: 10px 16px;
+    margin: 4px 0;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.subSessionContent {
+    flex: 1;
+    cursor: pointer;
+    padding-right: 8px;
+}
+
+.subSessionActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.videoIndicator {
+    display: flex;
+    align-items: center;
+    color: #666;
+}
+
+.subSessionItem:hover {
+    border-color: #4263eb;
+}
+
+.subSessionItem.selected {
+    background: #4263eb;
+    color: white;
+    border-color: #4263eb;
+}
+
+.subSessionItem.selected .videoIndicator {
+    color: white;
+}
+
+.subSessionItem.selected .deleteButton {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.subSessionItem.selected .deleteButton:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Document Items */
+.documentItem {
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Quiz Items */
+.quizItem {
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.quizItem:hover {
+    border-color: #4263eb;
+    background: #f8f9fa;
+}
+
+.quizItem.selected {
+    background: #4263eb;
+    color: white;
+    border-color: #4263eb;
+}
+
+.quizItem.selected button {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Buttons */
+button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #4263eb;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background: #364fc7;
+}
+
+button.deleteButton {
+    background: #e03131;
+}
+
+button.deleteButton:hover {
+    background: #c92a2a;
+}
+
+.modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    outline: none;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalContent {
+    padding: 24px;
+}
+
+.modalContent h2 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-size: 20px;
+}
+
+.modalField {
+    margin-bottom: 16px;
+}
+
+.modalField label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.modalInput {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.modalInput:focus {
+    border-color: #4263eb;
+    outline: none;
+}
+
+.modalButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cancelButton {
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0;
+    background: white;
+    color: #666;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancelButton:hover {
+    background: #f5f5f5;
+}
+
+.submitButton {
+    padding: 10px 20px;
+    background: #4263eb;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.submitButton:hover {
+    background: #364fc7;
+}
+
+/* ปรับปรุงสไตล์ปุ่มเมื่อ disabled */
+.submitButton:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+/* อัปเดตสไตล์สำหรับ SubSession */
+.subSessionList {
+    margin-left: 20px;
+}
+
+.saveButton {
+    width: 100%;
+    padding: 12px;
+    background: #4263eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin-top: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.saveButton:hover {
+    background: #364fc7;
+}
+
+/* ปรับปรุงสไตล์สำหรับ textarea เมื่อ disabled */
+.descriptionInput:disabled {
+    background: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.contentToggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.toggleButton {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    background: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.toggleButton.active {
+    background: #4263eb;
+    color: white;
+    border-color: #4263eb;
+}
+
+.deleteButton {
+    background: #dc3545;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+}
+
+.deleteButton:hover {
+    background: #c82333;
+}
+
+/* ปรับปรุงสไตล์ที่มีอยู่ */
+.video {
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.quizForm {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.questionCard {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.questionNumber {
+    width: auto;
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    background: white;
+}
+
+.questionInput {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    resize: vertical;
+    font-size: 14px;
+}
+
+.addImageButton {
+    width: 100%;
+    padding: 12px;
+    background: #4263eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.answerSection {
+    margin-top: 16px;
+}
+
+.answerHeader {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.radioOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.radioOption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.radioInput {
+    width: 16px;
+    height: 16px;
+}
+
+.optionInput {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.answerTypeSelector {
+    margin-top: 20px;
+}
+
+.answerTypeLabelWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.answerTypeLabelWrapper label {
+    font-size: 14px;
+    color: #666;
+}
+
+.answerTypeButtons {
+    display: flex;
+    gap: 8px;
+}
+
+.typeButton {
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.typeButton.active {
+    background: #4263eb;
+    color: white;
+    border-color: #4263eb;
+}
+
+.addQuestionButton {
+    width: 100%;
+    padding: 12px;
+    background: #4263eb;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.addQuestionButton:hover {
+    background: #364fc7;
+}
+
+.quizHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.backButton {
+    padding: 8px 16px;
+    background: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.quizFormContainer {
+    background: white;
+    border-radius: 12px;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.quizHeader {
+    position: sticky;
+    top: 0;
+    background: white;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1;
+}
+
+.quizHeader h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.backButton {
+    padding: 8px 16px;
+    background: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.backButton:hover {
+    background: #d0d0d0;
+}

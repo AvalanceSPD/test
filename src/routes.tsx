@@ -1,15 +1,15 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import { LessonView } from "./components/Course/LessonView";
-import { CreateLesson } from "./components/Course/CreateLesson";
-import { StudentProfile, TeacherProfile, Home_1 } from "./pages/index";
-import { LessonList } from "./components/Course/LessonList";
-import { GuestHome } from "./pages/GuestHome";
-import TestPages from "./test/TestPages";
-import TestPages1 from "./test/TestPage1";
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import { LessonView } from './components/Course/LessonView';
+import { CreateLesson } from './components/Course/CreateLesson';
+import { StudentProfile, TeacherProfile, Home_1 } from './pages/index';
+import { LessonList } from './components/Course/LessonList';
+import { GuestHome } from './pages/GuestHome';
+import TestPages from "./test/TestPages1";
+import CourseInfo from './test/testguestcourseinfo/CourseInfo';
 
 export const AppRoutes = () => {
   return (
@@ -25,7 +25,7 @@ export const AppRoutes = () => {
         <Route path="/guest-home" element={<GuestHome />} />
         <Route path="/home_1" element={<Home_1 />} />
         <Route path="/test" element={<TestPages />} />
-        <Route path="/test1" element={<TestPages1 />} />
+        <Route path="/course/:courseId" element={<CourseInfo />} />
       </Routes>
     </Layout>
   );
