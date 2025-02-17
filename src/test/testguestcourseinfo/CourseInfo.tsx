@@ -4,6 +4,7 @@ import styles from './CourseInfo.module.css';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';  // แก้ไข path
 import { Grid, Row, Col } from 'rsuite';
+import { useWallet } from '@solana/wallet-adapter-react'; // เพิ่ม import
 
 interface Course {
     id: number;
@@ -154,6 +155,10 @@ const CourseInfo = () => {
         onSubmit: (data: { title: string; url: string }) => {},
     });
 
+    const [userRole, setUserRole] = useState<string | null>(null);
+    const { publicKey } = useWallet(); // เพิ่ม useWallet hook
+    const [isEnrolled, setIsEnrolled] = useState(false);
+
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
@@ -237,6 +242,64 @@ const CourseInfo = () => {
         }
     }, [lessons]);
 
+    useEffect(() => {
+        const checkUser = async () => {
+            if (publicKey) {
+                try {
+                    const { data, error } = await supabase
+                        .from('users')
+                        .select('role')
+                        .eq('wallet_address', publicKey.toString())
+                        .single();
+                    
+                    if (error) {
+                        console.log('Error fetching user:', error);
+                        setUserRole(null);
+                    } else {
+                        console.log('User role:', data.role);
+                        setUserRole(data.role);
+                    }
+                } catch (error) {
+                    console.log('Error in checkUser:', error);
+                    setUserRole(null);
+                }
+            } else {
+                console.log('No wallet connected');
+                setUserRole(null);
+            }
+        };
+
+        checkUser();
+    }, [publicKey]);
+
+    useEffect(() => {
+        const checkEnrollment = async () => {
+            if (publicKey && courseId) {
+                try {
+                    const { data, error } = await supabase
+                        .from('enrolled_course')
+                        .select('*')
+                        .eq('course_id', courseId)
+                        .eq('std_id', publicKey.toString())
+                        .single();
+                    
+                    if (!error && data) {
+                        console.log('User is enrolled');
+                        setIsEnrolled(true);
+                    } else {
+                        console.log('User is not enrolled');
+                        setIsEnrolled(false);
+                    }
+                } catch (error) {
+                    console.log('Error checking enrollment:', error);
+                    setIsEnrolled(false);
+                }
+            }
+        };
+
+        checkEnrollment();
+    }, [publicKey, courseId]);
+
     const handleSubSessionClick = (subSession: SubSession) => {
         setSelectedSubSession(subSession);
         setVideoUrl(subSession.videoUrl || '');
@@ -253,6 +316,28 @@ const CourseInfo = () => {
 
     const toggleLesson = (index: number) => {
         setExpandedLesson(expandedLesson === index ? null : index);
+    };
+
+    const handleEnroll = async () => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            const { error } = await supabase
+                .from('enrolled_course')
+                .insert([
+                    { 
+                        course_id: courseId,
+                        std_id: user.id
+                    }
+                ]);
+
+            if (error) throw error;
+            alert('ลงทะเบียนเรียนสำเร็จ');
+        } catch (err) {
+            console.error('Error enrolling:', err);
+            alert('เกิดข้อผิดพลาดในการลงทะเบียน');
+        }
     };
 
     if (loading) {
@@ -292,20 +377,20 @@ const CourseInfo = () => {
                                 <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
-                                        <p>สร้างเมื่อ: {new Date(course.create_at).toLocaleDateString('th-TH', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        })}</p>
-                                        <p>อัปเดตล่าสุด: {new Date(course.update_at).toLocaleDateString('th-TH', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric',
-                                        })}</p>
+                                        <p>สร้างเมื่อ: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
+                                        <p>อัปเดตล่าสุด: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
                                         <p>สร้างโดย: {course.create_by}</p>
                                     </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
+                                        {userRole === 'student' && (
+                                            <button 
+                                                className={styles.enrollButton}
+                                                onClick={handleEnroll}
+                                            >
+                                                ลงทะเบียนเรียน
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </Col>
@@ -318,16 +403,31 @@ const CourseInfo = () => {
                 <Col xs={16} className={styles.mainContentCol}>
                     <div className={styles.videoContainer}>
                         {selectedVideoUrl ? (
-                            <iframe
-                                src={selectedVideoUrl}
-                                frameBorder="0"
-                                allowFullScreen
-                                className={styles.video}
-                            />
+                            <div className={
+                                (userRole === 'teacher' || (userRole === 'student' && isEnrolled)) 
+                                ? '' 
+                                : styles.blurContainer
+                            }>
+                                <iframe
+                                    src={selectedVideoUrl}
+                                    frameBorder="0"
+                                    allowFullScreen
+                                    className={styles.video}
+                                />
+                                {!userRole && (
+                                    <div className={styles.blurOverlay}>
+                                        <p>กรุณาเข้าสู่ระบบเพื่อรับชมวิดีโอ</p>
+                                    </div>
+                                )}
+                                {userRole === 'student' && !isEnrolled && (
+                                    <div className={styles.blurOverlay}>
+                                        <p>กรุณาลงทะเบียนเรียนเพื่อรับชมวิดีโอ</p>
+                                    </div>
+                                )}
+                            </div>
                         ) : (
                             <p>ไม่มีวิดีโอให้แสดง</p>
                         )}
-
                     </div>
                     <div className={styles.lessonList}>
                         <div className={styles.descriptionText}>
