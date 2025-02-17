@@ -8,6 +8,7 @@ import { CreateLesson } from './components/Course/CreateLesson';
 import { StudentProfile, TeacherProfile, Home_1 } from './pages/index';
 import { LessonList } from './components/Course/LessonList';
 import { GuestHome } from './pages/GuestHome';
+import { InsRegister } from './components/Auth/InsRegister'
 import TestPages from "./test/TestPages1";
 import CourseInfo from './test/testguestcourseinfo/CourseInfo';
 
@@ -26,6 +27,7 @@ export const AppRoutes = () => {
         <Route path="/home_1" element={<Home_1 />} />
         <Route path="/test" element={<TestPages />} />
         <Route path="/course/:courseId" element={<CourseInfo />} />
+        <Route path="/insregister" element={<InsRegister />} />
       </Routes>
     </Layout>
   );

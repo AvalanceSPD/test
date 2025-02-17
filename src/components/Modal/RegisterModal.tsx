@@ -17,6 +17,7 @@ export const RegisterModal = ({
 }: RegisterModalProps) => {
   const { publicKey } = useWallet();
   const [username, setUsername] = useState("");
+  const [fullname, setFullname] = useState("");
   const [role, setRole] = useState<"student" | "teacher">("student");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,6 +98,20 @@ export const RegisterModal = ({
         return;
       }
 
+      //: เพิ่มช้อมูลนักเรียนใหม่่
+      const { data:rpcdata, error:rpcerror } = await supabase
+        .rpc('create_std', {
+          p_std_name:fullname,
+          p_signature:bs58.encode(signature), 
+          p_username:username.trim(), 
+          p_wallet_address:publicKey.toString()
+        })
+      if (rpcerror) {
+        console.error(rpcerror)
+        throw rpcerror;
+      }
+      else console.log(rpcdata)
+
       const { error: insertError } = await supabase.from("users").insert([
         {
           wallet_address: publicKey.toString(),
@@ -111,11 +126,12 @@ export const RegisterModal = ({
       if (insertError) {
         throw insertError;
       }
+      else console.log(rpcdata)
 
       // Redirect ตาม role
-      const redirectPath =
-        role === "student" ? "/student-profile" : "/teacher-profile";
-      await onRegisterSuccess(redirectPath);
+      // const redirectPath =
+      //   role === "student" ? "/student-profile" : "/teacher-profile";
+      // await onRegisterSuccess(redirectPath);
     } catch (err) {
       console.error("Registration error:", err);
       setError("เกิดข้อผิดพลาดในการลงทะเบียน");
@@ -138,20 +154,28 @@ export const RegisterModal = ({
           <>
             <input
               type="text"
-              placeholder="ชื่อผู้ใช้"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className={styles.input}
             />
+            <input
+              type="text"
+              onChange={(e) => setFullname(e.target.value)}
+              placeholder="Full name"
+              className={styles.input}
+              minLength={3}
+              maxLength={30}
+            />
 
-            <select
+            {/* <select
               value={role}
               onChange={(e) => setRole(e.target.value as "student" | "teacher")}
               className={styles.select}
             >
               <option value="student">นักเรียน</option>
               <option value="teacher">อาจารย์</option>
-            </select>
+            </select> */}
 
             <button
               onClick={handleRegister}

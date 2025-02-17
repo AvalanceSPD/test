@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { use, useEffect, useState } from "react";
+import { data, useNavigate } from "react-router-dom";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { supabase } from "../utils/supabaseClient";
 import styles from "./Home_1.module.css";
 import Slider from "react-slick";
-import { Grid, Row, Col, Card, Text, Button, TagGroup, Tag } from "rsuite";
+import { Grid, Row, Col, Card, Text, Button, TagGroup, Tag, Dropdown} from "rsuite";
 import "rsuite/Grid/styles/index.css";
 import "rsuite/Row/styles/index.css";
 import "rsuite/Col/styles/index.css";
 import "rsuite/Panel/styles/index.css";
 import "rsuite/PanelGroup/styles/index.css";
+import 'rsuite/Dropdown/styles/index.css';
+import 'rsuite/Card/styles/index.css';
+import 'rsuite/CardGroup/styles/index.css';
+import 'rsuite/Button/styles/index.css';
 
 interface UserData {
   role: "student" | "teacher" | null;
@@ -23,7 +27,20 @@ interface CourseData {
   thumbnail: string;
 }
 
+interface rpcData {
+  id: number;
+  title: string;
+  description: string;
+  thumbnail: string;
+  ins_name: string;
+}
+
 const slides = ["/1.jpg", "/1.jpg", "/1.jpg"];
+
+const items = [
+  <Dropdown.Item key={1}>A ~ Z</Dropdown.Item>,
+  <Dropdown.Item key={2}>Release Date</Dropdown.Item>
+];
 
 const Home_1 = () => {
   // const Home_1: React.FC<CourseDataProps> = ({ items }) => {
@@ -34,6 +51,9 @@ const Home_1 = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [courseData, setCourseData] = useState<CourseData[]>([]);
+  const [rpcData, setRpcData] = useState<rpcData[]>([]);
+  const [sort, setSort] = useState({keyToSort: "MAKE", direction: "asc"});
+
 
   // : slider settings
   const settings = {
@@ -55,7 +75,7 @@ const Home_1 = () => {
           .from("course")
           .select("id, title, description, thumbnail");
         if (course) {
-          setCourseData(course);
+          setCourseData(course);          
         } else {
           console.log("can't see any courses");
         }
@@ -65,6 +85,30 @@ const Home_1 = () => {
     };
     fetchCoursedata();
   }, []);
+// console.log(courseData);
+
+  //: try postgreSQL
+  useEffect(() => {
+    const fetchtry = async () => {
+      try {
+        const { data:rpcData, error:rpcError } = await supabase
+          .rpc('get_relative_course_data')
+        if (error) console.error(error)
+        // else console.log(rpcData)
+        
+        
+        if (rpcData) {
+          setRpcData(rpcData);          
+        } else {
+          console.log("can't see any rpc");
+        }
+      } catch (error) {
+        console.error("Error fetching course data:", error);
+      }
+    };
+    fetchtry();
+  }, []);
+  // console.log(rpcData);
 
   //: fetch users data function
   useEffect(() => {
@@ -93,10 +137,17 @@ const Home_1 = () => {
     fetchUserData();
   }, [publicKey, connected]);
 
-  // courseData.forEach((course) => {
-  //   console.log(course.thumbnail);
-  // });
-  console.log(courseData);
+  function handleSort() {
+    console.log(courseData[0].title);
+  }
+
+  const testlog = async () => {
+    console.log("hello");
+    const { data:rpcData, error:rpcError } = await supabase
+    .rpc('get_relative_course_data')
+    if (rpcError) console.error(rpcError)
+    else console.log(rpcData)
+  }
 
   if (isLoading) {
     return <div className={styles.loading}>กำลังโหลด...</div>;
@@ -181,14 +232,23 @@ const Home_1 = () => {
         ))}
       </Slider>
       <div className={styles.courseWrapper}>
-        <h1>Course</h1>
+        <div className={styles.courseheader}>
+          <div className={styles.coursediv1}>
+              <h1>Course</h1>
+          </div>
+          <div className={styles.coursediv2}>
+              <Dropdown title="Sort" placement="bottomEnd">
+                {items}
+              </Dropdown>
+          </div>
+        </div>
         <div className={styles.course_card}>
           <Grid fluid>
             <Row className="show-grid">
               {courseData.map((course) => (
-                <Col xs={24} sm={24} md={6}>
-                  <div key={course.id} className={styles.divcard}>
-                    <Card width={320} shaded bordered size="sm">
+                <Col sm={12} lg={6} xxl={6}>
+                  <div key={course.id}>
+                    <Card shaded bordered size="sm" className={styles.divcard}>
                       <img
                         // fit="contain"
                         src={course.thumbnail}
@@ -196,12 +256,21 @@ const Home_1 = () => {
                         width={200}
                         height={160}
                         className={styles.imagecard}
+                        sizes="sm"
                       />
-                      <Card.Header as="h5">{course.title}</Card.Header>
-                      <Card.Body>{course.description}</Card.Body>
-                      <Card.Footer></Card.Footer>
+                      <Card.Header as="h4">{course.title}</Card.Header>
+                      {/* <Card.Body>{course.description}</Card.Body> */}
+                      <div className={styles.cardbottomdiv}>
+                        <div>
+                          <p>ผู้สอน : course_id for hover {course.id}</p>
+                        </div>
+                        <div>
+                          <Button color="violet" appearance="primary" onClick={testlog} className={styles.cardbtn}>
+                            Violet
+                          </Button>
+                        </div>
+                      </div>
                     </Card>
-                    <button>info</button>
                   </div>
                 </Col>
               ))}
@@ -210,6 +279,7 @@ const Home_1 = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

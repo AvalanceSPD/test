@@ -703,3 +703,15 @@ button.deleteButton:hover {
 .backButton:hover {
     background: #d0d0d0;
 }
+.bigblock {
+    align-items: center;
+    justify-content: space-between;
+  }
+  .block1 {
+    font-weight: 600;
+    color: #495057;
+  }
+  .block2 {
+    font-weight: 600;
+    color: #495057;
+  }

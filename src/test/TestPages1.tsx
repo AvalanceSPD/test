@@ -376,7 +376,7 @@ const TestPages = () => {
                             value={lessonTitle}
                             onChange={(e) => setLessonTitle(e.target.value)}
                             className={styles.titleInput}
-                        />
+                            />
                         <textarea
                             placeholder="Lesson description"
                             value={mainContent.mainDescription || ''}
@@ -385,7 +385,11 @@ const TestPages = () => {
                                 mainDescription: e.target.value
                             })}
                             className={styles.headerDescription}
-                        />
+                            />
+                            <div className={styles.bigblock}>bigblock
+                            <div className={styles.block1}>block1</div>
+                            <div className={styles.block2}>block2</div>
+                            </div>
                     </div>
                 </div>
             </div>
