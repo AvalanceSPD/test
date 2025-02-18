@@ -155,9 +155,12 @@ const CourseInfo = () => {
         onSubmit: (data: { title: string; url: string }) => {},
     });
 
-    const [userRole, setUserRole] = useState<string | null>(null);
+    const [userRole, setUserRole] = useState<'student' | 'instructor' | null>(null);
+    const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
     const { publicKey } = useWallet(); // เพิ่ม useWallet hook
     const [isEnrolled, setIsEnrolled] = useState(false);
+    const [isInStudentsList, setIsInStudentsList] = useState(false);
+    const [studentListId, setStudentListId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchCourseData = async () => {
@@ -244,61 +247,181 @@ const CourseInfo = () => {
 
     useEffect(() => {
         const checkUser = async () => {
-            if (publicKey) {
-                try {
-                    const { data, error } = await supabase
-                        .from('users')
-                        .select('role')
-                        .eq('wallet_address', publicKey.toString())
-                        .single();
-                    
-                    if (error) {
-                        console.log('Error fetching user:', error);
-                        setUserRole(null);
-                    } else {
-                        console.log('User role:', data.role);
-                        setUserRole(data.role);
-                    }
-                } catch (error) {
-                    console.log('Error in checkUser:', error);
-                    setUserRole(null);
-                }
-            } else {
-                console.log('No wallet connected');
+          if (publicKey) {
+            try {
+              const { data, error } = await supabase
+                .rpc('check_role_in_navebar', {
+                  p_public_key:publicKey
+                })
+                if (error) console.error(error)
+                else 
+                  console.log(data)
+                  console.log(data.wallet_address)
+                // { data, error } = await supabase
+                // .from('users')
+                // .select('role')
+                // .eq('wallet_address', publicKey.toString())
+                // .single();
+              
+              if (error) {
+                setIsRegistered(false);
                 setUserRole(null);
+              } if (data.is_instructor == true) {
+                setIsRegistered(true);
+                setUserRole('instructor');
+              } if (data.is_student == true) {
+                setIsRegistered(true);
+                setUserRole('student');
+              }
+            } catch (error) {
+              setIsRegistered(false);
+              setUserRole(null);
             }
+          } else {
+            setIsRegistered(null);
+            setUserRole(null);
+          }
         };
-
+    
         checkUser();
     }, [publicKey]);
 
     useEffect(() => {
-        const checkEnrollment = async () => {
-            if (publicKey && courseId) {
-                try {
-                    const { data, error } = await supabase
-                        .from('enrolled_course')
-                        .select('*')
-                        .eq('course_id', courseId)
-                        .eq('std_id', publicKey.toString())
-                        .single();
-                    
-                    if (!error && data) {
-                        console.log('User is enrolled');
-                        setIsEnrolled(true);
-                    } else {
-                        console.log('User is not enrolled');
-                        setIsEnrolled(false);
-                    }
-                } catch (error) {
-                    console.log('Error checking enrollment:', error);
-                    setIsEnrolled(false);
+        const checkEnrollmentStatus = async () => {
+            if (!publicKey || !courseId) {
+                console.log('Missing publicKey or courseId');
+                return;
+            }
+
+            try {
+                // 1. ดึง user id จาก wallet address
+                const { data: userData, error: userError } = await supabase
+                    .from('users')
+                    .select('id')
+                    .eq('wallet_address', publicKey.toString())
+                    .single();
+
+                if (userError) {
+                    console.log('Error getting user:', userError);
+                    return;
                 }
+
+                // 2. ดึง student id จาก students_list
+                const { data: studentData, error: studentError } = await supabase
+                    .from('students_list')
+                    .select('id')
+                    .eq('std_id', userData.id)
+                    .single();
+
+                if (studentError) {
+                    console.log('Error getting student:', studentError);
+                    return;
+                }
+
+                console.log('Found student:', {
+                    userId: userData.id,
+                    studentId: studentData.id
+                });
+
+                // 3. เช็คการลงทะเบียนโดยใช้ student.id
+                const { data: enrollmentData, error: enrollmentError } = await supabase
+                    .from('enrolled_course')
+                    .select('*')
+                    .eq('std_id', studentData.id)
+                    .eq('course_id', courseId);
+
+                if (enrollmentError) {
+                    console.error('Error checking enrollment:', enrollmentError);
+                    return;
+                }
+
+                console.log('Enrollment check result:', {
+                    studentId: studentData.id,
+                    courseId: courseId,
+                    enrollments: enrollmentData
+                });
+
+                // ถ้าพบข้อมูลการลงทะเบียน
+                const isAlreadyEnrolled = enrollmentData && enrollmentData.length > 0;
+                
+                if (isAlreadyEnrolled) {
+                    console.log(`Student ${studentData.id} is enrolled in course ${courseId}`);
+                    setIsEnrolled(true);
+                    setStudentListId(studentData.id);
+                } else {
+                    console.log(`Student ${studentData.id} is not enrolled in course ${courseId}`);
+                    setIsEnrolled(false);
+                    setStudentListId(studentData.id);
+                }
+
+            } catch (error) {
+                console.error('Error in checkEnrollmentStatus:', error);
+                setIsEnrolled(false);
             }
         };
 
-        checkEnrollment();
+        checkEnrollmentStatus();
     }, [publicKey, courseId]);
+
+    useEffect(() => {
+        const fetchStudentId = async () => {
+            if (publicKey && userRole === 'student') {
+                try {
+                    // 1. ดึง id จากตาราง users ก่อน
+                    const { data: userData, error: userError } = await supabase
+                        .from('users')
+                        .select('id')
+                        .eq('wallet_address', publicKey.toString())
+                        .single();
+
+                    if (userError) {
+                        console.error('Error fetching user:', userError);
+                        setStudentListId(null);
+                        setIsInStudentsList(false);
+                        return;
+                    }
+
+                    console.log('User data:', userData);
+
+                    // 2. ใช้ id จาก users ไปหาข้อมูลใน students_list
+                    const { data: studentData, error: studentError } = await supabase
+                        .from('students_list')
+                        .select('id, std_id')
+                        .eq('std_id', userData.id)
+                        .single();
+
+                    console.log('Student list query result:', { studentData, studentError });
+
+                    if (studentError) {
+                        console.error('Error fetching from students_list:', studentError);
+                        setStudentListId(null);
+                        setIsInStudentsList(false);
+                        return;
+                    }
+
+                    if (studentData) {
+                        console.log('Found student in list:', studentData);
+                        setStudentListId(studentData.id);
+                        setIsInStudentsList(true);
+                    } else {
+                        console.log('No student found in students_list');
+                        setStudentListId(null);
+                        setIsInStudentsList(false);
+                    }
+                } catch (error) {
+                    console.error('Error in fetchStudentId:', error);
+                    setStudentListId(null);
+                    setIsInStudentsList(false);
+                }
+            } else {
+                console.log('No wallet connected or user is not a student');
+                setStudentListId(null);
+                setIsInStudentsList(false);
+            }
+        };
+
+        fetchStudentId();
+    }, [publicKey, userRole]);
 
     // const handleSubSessionClick = (subSession: SubSession) => {
     //     setSelectedSubSession(subSession);
@@ -319,21 +442,45 @@ const CourseInfo = () => {
     };
 
     const handleEnroll = async () => {
-        try {
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+        if (!studentListId || !courseId) {
+            console.log('Missing studentListId or courseId');
+            return;
+        }
 
-            const { error } = await supabase
+        try {
+            // เช็คว่าลงทะเบียนไปแล้วหรือยัง
+            const { data: existingEnrollment, error: checkError } = await supabase
+                .from('enrolled_course')
+                .select('*')
+                .eq('course_id', courseId)
+                .eq('std_id', studentListId)
+                .single();
+
+            if (checkError && checkError.code !== 'PGRST116') {
+                throw checkError;
+            }
+
+            if (existingEnrollment) {
+                alert('คุณได้ลงทะเบียนในคอร์สนี้แล้ว');
+                return;
+            }
+
+            // บันทึกการลงทะเบียน
+            const { error: insertError } = await supabase
                 .from('enrolled_course')
                 .insert([
-                    { 
+                    {
                         course_id: courseId,
-                        std_id: user.id
+                        std_id: studentListId
                     }
                 ]);
 
-            if (error) throw error;
-            alert('ลงทะเบียนเรียนสำเร็จ');
+            if (insertError) throw insertError;
+
+            // อัพเดท state หลังลงทะเบียนสำเร็จ
+            setIsEnrolled(true);
+            alert('ลงทะเบียนสำเร็จ');
+
         } catch (err) {
             console.error('Error enrolling:', err);
             alert('เกิดข้อผิดพลาดในการลงทะเบียน');
@@ -384,12 +531,15 @@ const CourseInfo = () => {
                                     <div className={styles.descriptionText}>
                                         {course.description}
                                         {userRole === 'student' && (
-                                            <button 
-                                                className={styles.enrollButton}
-                                                onClick={handleEnroll}
-                                            >
-                                                ลงทะเบียนเรียน
-                                            </button>
+                                            <div className={styles.buttonContainer}>
+                                                <button 
+                                                    className={`${styles.enrollButton} ${isEnrolled ? styles.enrolled : ''}`}
+                                                    onClick={handleEnroll}
+                                                    disabled={isEnrolled}
+                                                >
+                                                    {isEnrolled ? 'Enrolled' : 'Enroll'}
+                                                </button>
+                                            </div>
                                         )}
                                     </div>
                                 </div>
@@ -404,9 +554,9 @@ const CourseInfo = () => {
                     <div className={styles.videoContainer}>
                         {selectedVideoUrl ? (
                             <div className={
-                                (userRole === 'teacher' || (userRole === 'student' && isEnrolled)) 
-                                ? '' 
-                                : styles.blurContainer
+                                (!userRole || (userRole === 'student' && !isEnrolled)) 
+                                ? styles.blurContainer 
+                                : ''
                             }>
                                 <iframe
                                     src={selectedVideoUrl}
@@ -419,10 +569,20 @@ const CourseInfo = () => {
                                         <p>กรุณาเข้าสู่ระบบเพื่อรับชมวิดีโอ</p>
                                     </div>
                                 )}
-                                {userRole === 'student' && !isEnrolled && (
-                                    <div className={styles.blurOverlay}>
-                                        <p>กรุณาลงทะเบียนเรียนเพื่อรับชมวิดีโอ</p>
-                                    </div>
+                                {userRole === 'student' && (
+                                    <>
+                                        {!isEnrolled ? (
+                                            <div className={styles.blurOverlay}>
+                                                {isInStudentsList ? (
+                                                    <p>กรุณาลงทะเบียนเรียนเพื่อรับชมวิดีโอ</p>
+                                                ) : (
+                                                    <p>คุณไม่มีสิทธิ์ลงทะเบียนเรียนในรายวิชานี้</p>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            <div>คุณได้ลงทะเบียนเรียนแล้ว</div>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         ) : (
