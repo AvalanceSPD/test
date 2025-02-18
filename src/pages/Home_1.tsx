@@ -103,7 +103,14 @@ const Home_1 = () => {
           .rpc('get_relative_course_data')
         if (error) console.error(error)
         // else console.log(rpcData)
-        
+        //? json format
+        //?   {
+        //?      "id": int,
+        //?      "title": "",
+        //?      "description": "",
+        //?      "thumbnail": "",
+        //?      "ins_name": ""
+        //?    },
         if (rpcData) {
           setRpcData(rpcData);          
         } else {
