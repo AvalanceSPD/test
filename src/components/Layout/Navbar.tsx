@@ -39,7 +39,9 @@ export const Navbar = () => {
               p_public_key:publicKey
             })
             if (error) console.error(error)
-            else console.log(data)
+            else 
+              console.log(data)
+              console.log(data.wallet_address)
             // { data, error } = await supabase
             // .from('users')
             // .select('role')
@@ -49,9 +51,12 @@ export const Navbar = () => {
           if (error) {
             setIsRegistered(false);
             setUserRole(null);
-          } else {
+          } if (data.is_instructor == true) {
             setIsRegistered(true);
-            setUserRole(data.role);
+            setUserRole('instructor');
+          } if (data.is_student == true) {
+            setIsRegistered(true);
+            setUserRole('student');
           }
         } catch (error) {
           setIsRegistered(false);
@@ -152,7 +157,7 @@ export const Navbar = () => {
           {userRole === 'student' && (
             <div className={styles.studentNav}>
               <button 
-                onClick={() => navigate('/')}
+                onClick={() => navigate('/home_1')}
                 className={styles.navButton}
               >
                 หน้าแรก
