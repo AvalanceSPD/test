@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import { supabase } from "../../utils/supabaseClient";
@@ -16,10 +17,13 @@ export const RegisterModal = ({
   onRegisterSuccess,
 }: RegisterModalProps) => {
   const { publicKey } = useWallet();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
+  const [fullname, setFullname] = useState("");
   const [role, setRole] = useState<"student" | "teacher">("student");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
 
   const handleRegister = async () => {
     if (!publicKey || !username || !role) {
@@ -97,25 +101,25 @@ export const RegisterModal = ({
         return;
       }
 
-      const { error: insertError } = await supabase.from("users").insert([
-        {
-          wallet_address: publicKey.toString(),
-          username: username.trim(),
-          role,
-          signature: bs58.encode(signature), // แลง Uint8Array เป็น base58 string
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-      ]);
-
-      if (insertError) {
-        throw insertError;
+      //: เพิ่มช้อมูลนักเรียนใหม่่
+      const { data:rpcdata, error:rpcerror } = await supabase
+        .rpc('create_std', {
+          p_std_name:fullname,
+          p_signature:bs58.encode(signature), 
+          p_username:username.trim(), 
+          p_wallet_address:publicKey.toString()
+        })
+      if (rpcerror) {
+        console.error(rpcerror)
+        throw rpcerror;
       }
+      else console.log(rpcdata)
 
-      // Redirect ตาม role
-      const redirectPath =
-        role === "student" ? "/student-profile" : "/teacher-profile";
-      await onRegisterSuccess(redirectPath);
+    setSuccess(true);
+    setTimeout(() => {
+      navigate('/home_1');
+    }, 2000);
+
     } catch (err) {
       console.error("Registration error:", err);
       setError("เกิดข้อผิดพลาดในการลงทะเบียน");
@@ -127,35 +131,34 @@ export const RegisterModal = ({
   return (
     <div className={styles.authContainer}>
       <h1>ลงทะเบียนผู้ใช้ใหม่</h1>
-      <p>กรุณาเชื่อมต่อกระเป๋า Phantom และกรอกข้อมูล</p>
-
-      {error && <div className={styles.errorMessage}>{error}</div>}
-
       <div className={styles.buttonContainer}>
         <WalletMultiButton className={styles.walletButton} />
-
         {publicKey && (
           <>
+            {error && <div className={styles.errorMessage}>{error}</div>}
+              {success && (
+                <div className={styles.successMessage}>
+                  ลงทะเบียนสำเร็จ! กำลังกลับไปยังหน้าเข้าสู่ระบบ...
+                </div>
+            )}
             <input
               type="text"
-              placeholder="ชื่อผู้ใช้"
+              placeholder="Username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className={styles.input}
             />
-
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value as "student" | "teacher")}
-              className={styles.select}
-            >
-              <option value="student">นักเรียน</option>
-              <option value="teacher">อาจารย์</option>
-            </select>
-
+            <input
+              type="text"
+              onChange={(e) => setFullname(e.target.value)}
+              placeholder="Full name"
+              className={styles.input}
+              minLength={3}
+              maxLength={30}
+            />
             <button
               onClick={handleRegister}
-              disabled={isLoading}
+              disabled={isLoading || success || !username.trim()}
               className={styles.registerButton}
             >
               {isLoading ? "กำลังลงทะเบียน..." : "ลงทะเบียน"}
