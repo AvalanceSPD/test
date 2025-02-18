@@ -122,16 +122,16 @@ const CourseInfo = () => {
     const { courseId } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState<Course | null>(null);
-    const [sessions, setSessions] = useState<Session[]>([]);
-    const [documents, setDocuments] = useState<Document[]>([]);
-    const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-    const [selectedSubSession, setSelectedSubSession] = useState<SubSession | null>(null);
-    const [lessonTitle, setLessonTitle] = useState('');
-    const [thumbnailUrl, setThumbnailUrl] = useState('');
-    const [videoUrl, setVideoUrl] = useState('');
-    const [description, setDescription] = useState('');
-    const [mainContent, setMainContent] = useState<MainContent>({});
-    const [isMainContent, setIsMainContent] = useState(true);
+    // const [sessions, setSessions] = useState<Session[]>([]);
+    // const [documents, setDocuments] = useState<Document[]>([]);
+    // const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+    // const [selectedSubSession, setSelectedSubSession] = useState<SubSession | null>(null);
+    // const [lessonTitle, setLessonTitle] = useState('');
+    // const [thumbnailUrl, setThumbnailUrl] = useState('');
+    // const [videoUrl, setVideoUrl] = useState('');
+    // const [description, setDescription] = useState('');
+    // const [mainContent, setMainContent] = useState<MainContent>({});
+    // const [isMainContent, setIsMainContent] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -300,11 +300,11 @@ const CourseInfo = () => {
         checkEnrollment();
     }, [publicKey, courseId]);
 
-    const handleSubSessionClick = (subSession: SubSession) => {
-        setSelectedSubSession(subSession);
-        setVideoUrl(subSession.videoUrl || '');
-        setDescription(subSession.description || '');
-    };
+    // const handleSubSessionClick = (subSession: SubSession) => {
+    //     setSelectedSubSession(subSession);
+    //     setVideoUrl(subSession.videoUrl || '');
+    //     setDescription(subSession.description || '');
+    // };
 
     const handleVideoClick = (media: string, title: string, description: string) => {
         const videoId = media.split('v=')[1].split('&')[0]; // ดึง video ID
@@ -358,7 +358,7 @@ const CourseInfo = () => {
                 <Col xs={24}>
                     <div className={styles.headerBox}>
                         <Row>
-                            <Col xs={4} className={styles.thumbnailCol}>
+                            <Col xs={8} className={styles.thumbnailCol}>
                                 <div className={styles.thumbnailContainer}>
                                     {course.thumbnail && (
                                         <img 
@@ -373,7 +373,7 @@ const CourseInfo = () => {
                                     )}
                                 </div>
                             </Col>
-                            <Col xs={20} className={styles.lessonTitleCol}>
+                            <Col xs={16} className={styles.lessonTitleCol}>
                                 <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
