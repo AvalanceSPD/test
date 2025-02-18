@@ -42,11 +42,6 @@ export const Navbar = () => {
             else 
               console.log(data)
               console.log(data.wallet_address)
-            // { data, error } = await supabase
-            // .from('users')
-            // .select('role')
-            // .eq('wallet_address', publicKey.toString())
-            // .single();
           
           if (error) {
             setIsRegistered(false);

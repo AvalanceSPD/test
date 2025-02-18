@@ -137,7 +137,7 @@
   .courseWrapper {
     /* border: 1px solid #000000; */
     border-radius: 20px;
-    padding: 20px 50px 20px 50px;
+    padding: 20px 40px 20px 40px;
     background-color: #FFFFFF;
   }
   
@@ -185,7 +185,7 @@
     display: flex;
     justify-content: space-between;
     position: relative;
-    padding: 0px 30px 0px 30px;
+    padding: 0px 25px 0px 25px;
   }
   .coursediv1 {
     justify-content: center;

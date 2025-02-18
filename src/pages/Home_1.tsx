@@ -38,9 +38,17 @@ interface rpcData {
 const slides = ["/1.jpg", "/1.jpg", "/1.jpg"];
 
 const items = [
-  <Dropdown.Item key={1}>A ~ Z</Dropdown.Item>,
-  <Dropdown.Item key={2}>Release Date</Dropdown.Item>
+  <Dropdown.Item key={1} onClick={() => handleSortAZ()}>A ~ Z</Dropdown.Item>,
+  <Dropdown.Item key={2} onClick={() => handleSortByDate()}>Release Date</Dropdown.Item>
 ];
+
+function handleSortAZ() {
+  console.log('A ~ Z');
+}
+
+function handleSortByDate() {
+  console.log('Release Date');
+}
 
 const Home_1 = () => {
   // const Home_1: React.FC<CourseDataProps> = ({ items }) => {
@@ -75,7 +83,7 @@ const Home_1 = () => {
           .from("course")
           .select("id, title, description, thumbnail");
         if (course) {
-          setCourseData(course);          
+          setCourseData(course);
         } else {
           console.log("can't see any courses");
         }
@@ -89,13 +97,12 @@ const Home_1 = () => {
 
   //: try postgreSQL
   useEffect(() => {
-    const fetchtry = async () => {
+    const fetchCoursedata = async () => {
       try {
         const { data:rpcData, error:rpcError } = await supabase
           .rpc('get_relative_course_data')
         if (error) console.error(error)
         // else console.log(rpcData)
-        
         
         if (rpcData) {
           setRpcData(rpcData);          
@@ -106,7 +113,7 @@ const Home_1 = () => {
         console.error("Error fetching course data:", error);
       }
     };
-    fetchtry();
+    fetchCoursedata();
   }, []);
   // console.log(rpcData);
 
@@ -137,17 +144,10 @@ const Home_1 = () => {
     fetchUserData();
   }, [publicKey, connected]);
 
-  function handleSort() {
-    console.log(courseData[0].title);
-  }
-
-  const testlog = async () => {
-    console.log("hello");
-    const { data:rpcData, error:rpcError } = await supabase
-    .rpc('get_relative_course_data')
-    if (rpcError) console.error(rpcError)
-    else console.log(rpcData)
-  }
+  const handlecoursebtn = async (course_id: number) => {
+    console.log(course_id);
+    navigate(`/course/${course_id}`);
+  } 
 
   if (isLoading) {
     return <div className={styles.loading}>กำลังโหลด...</div>;
@@ -245,7 +245,7 @@ const Home_1 = () => {
         <div className={styles.course_card}>
           <Grid fluid>
             <Row className="show-grid">
-              {courseData.map((course) => (
+              {rpcData.map((course) => (
                 <Col sm={12} lg={6} xxl={6}>
                   <div key={course.id}>
                     <Card shaded bordered size="sm" className={styles.divcard}>
@@ -262,10 +262,10 @@ const Home_1 = () => {
                       {/* <Card.Body>{course.description}</Card.Body> */}
                       <div className={styles.cardbottomdiv}>
                         <div>
-                          <p>ผู้สอน : course_id for hover {course.id}</p>
+                          <p>ผู้สอน : {course.ins_name}</p>
                         </div>
                         <div>
-                          <Button color="violet" appearance="primary" onClick={testlog} className={styles.cardbtn}>
+                          <Button color="violet" appearance="primary" onClick={() => handlecoursebtn(course.id)} className={styles.cardbtn}>
                             Violet
                           </Button>
                         </div>
