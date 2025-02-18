@@ -13,11 +13,11 @@ export const Navbar = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [userRole, setUserRole] = useState<'student' | 'teacher' | null>(null);
+  const [userRole, setUserRole] = useState<'student' | 'instructor' | null>(null);
   const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // ปิด dropdown เมื่อคลิกนอกพื้นที่
+  //: ปิด dropdown เมื่อคลิกนอกพื้นที่
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -29,16 +29,22 @@ export const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // เพิ่มฟังก์ชันเช็คการลงทะเบียน
+  //: เพิ่มฟังก์ชันเช็คการลงทะเบียน
   useEffect(() => {
     const checkUser = async () => {
       if (publicKey) {
         try {
           const { data, error } = await supabase
-            .from('users')
-            .select('role')
-            .eq('wallet_address', publicKey.toString())
-            .single();
+            .rpc('check_role_in_navebar', {
+              p_public_key:publicKey
+            })
+            if (error) console.error(error)
+            else console.log(data)
+            // { data, error } = await supabase
+            // .from('users')
+            // .select('role')
+            // .eq('wallet_address', publicKey.toString())
+            // .single();
           
           if (error) {
             setIsRegistered(false);
@@ -114,7 +120,7 @@ export const Navbar = () => {
       case 'student':
         navigate('/student-profile');
         break;
-      case 'teacher':
+      case 'instructor':
         navigate('/teacher-profile');
         break;
       default:
@@ -126,15 +132,15 @@ export const Navbar = () => {
     <>
       <nav className={styles.navbar}>
         <div className={styles.leftSection}>
-          <Link to="/">
+          <Link to="/home_1">
             <img 
               src="/logo.png" 
               alt="Logo" 
               className={styles.logo}
             />
           </Link>
-
-          {userRole === 'teacher' && (
+          {/* //: instructor */}
+          {userRole === 'instructor' && (
             <button 
               onClick={() => navigate('/create-lesson')}
               className={styles.navButton}
@@ -142,7 +148,7 @@ export const Navbar = () => {
               สร้างบทเรียน
             </button>
           )}
-
+          {/* //: student */}
           {userRole === 'student' && (
             <div className={styles.studentNav}>
               <button 
@@ -160,7 +166,7 @@ export const Navbar = () => {
             </div>
           )}
         </div>
-
+          {/* //: drop down */}
         <div className={styles.rightSection}>
           {publicKey ? (
             <div className={styles.profileContainer} ref={dropdownRef}>

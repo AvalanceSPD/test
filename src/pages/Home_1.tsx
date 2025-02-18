@@ -16,7 +16,7 @@ import 'rsuite/CardGroup/styles/index.css';
 import 'rsuite/Button/styles/index.css';
 
 interface UserData {
-  role: "student" | "teacher" | null;
+  // role: "student" | "teacher" | null;
   username: string;
 }
 
@@ -118,7 +118,7 @@ const Home_1 = () => {
         try {
           const { data, error } = await supabase
             .from("users")
-            .select("role, username")
+            .select("username")
             .eq("wallet_address", publicKey.toString())
             .single();
 
@@ -154,68 +154,68 @@ const Home_1 = () => {
   }
 
   //= หน้า Home สำหรับนักเรียน
-  if (userData?.role === "student") {
-    return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <h1 className={styles.title}>ยินดีต้อนรับ {userData.username}</h1>
-          <div className={styles.studentDashboard}>
-            <div className={styles.section}>
-              <h2>คอร์สเรียนของฉัน</h2>
-              {/* แสดงรายการคอร์สที่ลงทะเบียน */}
-              <div className={styles.courseGrid_v1}>
-                {/* ตัวอย่างคอร์ส */}
-                <div className={styles.courseCard_v1}>
-                  <h3>คอร์ส A</h3>
-                  <button onClick={() => navigate("/course/1")}>
-                    เข้าเรียน
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className={styles.section}>
-              <h2>คอร์สแนะนำ</h2>
-              {/* แสดงคอร์สแนะนำ */}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (userData?.role === "student") {
+  //   return (
+  //     <div className={styles.container}>
+  //       <div className={styles.content}>
+  //         <h1 className={styles.title}>ยินดีต้อนรับ {userData.username}</h1>
+  //         <div className={styles.studentDashboard}>
+  //           <div className={styles.section}>
+  //             <h2>คอร์สเรียนของฉัน</h2>
+  //             {/* แสดงรายการคอร์สที่ลงทะเบียน */}
+  //             <div className={styles.courseGrid_v1}>
+  //               {/* ตัวอย่างคอร์ส */}
+  //               <div className={styles.courseCard_v1}>
+  //                 <h3>คอร์ส A</h3>
+  //                 <button onClick={() => navigate("/course/1")}>
+  //                   เข้าเรียน
+  //                 </button>
+  //               </div>
+  //             </div>
+  //           </div>
+  //           <div className={styles.section}>
+  //             <h2>คอร์สแนะนำ</h2>
+  //             {/* แสดงคอร์สแนะนำ */}
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   //= หน้า Home สำหรับอาจารย์
-  if (userData?.role === "teacher") {
-    return (
-      <div className={styles.container}>
-        <div className={styles.content}>
-          <h1 className={styles.title}>
-            ยินดีต้อนรับ อาจารย์ {userData.username}
-          </h1>
-          <div className={styles.teacherDashboard}>
-            <div className={styles.section}>
-              <h2>คอร์สที่สอน</h2>
-              <button
-                className={styles.createButton}
-                onClick={() => navigate("/create-lesson")}
-              >
-                สร้างคอร์สใหม่
-              </button>
-              {/* แสดงรายการคอร์สที่สอน */}
-              <div className={styles.courseGrid_v1}>
-                {/* ตัวอย่างคอร์ส */}
-                <div className={styles.courseCard_1}>
-                  <h3>คอร์ส X</h3>
-                  <button onClick={() => navigate("/lessons/1")}>
-                    จัดการคอร์ส
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // if (userData?.role === "teacher") {
+  //   return (
+  //     <div className={styles.container}>
+  //       <div className={styles.content}>
+  //         <h1 className={styles.title}>
+  //           ยินดีต้อนรับ อาจารย์ {userData.username}
+  //         </h1>
+  //         <div className={styles.teacherDashboard}>
+  //           <div className={styles.section}>
+  //             <h2>คอร์สที่สอน</h2>
+  //             <button
+  //               className={styles.createButton}
+  //               onClick={() => navigate("/create-lesson")}
+  //             >
+  //               สร้างคอร์สใหม่
+  //             </button>
+  //             {/* แสดงรายการคอร์สที่สอน */}
+  //             <div className={styles.courseGrid_v1}>
+  //               {/* ตัวอย่างคอร์ส */}
+  //               <div className={styles.courseCard_1}>
+  //                 <h3>คอร์ส X</h3>
+  //                 <button onClick={() => navigate("/lessons/1")}>
+  //                   จัดการคอร์ส
+  //                 </button>
+  //               </div>
+  //             </div>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   //= หน้า Home สำหรับ Guest
   return (
