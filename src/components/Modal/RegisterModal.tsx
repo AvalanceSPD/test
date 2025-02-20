@@ -63,7 +63,7 @@ export const RegisterModal = ({
         setError("การยืนยันตัวตนล้มเหลว");
         return;
       }
-
+      
       const { data: existingWallet, error: walletError } = await supabase
         .from("users")
         .select("wallet_address")

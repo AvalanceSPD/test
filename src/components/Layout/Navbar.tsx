@@ -39,9 +39,9 @@ export const Navbar = () => {
               p_public_key:publicKey
             })
             if (error) console.error(error)
-            else 
-              console.log(data)
-              console.log(data.wallet_address)
+            // else 
+            //   console.log(data)
+            //   console.log(data.wallet_address)
           
           if (error) {
             setIsRegistered(false);

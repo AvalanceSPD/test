@@ -5,46 +5,43 @@ import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { supabase } from '../utils/supabaseClient';
 import styles from './Profile.module.css';
 
-interface UserProfile {
-  id: number;
-  username: string;
-  role: 'student' | 'teacher';
-  wallet_address: string;
-  created_at: string;
+interface profiledata {
+  wallet_address: string,
+  username: string,
+  std_name: string,
+  is_instructor: boolean,
+  is_student: boolean
 }
 
 const StudentProfile = () => {
   const { publicKey, connected, disconnect, wallet } = useWallet();
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [profiledata, setProfiledata] = useState<profiledata | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!publicKey) {
-        navigate('/');
+        navigate('/home_1');
         return;
       }
-
+      
       try {
         setIsLoading(true);
         setError(null);
 
-        const walletAddress = publicKey.toString();
+        // const walletAddress = publicKey.toString();
         const { data, error: fetchError } = await supabase
-          .from('users')
-          .select('*')
-          .eq('wallet_address', walletAddress)
-          .eq('role', 'student')
-          .single();
-
+        .rpc('check_role_in_navebar', {
+          p_public_key:publicKey
+        })
         if (fetchError) {
           throw fetchError;
         }
-
         if (data) {
-          setUserProfile(data);
+          setProfiledata(data);
+          
         } else {
           setError('คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่นักเรียน');
           setTimeout(() => {
@@ -91,21 +88,26 @@ const StudentProfile = () => {
           </div>
         )}
 
-        {userProfile && (
+        {profiledata && (
           <div className={styles.profileInfo}>
             <div className={styles.infoRow}>
               <span className={styles.label}>ชื่อผู้ใช้:</span>
-              <span className={styles.value}>{userProfile.username}</span>
+              <span className={styles.value}>{profiledata.username}</span>
+            </div>
+
+            <div className={styles.infoRow}>
+              <span className={styles.label}>ชื่อเต็ม:</span>
+              <span className={styles.value}>{profiledata.std_name}</span>
             </div>
 
             <div className={styles.infoRow}>
               <span className={styles.label}>บทบาท:</span>
-              <span className={styles.value}>{userProfile.role}</span>
+              <span className={styles.value}>นักเรียน</span>
             </div>
 
             <div className={styles.infoRow}>
-              <span className={styles.label}>ที่อยู่กระเป๋า:</span>
-              <span className={styles.value}>{userProfile.wallet_address}</span>
+              <span className={styles.label}>Public key:</span>
+              <span className={styles.value}>{profiledata.wallet_address}</span>
             </div>
           </div>
         )}
