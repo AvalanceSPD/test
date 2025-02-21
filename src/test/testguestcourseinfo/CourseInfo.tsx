@@ -481,6 +481,35 @@ const CourseInfo = () => {
         }
     };
 
+    const handleCancelEnrollment = async () => {
+        if (!studentListId || !courseId) {
+            console.log('Missing studentListId or courseId');
+            return;
+        }
+
+        try {
+            // ลบการลงทะเบียนจาก enrolled_course
+            const { error } = await supabase
+                .from('enrolled_course')
+                .delete()
+                .eq('std_id', studentListId)
+                .eq('course_id', courseId);
+
+            if (error) {
+                console.error('Error canceling enrollment:', error);
+                alert('เกิดข้อผิดพลาดในการยกเลิกการลงทะเบียน');
+                return;
+            }
+
+            // อัพเดทสถานะการลงทะเบียน
+            setIsEnrolled(false);
+            alert('ยกเลิกการลงทะเบียนเรียบร้อยแล้ว');
+
+        } catch (err) {
+            console.error('Error in handleCancelEnrollment:', err);
+            alert('เกิดข้อผิดพลาดในการยกเลิกการลงทะเบียน');
+        }
+    };
 
     if (loading) {
         return <div className={styles.loadingState}>กำลังโหลด...</div>;
@@ -534,6 +563,14 @@ const CourseInfo = () => {
                                                 >
                                                     {isEnrolled ? 'Enrolled' : 'Enroll'}
                                                 </button>
+                                                {isEnrolled && (
+                                                    <button 
+                                                        className={styles.cancelButton}
+                                                        onClick={handleCancelEnrollment}
+                                                    >
+                                                        Cancel Enrolled
+                                                    </button>
+                                                )}
                                             </div>
                                         )}
                                     </div>
