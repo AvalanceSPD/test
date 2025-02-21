@@ -35,7 +35,7 @@ interface rpcData {
   ins_name: string;
 }
 
-const slides = ["/1.jpg", "/1.jpg", "/1.jpg"];
+const slides = ["/1.jpg", "/2.jpg", "/3.jpg"];
 
 const items = [
   <Dropdown.Item key={1} onClick={() => handleSortAZ()}>A ~ Z</Dropdown.Item>,
@@ -149,12 +149,12 @@ const Home_1 = () => {
     };
 
     fetchUserData();
-  }, [publicKey, connected]);
+  }, [publicKey, connected]);  
 
   const handlecoursebtn = async (course_id: number) => {
     console.log(course_id);
     navigate(`/course/${course_id}`);
-  } 
+  }
 
   if (isLoading) {
     return <div className={styles.loading}>กำลังโหลด...</div>;
@@ -253,11 +253,10 @@ const Home_1 = () => {
           <Grid fluid>
             <Row className="show-grid">
               {rpcData.map((course) => (
-                <Col sm={12} lg={6} xxl={6}>
-                  <div key={course.id}>
+                <Col key={course.id} sm={12} lg={6} xxl={6}>
+                  <div>
                     <Card shaded bordered size="sm" className={styles.divcard}>
                       <img
-                        // fit="contain"
                         src={course.thumbnail}
                         alt={course.title}
                         width={200}
