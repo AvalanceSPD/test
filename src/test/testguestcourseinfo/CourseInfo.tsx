@@ -6,6 +6,7 @@ import { supabase } from '../../utils/supabaseClient';  // แก้ไข path
 import { Grid, Row, Col } from 'rsuite';
 import { useWallet } from '@solana/wallet-adapter-react'; // เพิ่ม import
 
+
 interface Course {
     id: number;
     title: string;
@@ -50,6 +51,7 @@ interface Lesson {
     title: string;
     media: string;
     description: string;
+    file?: string;
 }
 
 // เพิ่ม interface สำหรับ Modal
@@ -122,16 +124,6 @@ const CourseInfo = () => {
     const { courseId } = useParams();
     const navigate = useNavigate();
     const [course, setCourse] = useState<Course | null>(null);
-    // const [sessions, setSessions] = useState<Session[]>([]);
-    // const [documents, setDocuments] = useState<Document[]>([]);
-    // const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-    // const [selectedSubSession, setSelectedSubSession] = useState<SubSession | null>(null);
-    // const [lessonTitle, setLessonTitle] = useState('');
-    // const [thumbnailUrl, setThumbnailUrl] = useState('');
-    // const [videoUrl, setVideoUrl] = useState('');
-    // const [description, setDescription] = useState('');
-    // const [mainContent, setMainContent] = useState<MainContent>({});
-    // const [isMainContent, setIsMainContent] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -161,7 +153,9 @@ const CourseInfo = () => {
     const [isEnrolled, setIsEnrolled] = useState(false);
     const [isInStudentsList, setIsInStudentsList] = useState(false);
     const [studentListId, setStudentListId] = useState<string | null>(null);
-
+    // เพิ่ม state สำหรับเก็บข้อมูลเอกสาร
+    const [lessonDocument, setLessonDocument] = useState<string | null>(null);
+    
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
@@ -487,6 +481,7 @@ const CourseInfo = () => {
         }
     };
 
+
     if (loading) {
         return <div className={styles.loadingState}>กำลังโหลด...</div>;
     }
@@ -616,6 +611,27 @@ const CourseInfo = () => {
                                         >
                                             ดูวิดีโอ
                                         </div>
+                                        {lesson.file && (
+                                            <div 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    // ใช้ getPublicUrl แทน createSignedUrl
+                                                    const { data } = supabase.storage
+                                                        .from('document')
+                                                        .getPublicUrl(lesson.file!); // ใช้ ! เพื่อบอกว่า file ไม่เป็น null
+
+                                                    if (data?.publicUrl) {
+                                                        console.log('Download URL:', data.publicUrl);
+                                                        window.open(data.publicUrl, '_blank'); // เปิด URL ในแท็บใหม่
+                                                    } else {
+                                                        alert('ไม่พบ URL สำหรับดาวน์โหลด');
+                                                    }
+                                                }} 
+                                                className={styles.contentLink}
+                                            >
+                                                ดาวน์โหลดเอกสาร
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
