@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';  // แก้ไข path
 import { Grid, Row, Col } from 'rsuite';
 import { useWallet } from '@solana/wallet-adapter-react'; // เพิ่ม import
+import Swal from 'sweetalert2';
 
 
 interface Course {
@@ -131,6 +132,7 @@ const CourseInfo = () => {
     const [selectedDescription, setSelectedDescription] = useState<string>('');
     const [selectedTitle, setSelectedTitle] = useState('');
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
+    const [instructorName, setInstructorName] = useState<string | null>(null);
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -212,6 +214,25 @@ const CourseInfo = () => {
                 console.log('No lessons found for this course.'); // แจ้งเมื่อไม่มีบทเรียน
             }
 
+            // ดึงชื่อผู้สอน
+            const fetchInstructorName = async () => {
+                if (data && data.create_by) {
+                    const { data: instructorData, error: instructorError } = await supabase
+                        .from('instructors_list')
+                        .select('ins_name')
+                        .eq('id', data.create_by)
+                        .single();
+
+                    if (instructorError) {
+                        console.error('Error fetching instructor name:', instructorError);
+                    } else {
+                        setInstructorName(instructorData?.ins_name);
+                    }
+                }
+            };
+
+            await fetchInstructorName();
+
         } catch (err: any) {
             console.error('Error fetching course:', err);
             setError(err.message || 'ไม่สามารถโหลดข้อมูลบทเรียนได้');
@@ -251,11 +272,6 @@ const CourseInfo = () => {
                 else 
                   console.log(data)
                   console.log(data.wallet_address)
-                // { data, error } = await supabase
-                // .from('users')
-                // .select('role')
-                // .eq('wallet_address', publicKey.toString())
-                // .single();
               
               if (error) {
                 setIsRegistered(false);
@@ -456,7 +472,11 @@ const CourseInfo = () => {
             }
 
             if (existingEnrollment) {
-                alert('You are already enrolled in this course.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'You are already enrolled in this course.',
+                });
                 return;
             }
 
@@ -468,7 +488,11 @@ const CourseInfo = () => {
 
             setIsEnrolled(true);
             console.log('Enrollment successful');
-            alert('Enrollment successful');
+            Swal.fire({
+                icon: 'success',
+                title: 'Enrollment successful',
+                text: 'You have successfully enrolled in the course!',
+            });
 
             await fetchCourseData();
 
@@ -484,25 +508,45 @@ const CourseInfo = () => {
             return;
         }
 
-        try {
-            console.log('Attempting to delete enrollment...');
-            const { error } = await supabase
-                .from('enrolled_course')
-                .delete()
-                .eq('course_id', courseId)
-                .eq('std_id', studentListId);
+        // แสดง pop-up ยืนยันการยกเลิกการลงทะเบียน
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        });
 
-            if (error) throw error;
+        if (result.isConfirmed) {
+            try {
+                console.log('Attempting to delete enrollment...');
+                const { error } = await supabase
+                    .from('enrolled_course')
+                    .delete()
+                    .eq('course_id', courseId)
+                    .eq('std_id', studentListId);
 
-            setIsEnrolled(false);
-            console.log('Enrollment canceled successfully');
-            alert('Enrollment canceled successfully');
+                if (error) throw error;
 
-            await fetchCourseData();
+                setIsEnrolled(false);
+                console.log('Enrollment canceled successfully');
+                Swal.fire(
+                    'Canceled!',
+                    'Your enrollment has been canceled.',
+                    'success'
+                );
 
-        } catch (err) {
-            console.error('Error canceling enrollment:', err);
-            alert('An error occurred while canceling enrollment');
+                await fetchCourseData();
+
+            } catch (err) {
+                console.error('Error canceling enrollment:', err);
+                Swal.fire(
+                    'Error!',
+                    'An error occurred while canceling enrollment.',
+                    'error'
+                );
+            }
         }
     };
 
@@ -545,7 +589,7 @@ const CourseInfo = () => {
                                     <div className={styles.courseInfo}>
                                         <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
                                         <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
-                                        <p>Create by: {course.create_by}</p>
+                                        <p>Create by: {instructorName || 'Loading...'}</p>
                                     </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
