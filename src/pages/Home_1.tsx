@@ -25,6 +25,7 @@ interface CourseData {
   title: string;
   description: string;
   thumbnail: string;
+  create_at: string;
 }
 
 interface rpcData {
@@ -33,22 +34,10 @@ interface rpcData {
   description: string;
   thumbnail: string;
   ins_name: string;
+  create_at: string;
 }
 
 const slides = ["/1.jpg", "/1.jpg", "/1.jpg"];
-
-const items = [
-  <Dropdown.Item key={1} onClick={() => handleSortAZ()}>A ~ Z</Dropdown.Item>,
-  <Dropdown.Item key={2} onClick={() => handleSortByDate()}>Release Date</Dropdown.Item>
-];
-
-function handleSortAZ() {
-  console.log('A ~ Z');
-}
-
-function handleSortByDate() {
-  console.log('Release Date');
-}
 
 const Home_1 = () => {
   // const Home_1: React.FC<CourseDataProps> = ({ items }) => {
@@ -60,7 +49,9 @@ const Home_1 = () => {
   const [error, setError] = useState<string | null>(null);
   const [courseData, setCourseData] = useState<CourseData[]>([]);
   const [rpcData, setRpcData] = useState<rpcData[]>([]);
+  const [originalData, setOriginalData] = useState<rpcData[]>([]);
   const [sort, setSort] = useState({keyToSort: "MAKE", direction: "asc"});
+  const [searchTerm, setSearchTerm] = useState('');
 
 
   // : slider settings
@@ -81,7 +72,7 @@ const Home_1 = () => {
         //> supabase api for fetch related course data
         const { data: course, error } = await supabase
           .from("course")
-          .select("id, title, description, thumbnail");
+          .select("id, title, description, thumbnail, create_at");
         if (course) {
           setCourseData(course);
         } else {
@@ -99,8 +90,8 @@ const Home_1 = () => {
   useEffect(() => {
     const fetchCoursedata = async () => {
       try {
-        const { data:rpcData, error:rpcError } = await supabase
-          .rpc('get_relative_course_data')
+        const { data: rpcData, error } = await supabase
+          .rpc('get_relative_course_data');
         if (error) console.error(error)
         // else console.log(rpcData)
         //? json format
@@ -112,7 +103,8 @@ const Home_1 = () => {
         //?      "ins_name": ""
         //?    },
         if (rpcData) {
-          setRpcData(rpcData);          
+          setRpcData(rpcData);
+          setOriginalData(rpcData);
         } else {
           console.log("can't see any rpc");
         }
@@ -123,6 +115,55 @@ const Home_1 = () => {
     fetchCoursedata();
   }, []);
   // console.log(rpcData);
+
+  const handleSortByDateNew = () => {
+    const sortedData = [...rpcData].sort((a, b) => {
+        return new Date(b.create_at).getTime() - new Date(a.create_at).getTime(); // จัดเรียงจากใหม่ไปเก่า
+    });
+    setRpcData(sortedData);
+};
+
+const handleSortByDateOld = () => {
+  const sortedData = [...rpcData].sort((a, b) => {
+      return new Date(a.create_at).getTime() - new Date(b.create_at).getTime(); // จัดเรียงจากใหม่ไปเก่า
+  });
+  setRpcData(sortedData);
+};
+
+const handleSortAZ = () => {
+    const sortedData = [...rpcData].sort((a, b) => {
+        return a.title.localeCompare(b.title); // จัดเรียงตามชื่อจาก A ถึง Z
+    });
+    setRpcData(sortedData);
+};
+
+const handleSortZA = () => {
+    const sortedData = [...rpcData].sort((a, b) => {
+        return b.title.localeCompare(a.title); // จัดเรียงตามชื่อจาก Z ถึง A
+    });
+    setRpcData(sortedData);
+};
+
+const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+
+    if (value === '') {
+        setRpcData(originalData); // คืนค่าข้อมูลต้นฉบับเมื่อไม่มีการค้นหา
+    } else {
+        const filteredData = originalData.filter(course => 
+            course.title.toLowerCase().includes(value.toLowerCase())
+        );
+        setRpcData(filteredData);
+    }
+};
+
+const items = [
+  <Dropdown.Item key={1} onClick={handleSortAZ}>A ~ Z</Dropdown.Item>,
+  <Dropdown.Item key={2} onClick={handleSortZA}>Z ~ A</Dropdown.Item>,
+  <Dropdown.Item key={3} onClick={handleSortByDateNew}>lasted Date</Dropdown.Item>,
+  <Dropdown.Item key={4} onClick={handleSortByDateOld}>Released Date</Dropdown.Item>,
+];
 
   //: fetch users data function
   useEffect(() => {
@@ -160,73 +201,9 @@ const Home_1 = () => {
     return <div className={styles.loading}>กำลังโหลด...</div>;
   }
 
-  //= หน้า Home สำหรับนักเรียน
-  // if (userData?.role === "student") {
-  //   return (
-  //     <div className={styles.container}>
-  //       <div className={styles.content}>
-  //         <h1 className={styles.title}>ยินดีต้อนรับ {userData.username}</h1>
-  //         <div className={styles.studentDashboard}>
-  //           <div className={styles.section}>
-  //             <h2>คอร์สเรียนของฉัน</h2>
-  //             {/* แสดงรายการคอร์สที่ลงทะเบียน */}
-  //             <div className={styles.courseGrid_v1}>
-  //               {/* ตัวอย่างคอร์ส */}
-  //               <div className={styles.courseCard_v1}>
-  //                 <h3>คอร์ส A</h3>
-  //                 <button onClick={() => navigate("/course/1")}>
-  //                   เข้าเรียน
-  //                 </button>
-  //               </div>
-  //             </div>
-  //           </div>
-  //           <div className={styles.section}>
-  //             <h2>คอร์สแนะนำ</h2>
-  //             {/* แสดงคอร์สแนะนำ */}
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  //= หน้า Home สำหรับอาจารย์
-  // if (userData?.role === "teacher") {
-  //   return (
-  //     <div className={styles.container}>
-  //       <div className={styles.content}>
-  //         <h1 className={styles.title}>
-  //           ยินดีต้อนรับ อาจารย์ {userData.username}
-  //         </h1>
-  //         <div className={styles.teacherDashboard}>
-  //           <div className={styles.section}>
-  //             <h2>คอร์สที่สอน</h2>
-  //             <button
-  //               className={styles.createButton}
-  //               onClick={() => navigate("/create-lesson")}
-  //             >
-  //               สร้างคอร์สใหม่
-  //             </button>
-  //             {/* แสดงรายการคอร์สที่สอน */}
-  //             <div className={styles.courseGrid_v1}>
-  //               {/* ตัวอย่างคอร์ส */}
-  //               <div className={styles.courseCard_1}>
-  //                 <h3>คอร์ส X</h3>
-  //                 <button onClick={() => navigate("/lessons/1")}>
-  //                   จัดการคอร์ส
-  //                 </button>
-  //               </div>
-  //             </div>
-  //           </div>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
   //= หน้า Home สำหรับ Guest
   return (
-    <div className={styles.container_v1}>
+    <div className={styles.container}>
       <Slider {...settings}>
         {slides.map((slide, index) => (
           <div key={index} className={styles.slider}>
@@ -238,55 +215,66 @@ const Home_1 = () => {
           </div>
         ))}
       </Slider>
-      <div className={styles.courseWrapper}>
-        <div className={styles.courseheader}>
-          <div className={styles.coursediv1}>
-              <h1>Course</h1>
+      <div className={styles.container_v1}>
+        <div className={styles.courseWrapper}>
+          <div className={styles.courseheader}>
+            <div className={styles.coursediv1}>
+                <h1>Course</h1>
+            </div>
+            <div className={styles.coursediv2}>
+                <div className={styles.sortSearchContainer}>
+                  <input 
+                      type="text" 
+                      placeholder="Search..." 
+                      value={searchTerm} 
+                      onChange={handleSearch}
+                      className={styles.searchInput}
+                    />
+                  <Dropdown title="Sort" placement="bottomEnd">
+                    {items}
+                  </Dropdown>
+                </div>
+            </div>
           </div>
-          <div className={styles.coursediv2}>
-              <Dropdown title="Sort" placement="bottomEnd">
-                {items}
-              </Dropdown>
-          </div>
-        </div>
-        <div className={styles.course_card}>
-          <Grid fluid>
-            <Row className="show-grid">
-              {rpcData.map((course) => (
-                <Col sm={12} lg={6} xxl={6}>
-                  <div key={course.id}>
+          <div className={styles.course_card}>
+            <Grid fluid>
+              <Row className="show-grid">
+                {rpcData.map((course) => (
+                  <Col sm={12} lg={6} xxl={6} key={course.id}>
                     <Card shaded bordered size="sm" className={styles.divcard}>
                       <img
-                        // fit="contain"
                         src={course.thumbnail}
                         alt={course.title}
-                        width={200}
-                        height={160}
                         className={styles.imagecard}
-                        sizes="sm"
                       />
-                      <Card.Header as="h4">{course.title}</Card.Header>
-                      {/* <Card.Body>{course.description}</Card.Body> */}
-                      <div className={styles.cardbottomdiv}>
-                        <div>
-                          <p>ผู้สอน : {course.ins_name}</p>
+                      <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
+                      <div className={styles.cardContent}>
+                        <div className={styles.instructorName}>
+                          <p className={styles.cardText}>ผู้สอน : {course.ins_name}</p>
                         </div>
-                        <div>
-                          <Button color="violet" appearance="primary" onClick={() => handlecoursebtn(course.id)} className={styles.cardbtn}>
-                            Violet
-                          </Button>
+                        <p className={styles.cardText}>วันที่สร้าง: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
+                        <div className={styles.cardbottomdiv}>
+                          <div>
+                            <Button 
+                              color="violet" 
+                              appearance="primary" 
+                              onClick={() => handlecoursebtn(course.id)} 
+                              className={styles.cardbtn}
+                            >
+                              Info
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </Card>
-                  </div>
-                </Col>
-              ))}
-            </Row>
-          </Grid>
+                  </Col>
+                ))}
+              </Row>
+            </Grid>
+          </div>
         </div>
       </div>
     </div>
-    
   );
 };
 

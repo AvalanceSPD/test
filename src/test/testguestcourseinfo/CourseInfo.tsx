@@ -19,32 +19,32 @@ interface Course {
 }
 
 interface Session {
-    id: number;
-    title: string;
-    subSessions: SubSession[];
+  id: number;
+  title: string;
+  subSessions: SubSession[];
 }
 
 interface SubSession {
-    id: number;
-    title: string;
-    videoUrl?: string;
-    description?: string;
+  id: number;
+  title: string;
+  videoUrl?: string;
+  description?: string;
 }
 
 interface Document {
-    id: number;
-    title: string;
-    url?: string;
+  id: number;
+  title: string;
+  url?: string;
 }
 
 interface Quiz {
-    id: number;
-    title: string;
+  id: number;
+  title: string;
 }
 
 interface MainContent {
-    previewVideo?: string;
-    mainDescription?: string;
+  previewVideo?: string;
+  mainDescription?: string;
 }
 
 interface Lesson {
@@ -57,64 +57,64 @@ interface Lesson {
 
 // เพิ่ม interface สำหรับ Modal
 interface InputModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (value: string) => void;
-    title: string;
-    placeholder: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (value: string) => void;
+  title: string;
+  placeholder: string;
 }
 
 // สร้าง Component Modal แยก
 const InputModal: React.FC<InputModalProps> = ({ isOpen, onClose, onSubmit, title, placeholder }) => {
-    const [value, setValue] = useState('');
+  const [value, setValue] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (value.trim()) {
-            onSubmit(value);
-            setValue('');
-            onClose();
-        }
-    };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (value.trim()) {
+      onSubmit(value);
+      setValue('');
+      onClose();
+    }
+  };
 
-    return (
-        <Modal
-            isOpen={isOpen}
-            onRequestClose={onClose}
-            className={styles.modal}
-            overlayClassName={styles.overlay}
-        >
-            <div className={styles.modalContent}>
-                <h2>{title}</h2>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        placeholder={placeholder}
-                        className={styles.modalInput}
-                        autoFocus
-                    />
-                    <div className={styles.modalButtons}>
-                        <button type="button" onClick={onClose} className={styles.cancelButton}>
-                            ยกเลิก
-                        </button>
-                        <button type="submit" className={styles.submitButton}>
-                            บันทึก
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-    );
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className={styles.modal}
+      overlayClassName={styles.overlay}
+    >
+      <div className={styles.modalContent}>
+        <h2>{title}</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder={placeholder}
+            className={styles.modalInput}
+            autoFocus
+          />
+          <div className={styles.modalButtons}>
+            <button type="button" onClick={onClose} className={styles.cancelButton}>
+              ยกเลิก
+            </button>
+            <button type="submit" className={styles.submitButton}>
+              บันทึก
+            </button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
 };
 
 // เพิ่ม interface สำหรับ URL Modal
 interface UrlModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (data: { title: string; url: string }) => void;
-    title: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: { title: string; url: string }) => void;
+  title: string;
 }
 
 
@@ -569,7 +569,7 @@ const CourseInfo = () => {
                     <div className={styles.headerBox}>
                         <Row>
                             <Col xs={8} className={styles.thumbnailCol}>
-                                <div className={styles.thumbnailContainer}>
+                    <div className={styles.thumbnailContainer}>
                                     {course.thumbnail && (
                                         <img 
                                             src={course.thumbnail} 
@@ -584,30 +584,30 @@ const CourseInfo = () => {
                                 </div>
                             </Col>
                             <Col xs={16} className={styles.lessonTitleCol}>
-                                <div className={styles.lessonTitle}>
+                    <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
                                         <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
                                         <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
                                         <p>Create by: {instructorName || 'Loading...'}</p>
-                                    </div>
+                    </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
                                         <div className={styles.buttonContainer}>
                                             {!isEnrolled ? (
-                                                <button 
+                        <button 
                                                     className={styles.enrollButton}
                                                     onClick={handleEnroll}
-                                                >
+                        >
                                                     Enroll
-                                                </button>
+                        </button>
                                             ) : (
-                                                <button 
+                        <button 
                                                     className={styles.cancelButton}
                                                     onClick={handleCancelEnrollment}
-                                                >
+                        >
                                                     Cancel Enrollment
-                                                </button>
+                        </button>
                                             )}
                                         </div>
                                     </div>
@@ -627,12 +627,12 @@ const CourseInfo = () => {
                                 ? styles.blurContainer 
                                 : ''
                             }>
-                                <iframe
+                                    <iframe
                                     src={selectedVideoUrl}
-                                    frameBorder="0"
-                                    allowFullScreen
-                                    className={styles.video}
-                                />
+                                        frameBorder="0"
+                                        allowFullScreen
+                                        className={styles.video}
+                                    />
                                 {!userRole && (
                                     <div className={styles.blurOverlay}>
                                         <p>Please log in to watch the video.</p>
@@ -647,7 +647,7 @@ const CourseInfo = () => {
                                                 ) : (
                                                     <p>You are not eligible to enroll for this course.</p>
                                                 )}
-                                            </div>
+                                    </div>
                                         ) : (
                                             <div>You have already enrolled for course.</div>
                                         )}
@@ -656,8 +656,8 @@ const CourseInfo = () => {
                             </div>
                         ) : (
                             <p>There are no videos to show.</p>
-                        )}
-                    </div>
+                    )}
+                </div>
                     <div className={styles.lessonList}>
                         <div className={styles.descriptionText}>
                                 <h2>{selectedTitle}</h2>
@@ -704,9 +704,9 @@ const CourseInfo = () => {
                                                 className={styles.contentLink}
                                             >
                                                 Download documents
-                                            </div>
+                                        </div>
                                         )}
-                                    </div>
+                                </div>
                                 )}
                             </div>
                         ))}
