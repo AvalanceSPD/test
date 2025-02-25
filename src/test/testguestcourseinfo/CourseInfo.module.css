@@ -51,6 +51,7 @@ body {
 
 .lessonTitle {
     flex: 1;
+    cursor: pointer;
 }
 
 .lessonTitle h1 {
@@ -184,7 +185,10 @@ body {
 
 /* ส่วนคอลัมน์ขวา */
 .rightSection {
-    background: white;
+    position: sticky; /* ทำให้เป็น sticky */
+    top: 120px; /* ปรับค่าตามความสูงของ Navbar */
+    z-index: 100; /* เพื่อให้แน่ใจว่ามันอยู่เหนือเนื้อหาอื่น */
+    background-color: white; /* เพิ่มพื้นหลังเพื่อให้เห็นชัดเจน */
     border-radius: 12px;
     padding: 15px;
     height: auto;
