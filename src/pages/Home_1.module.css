@@ -199,8 +199,8 @@
   }
   .course_card {
     background-color: #ffffff;
-    height: auto;
-    width: auto;
+    height: 80%;
+    width: 90%;
   }
 .divcard {
   height: 50vh;
