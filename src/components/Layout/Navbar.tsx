@@ -41,7 +41,7 @@ export const Navbar = () => {
             if (error) console.error(error)
             else 
               console.log(data)
-            //   console.log(data.wallet_address)
+              console.log(data.wallet_address)
           
           if (error) {
             setIsRegistered(false);
@@ -52,15 +52,16 @@ export const Navbar = () => {
             setIsRegistered(true);
             setUserRole('instructor');
             console.log('instructor');
-            
-          } if (data.is_student == true) {
+          } else if (data.is_student == true) {
             setIsRegistered(true);
             setUserRole('student');
             console.log('student');
           } else {
             setShowLogin(false);
             setShowRegister(true);
+            console.log('here is problem');
           }
+          
         } catch (error) {
           setIsRegistered(false);
           setUserRole(null);
