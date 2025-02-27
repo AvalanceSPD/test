@@ -163,7 +163,7 @@ const StudentProfile = () => {
                   <Grid fluid>
                   <Row className="show-grid">
                     {rpcData.map((course) => (
-                  <Col sm={12} lg={6} xxl={6} key={course.id}>
+                  <Col sm={24} lg={12} xxl={8} key={course.id}>
                     <Card shaded bordered size="sm" className={styles.divcard}>
                       <img
                         src={course.thumbnail}
