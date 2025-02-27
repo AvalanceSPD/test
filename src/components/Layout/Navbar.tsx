@@ -40,7 +40,7 @@ export const Navbar = () => {
             })
             if (error) console.error(error)
             // else 
-            //   console.log(data)
+              // console.log(data)
             //   console.log(data.wallet_address)
           
           if (error) {
@@ -52,6 +52,9 @@ export const Navbar = () => {
           } if (data.is_student == true) {
             setIsRegistered(true);
             setUserRole('student');
+          } else {
+            setShowLogin(false);
+            setShowRegister(true);
           }
         } catch (error) {
           setIsRegistered(false);
@@ -69,7 +72,6 @@ export const Navbar = () => {
   const handleLoginClick = () => {
     setShowLogin(true);
   };
-
   const handleDisconnect = async () => {
     try {
       await disconnect();
@@ -86,6 +88,18 @@ export const Navbar = () => {
     return new Promise<void>((resolve) => {
       setShowLogin(false);
       setShowRegister(false);
+      
+      requestAnimationFrame(() => {
+        navigate(redirectPath);
+        resolve();
+      });
+    });
+  };
+  const handleRegisterSuccess = async (redirectPath: string) => {
+    return new Promise<void>((resolve) => {
+      setShowLogin(false);
+      setShowRegister(false);
+      setIsRegistered(true);
       
       requestAnimationFrame(() => {
         navigate(redirectPath);
@@ -225,12 +239,12 @@ export const Navbar = () => {
       </AuthModal>
 
       <AuthModal 
-        isOpen={showRegister} 
+        isOpen={showRegister}
         onClose={handleCloseModal}
       >
         <RegisterModal 
           onLoginClick={switchToLogin}
-          onRegisterSuccess={handleLoginSuccess}
+          onRegisterSuccess={handleRegisterSuccess}
         />
       </AuthModal>
     </>

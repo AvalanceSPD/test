@@ -206,7 +206,7 @@ const CourseInfo = () => {
                 if (lessonError) throw lessonError;
                 setLessons(lessonData || []);
 
-                console.log('Lesson Data:', lessonData); // ตรวจสอบข้อมูลที่ดึงมา
+                // console.log('Lesson Data:', lessonData); // ตรวจสอบข้อมูลที่ดึงมา
 
                 if (lessonData && lessonData.length > 0) {
                     const firstLesson = lessonData[0];
@@ -255,8 +255,8 @@ const CourseInfo = () => {
                 })
                 if (error) console.error(error)
                 else 
-                  console.log(data)
-                  console.log(data.wallet_address)
+                //   console.log(data)
+                //   console.log(data.wallet_address)
                 // { data, error } = await supabase
                 // .from('users')
                 // .select('role')
@@ -289,7 +289,7 @@ const CourseInfo = () => {
     useEffect(() => {
         const checkEnrollmentStatus = async () => {
             if (!publicKey || !courseId) {
-                console.log('Missing publicKey or courseId');
+                // console.log('Missing publicKey or courseId');
                 return;
             }
 
@@ -318,10 +318,10 @@ const CourseInfo = () => {
                     return;
                 }
 
-                console.log('Found student:', {
-                    userId: userData.id,
-                    studentId: studentData.id
-                });
+                // console.log('Found student:', {
+                //     userId: userData.id,
+                //     studentId: studentData.id
+                // });
 
                 // 3. เช็คการลงทะเบียนโดยใช้ student.id
                 const { data: enrollmentData, error: enrollmentError } = await supabase
@@ -335,17 +335,17 @@ const CourseInfo = () => {
                     return;
                 }
 
-                console.log('Enrollment check result:', {
-                    studentId: studentData.id,
-                    courseId: courseId,
-                    enrollments: enrollmentData
-                });
+                // console.log('Enrollment check result:', {
+                //     studentId: studentData.id,
+                //     courseId: courseId,
+                //     enrollments: enrollmentData
+                // });
 
                 // ถ้าพบข้อมูลการลงทะเบียน
                 const isAlreadyEnrolled = enrollmentData && enrollmentData.length > 0;
                 
                 if (isAlreadyEnrolled) {
-                    console.log(`Student ${studentData.id} is enrolled in course ${courseId}`);
+                    // console.log(`Student ${studentData.id} is enrolled in course ${courseId}`);
                     setIsEnrolled(true);
                     setStudentListId(studentData.id);
                 } else {
@@ -381,7 +381,7 @@ const CourseInfo = () => {
                         return;
                     }
 
-                    console.log('User data:', userData);
+                    // console.log('User data:', userData);
 
                     // 2. ใช้ id จาก users ไปหาข้อมูลใน students_list
                     const { data: studentData, error: studentError } = await supabase
@@ -390,7 +390,7 @@ const CourseInfo = () => {
                         .eq('std_id', userData.id)
                         .single();
 
-                    console.log('Student list query result:', { studentData, studentError });
+                    // console.log('Student list query result:', { studentData, studentError });
 
                     if (studentError) {
                         console.error('Error fetching from students_list:', studentError);
@@ -400,7 +400,7 @@ const CourseInfo = () => {
                     }
 
                     if (studentData) {
-                        console.log('Found student in list:', studentData);
+                        // console.log('Found student in list:', studentData);
                         setStudentListId(studentData.id);
                         setIsInStudentsList(true);
                     } else {
@@ -414,7 +414,7 @@ const CourseInfo = () => {
                     setIsInStudentsList(false);
                 }
             } else {
-                console.log('No wallet connected or user is not a student');
+                // console.log('No wallet connected or user is not a student');
                 setStudentListId(null);
                 setIsInStudentsList(false);
             }
