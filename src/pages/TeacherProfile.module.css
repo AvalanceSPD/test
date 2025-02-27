@@ -29,13 +29,11 @@
 }
 
 .mainContent {
-  flex: 1;
-  max-width: 100%;
+  flex: 2;
   background: white;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  height: auto;
 }
 
 .profileSidebar {
@@ -132,44 +130,44 @@
 }
 
 .divcard {
-  height: 80%;
-  width: 90%;
-  margin: 10px;
+  margin: 5px;
   background-color: #ffffff;
   padding: 0px;
   /* border: 2px solid #000000; */
-  border-radius: 20px;
+  border-radius: 5000px;
+  margin-bottom: 25px;
   justify-content: space-between; /* จัดให้มีระยะห่างเท่ากัน */
   /* align-items: center; จัดให้เนื้อหาทั้งหมดอยู่กลาง */
   display: flex;
   flex-direction: column; /* จัดเรียงในแนวตั้ง */
-  height: 350px; /* ปรับความสูงตามต้องการ */
+  height: 400px; /* ปรับความสูงตามต้องการ */
+  max-width: 300px; /* กำหนดความกว้างสูงสุดตามต้องการ */
   overflow: hidden; /* ซ่อนเนื้อหาที่เกิน */
   justify-content: center; /* จัดให้เนื้อหาอยู่กลาง */
 }
 .imagecard {
-    width: 100%; /* ทำให้รูปภาพกว้างเต็มที่ */
-    height: 50%; /* ทำให้รูปภาพสูงครึ่งหนึ่ง */
-    /* object-fit: cover; ปรับขนาดรูปภาพให้พอดีกับ container */
+  width: 100%; /* ทำให้รูปภาพกว้างเต็มที่ */
+  height: 50%; /* ทำให้รูปภาพสูงครึ่งหนึ่ง */
+  /* object-fit: cover; ปรับขนาดรูปภาพให้พอดีกับ container */
 }
 .cardContent {
-    margin-bottom: 0px;
-    padding: 0px; /* ลด padding ให้มีระยะห่างน้อยลง */
-    height: 50%; /* ทำให้เนื้อหาสูงครึ่งหนึ่ง */
-    margin-left: 10px;
-    display: flex;
-    flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้ง */
-    /* justify-content: center; จัดให้เนื้อหาอยู่กลาง */
-    /* text-align: center; จัดข้อความให้อยู่กลาง */
+  margin-bottom: 0px;
+  padding: 0px; /* ลด padding ให้มีระยะห่างน้อยลง */
+  height: 50%; /* ทำให้เนื้อหาสูงครึ่งหนึ่ง */
+  margin-left: 10px;
+  display: flex;
+  flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้ง */
+  /* justify-content: center; จัดให้เนื้อหาอยู่กลาง */
+  /* text-align: center; จัดข้อความให้อยู่กลาง */
 }
 .cardbottomdiv {
-    display: flex;
-    justify-content: space-between; /* จัดให้มีระยะห่างเท่ากัน */
-    align-items: center; /* จัดแนวแนวตั้ง */
-    margin-bottom: 15px; /* ลด margin ด้านบน */
-    margin-top: 5px;
-    flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้ง */
-    justify-content: center; /* จัดให้เนื้อหาอยู่กลาง */
+  display: flex;
+  justify-content: space-between; /* จัดให้มีระยะห่างเท่ากัน */
+  align-items: center; /* จัดแนวแนวตั้ง */
+  margin-bottom: 15px; /* ลด margin ด้านบน */
+  margin-top: 5px;
+  flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้ง */
+  justify-content: center; /* จัดให้เนื้อหาอยู่กลาง */
 }
 .cardbtn {
   background-color: #311b92;
@@ -187,8 +185,8 @@
 }
 
 .instructorName {
-    margin: 5px 5px; /* ลด margin ให้มีระยะห่างน้อยลง */
-    overflow: hidden; /* ซ่อนเนื้อหาที่เกิน */
+  margin: 5px 5px; /* ลด margin ให้มีระยะห่างน้อยลง */
+  overflow: hidden; /* ซ่อนเนื้อหาที่เกิน */
 }
 
 @media screen and (max-width: 800px) {
@@ -231,22 +229,22 @@
 } 
 
 .sortSearchContainer {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .searchInput {
-    margin-left: 10px;
-    margin-right: 10px;
-    padding: 5px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 } 
 
 .cardTitle {
-    margin: 2px 0; /* ลด margin ให้มีระยะห่างน้อยลง */
+  margin: 2px 0; /* ลด margin ให้มีระยะห่างน้อยลง */
 } 
 
 .cardText {
-    margin: 2px 0; /* ลด margin ให้มีระยะห่างน้อยลง */
+  margin: 2px 0; /* ลด margin ให้มีระยะห่างน้อยลง */
 } 

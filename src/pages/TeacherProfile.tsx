@@ -159,7 +159,7 @@ const TeacherProfile = () => {
                   className={styles.imagecard}
                 />
                 <div className={styles.cardContent}>
-                <Card.Header as="h3" className={styles.cardTitle}>{course.title}</Card.Header>
+                <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
                   <div className={styles.instructorName}>
                     <p className={styles.cardText}>Instructer : {course.ins_name}</p>
                     <p className={styles.cardText}>Create at: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
@@ -197,16 +197,16 @@ const TeacherProfile = () => {
 
             <div className={styles.profileDetails}>
               <div className={styles.detailItem}>
-                <span className={styles.label}>ชื่อผู้ใช้:</span>
+                <span className={styles.label}>Username:</span>
                 <span className={styles.value}>{profiledata?.username}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.label}>ชื่อเต็ม:</span>
+                <span className={styles.label}>Name:</span>
                 <span className={styles.value}>{profiledata?.ins_name}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.label}>บทบาท:</span>
-                <span className={styles.value}>ผู้สอน</span>
+                <span className={styles.label}>Role:</span>
+                <span className={styles.value}>Instructer</span>
               </div>
               <div className={styles.detailItem}>
                 <span className={styles.label}>Public key:</span>
