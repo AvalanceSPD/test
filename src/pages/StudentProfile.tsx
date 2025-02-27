@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { supabase } from '../utils/supabaseClient';
-import styles from './Profile.module.css';
+import styles from './TeacherProfile.module.css';
+import { CopyButton } from '../components/compo/CopyButton'
+import { Grid, Row, Col, Card, Button} from "rsuite";
+import "rsuite/Grid/styles/index.css";
+import "rsuite/Row/styles/index.css";
+import "rsuite/Col/styles/index.css";
+import "rsuite/Panel/styles/index.css";
+import "rsuite/PanelGroup/styles/index.css";
+import 'rsuite/Dropdown/styles/index.css';
+import 'rsuite/Card/styles/index.css';
+import 'rsuite/CardGroup/styles/index.css';
+import 'rsuite/Button/styles/index.css';
 
 interface profiledata {
   wallet_address: string,
@@ -13,37 +24,57 @@ interface profiledata {
   is_student: boolean
 }
 
+interface rpcData {
+  id: number;
+  title: string;
+  description: string;
+  thumbnail: string;
+  ins_name: string;
+}
+
 const StudentProfile = () => {
-  const { publicKey, connected, disconnect, wallet } = useWallet();
+  const { publicKey,connected, disconnect } = useWallet();
   const navigate = useNavigate();
+  const [profiledata, setProfiledata] = useState<profiledata | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [profiledata, setProfiledata] = useState<profiledata | null>(null);
+  const [rpcData, setRpcData] = useState<rpcData[]>([]);
+  const [nullData, setNulldata] = useState(false);
 
   useEffect(() => {
+    
     const fetchUserProfile = async () => {
       if (!publicKey) {
-        navigate('/home_1');
-        return;
-      }
-      
-      try {
-        setIsLoading(true);
-        setError(null);
-
-        // const walletAddress = publicKey.toString();
-        const { data, error: fetchError } = await supabase
-        .rpc('check_role_in_navebar', {
+          // navigate('/home_1');
+          // alert("fuck off")
+          return;
+        }
+        
+        try {
+          setIsLoading(true);
+          setError(null);
+          
+          // const walletAddress = publicKey.toString();
+          const { data, error: fetchError } = await supabase
+          .rpc('check_role_in_navebar', {
           p_public_key:publicKey
         })
+          //= json format
+          //=   {
+          //=      "is_instructor": boolean,
+          //=      "is_student": boolean,
+          //=      "ins_name": string,
+          //=      "username": string,
+          //=      "wallet_address": string
+          //=    }
         if (fetchError) {
           throw fetchError;
         }
         if (data) {
           setProfiledata(data);
-          
+
         } else {
-          setError('คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่นักเรียน');
+          setError('คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่ผู้สอน');
           setTimeout(() => {
             navigate('/profile');
           }, 3000);
@@ -58,68 +89,148 @@ const StudentProfile = () => {
     };
 
     fetchUserProfile();
-  }, [connected, publicKey, navigate]);
+  }, [publicKey, navigate]);
 
-  const handleLogout = async () => {
-    try {
-      await disconnect();
-      navigate('/');
-    } catch (error) {
-      console.error('Logout error:', error);
+    //: postgreSQL
+    useEffect(() => {
+      if (publicKey) {
+        const fetchCoursedata = async () => {
+          try {
+            const { data:rpcData, error:rpcError } = await supabase
+              .rpc('get_std_course', {
+                p_public_key:publicKey
+              })
+            if (rpcError) console.error(rpcError)
+            // else console.log(rpcData)
+            //= json format
+            //=   {
+            //=      "id": int,
+            //=      "title": "",
+            //=      "description": "",
+            //=      "thumbnail": "",
+            //=      "ins_name": ""
+            //=    }
+            if (rpcData) {
+              
+              setRpcData(rpcData);
+            } else {
+              // console.log("can't see any rpc");
+              setNulldata(true);
+              
+            }
+          } catch (error) {
+            console.error("Error fetching course data:", error);
+          }
+        };
+        fetchCoursedata();
+      }
+    }, [publicKey]);
+    
+    const handlecoursebtn = async (course_id: number) => {
+      console.log(course_id);
+      navigate(`/course/${course_id}`);
     }
-  };
+    // console.log('RPC : ',rpcData);
+    
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <h1>โปรไฟล์นักเรียน</h1>
-
-        <div className={styles.walletSection}>
-          <WalletMultiButton className={styles.walletButton} />
+    return (
+      <div className={styles.container}>
+        <div className={styles.backgroundSection}>
+          <img src="/2.jpg" alt="Background" />
         </div>
+  
+        <div className={styles.contentWrapper}>
+          <div className={styles.mainContent}>
+            <div className={styles.courseheader}>
+              <div>
+                <h1>Course manager</h1>
+              </div>
+              <div className={styles.createbtn}>
+              </div>
+            </div>
+            
+            <div className={styles.lessonGrid}>
+              {/* เงื่อนไขถ้านักเรียนไม่ได้ลงทะเบียนเรียนเลยให้เเสดงข้อความนี้ */}
+              {nullData ?(
+                <div>
+                  <h3>You haven't enrolled in any courses yet</h3>
+                  <button onClick={() => navigate('/home_1')}>Get courses you would like</button>
+                </div>
+              ) : (
+                <div>
 
-        {isLoading && (
-          <div className={styles.loading}>กำลังโหลดข้อมูล...</div>
-        )}
-
-        {error && (
-          <div className={styles.error}>
-            {error}
+                  <Grid fluid>
+                  <Row className="show-grid">
+                    {rpcData.map((course) => (
+                      <Col key={course.id} sm={24} lg={12} xxl={8}>
+                        <div>
+                          <Card shaded bordered size="sm" className={styles.divcard}>
+                            <img
+                              src={course.thumbnail}
+                              alt={course.title}
+                              width={200}
+                              height={160}
+                              className={styles.imagecard}
+                              sizes="sm"
+                            />
+                            <Card.Header as="h4">{course.title}</Card.Header>
+                            {/* <Card.Body>{course.description}</Card.Body> */}
+                            <div className={styles.cardbottomdiv}>
+                              <div>
+                                <p>Instructor : {course.ins_name}</p>
+                              </div>
+                              <div>
+                                <Button color="violet" appearance="primary" onClick={() => handlecoursebtn(course.id)} className={styles.cardbtn}>
+                                  Violet
+                                </Button>
+                              </div>
+                            </div>
+                          </Card>
+                        </div>
+                      </Col>
+                    ))}
+                  </Row>
+                </Grid>
+                </div>
+              )}
+              {/* Grid สำหรับ lessons */}
+            </div>
           </div>
-        )}
-
-        {profiledata && (
-          <div className={styles.profileInfo}>
-            <div className={styles.infoRow}>
-              <span className={styles.label}>ชื่อผู้ใช้:</span>
-              <span className={styles.value}>{profiledata.username}</span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <span className={styles.label}>ชื่อเต็ม:</span>
-              <span className={styles.value}>{profiledata.std_name}</span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <span className={styles.label}>บทบาท:</span>
-              <span className={styles.value}>นักเรียน</span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <span className={styles.label}>Public key:</span>
-              <span className={styles.value}>{profiledata.wallet_address}</span>
+  
+          <div className={styles.profileSidebar}>
+            <div className={styles.profileCard}>
+              <div className={styles.profileHeader}>
+                <div className={styles.avatarContainer}>
+                  <img src="/3.jpg" alt="Profile" className={styles.avatar} />
+                </div>
+                <h2>{profiledata?.std_name || 'Instructor name'}</h2>
+                <p className={styles.subtitle}>subtitle</p>
+                </div>
+  
+              <div className={styles.profileDetails}>
+                <div className={styles.detailItem}>
+                  <span className={styles.label}>Username:</span>
+                  <span className={styles.value}>{profiledata?.username}</span>
+                </div>
+                <div className={styles.detailItem}>
+                  <span className={styles.label}>Name:</span>
+                  <span className={styles.value}>{profiledata?.std_name}</span>
+                </div>
+                <div className={styles.detailItem}>
+                  <span className={styles.label}>Role:</span>
+                  <span className={styles.value}>Student</span>
+                </div>
+                <div className={styles.detailItem}>
+                  <span className={styles.label}>Public key:</span>
+                  {/* <span className={styles.value}>{profiledata?.wallet_address}</span> */}
+                  {profiledata?.wallet_address &&<CopyButton text={profiledata?.wallet_address} maxLength={10} />}
+                </div>
+              </div>
             </div>
           </div>
-        )}
-
-        {connected && (
-          <button onClick={handleLogout} className={styles.logoutButton}>
-            ออกจากระบบ
-          </button>
-        )}
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 export default StudentProfile;

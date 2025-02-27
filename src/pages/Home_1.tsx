@@ -4,7 +4,7 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { supabase } from "../utils/supabaseClient";
 import styles from "./Home_1.module.css";
 import Slider from "react-slick";
-import { Grid, Row, Col, Card, Text, Button, TagGroup, Tag, Dropdown} from "rsuite";
+import { Grid, Row, Col, Card, Text, Button, Dropdown} from "rsuite";
 import "rsuite/Grid/styles/index.css";
 import "rsuite/Row/styles/index.css";
 import "rsuite/Col/styles/index.css";
@@ -61,8 +61,7 @@ const Home_1 = () => {
   const [courseData, setCourseData] = useState<CourseData[]>([]);
   const [rpcData, setRpcData] = useState<rpcData[]>([]);
   const [sort, setSort] = useState({keyToSort: "MAKE", direction: "asc"});
-
-
+ 
   // : slider settings
   const settings = {
     dots: true,
@@ -74,28 +73,26 @@ const Home_1 = () => {
     autoplaySpeed: 3000,
   };
 
-  //: fetch course data function
-  useEffect(() => {
-    const fetchCoursedata = async () => {
-      try {
-        //> supabase api for fetch related course data
-        const { data: course, error } = await supabase
-          .from("course")
-          .select("id, title, description, thumbnail");
-        if (course) {
-          setCourseData(course);
-        } else {
-          console.log("can't see any courses");
-        }
-      } catch (error) {
-        console.error("Error fetching course data:", error);
-      }
-    };
-    fetchCoursedata();
-  }, []);
+  // useEffect(() => {
+  //   const fetchCoursedata = async () => {
+  //     try {
+  //       const { data: course, error } = await supabase
+  //         .from("course")
+  //         .select("id, title, description, thumbnail");
+  //       if (course) {
+  //         setCourseData(course);
+  //       } else {
+  //         console.log("can't see any courses");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching course data:", error);
+  //     }
+  //   };
+  //   fetchCoursedata();
+  // }, []);
 // console.log(courseData);
 
-  //: try postgreSQL
+  //: postgreSQL
   useEffect(() => {
     const fetchCoursedata = async () => {
       try {
@@ -152,7 +149,7 @@ const Home_1 = () => {
   }, [publicKey, connected]);  
 
   const handlecoursebtn = async (course_id: number) => {
-    console.log(course_id);
+    // console.log(course_id);
     navigate(`/course/${course_id}`);
   }
 

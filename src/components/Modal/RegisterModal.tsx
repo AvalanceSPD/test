@@ -23,10 +23,10 @@ export const RegisterModal = ({
   const [role, setRole] = useState<"student" | "teacher">("student");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState(false);  
 
   const handleRegister = async () => {
-    if (!publicKey || !username || !role) {
+    if (!publicKey || !username || !fullname) {
       setError("กรุณากรอกข้อมูลให้ครบถ้วน");
       return;
     }
@@ -117,7 +117,7 @@ export const RegisterModal = ({
 
     setSuccess(true);
     setTimeout(() => {
-      navigate('/home_1');
+      onRegisterSuccess('/student-profile');
     }, 2000);
 
     } catch (err) {
