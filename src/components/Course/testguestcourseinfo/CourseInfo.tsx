@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import styles from './CourseInfo.module.css';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -41,6 +41,18 @@ interface InputModalProps {
   onSubmit: (value: string) => void;
   title: string;
   placeholder: string;
+}
+
+interface Quiz {
+    id: number;
+    question: string;
+    media: null;
+    created_at: string;
+    opts1: string;
+    opts2: string;
+    opts3: string;
+    answer: string;
+    lesson_id: number;
 }
 
 // สร้าง Component Modal แยก
@@ -107,12 +119,15 @@ const CourseInfo = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [lessons, setLessons] = useState<Lesson[]>([]);
+    const [quiz, setQuiz] = useState<Quiz[]>([]);
     const [selectedVideoUrl, setSelectedVideoUrl] = useState<string>('');
     const [selectedDescription, setSelectedDescription] = useState<string>('');
     const [selectedTitle, setSelectedTitle] = useState('');
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
     const [instructorName, setInstructorName] = useState<string | null>(null);
     const [profiledata, setProfiledata] = useState<profiledata | null>(null);
+    const [showvideo, setShowvideo] = useState(true);
+    const [showquiz, setShowquiz] = useState(false);
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -421,6 +436,10 @@ const CourseInfo = () => {
         fetchStudentId();
     }, [publicKey, userRole]);
 
+    useEffect(() => {
+        
+    }, [courseId]);
+
     // const handleSubSessionClick = (subSession: SubSession) => {
     //     setSelectedSubSession(subSession);
     //     setVideoUrl(subSession.videoUrl || '');
@@ -433,6 +452,8 @@ const CourseInfo = () => {
         setSelectedVideoUrl(embedUrl); // ตั้งค่า embed URL
         setSelectedDescription(description); // ตั้งค่าคำอธิบาย
         setSelectedTitle(title); // ตั้งค่าชื่อ
+        setShowvideo(true);
+        setShowquiz(false);
     };
 
     const toggleLesson = (index: number) => {
@@ -538,6 +559,52 @@ const CourseInfo = () => {
         }
     };
 
+
+    // useEffect(() => {
+        
+    // }, [courseId, navigate]);
+
+    const handleQuizClick = async () => { //: function ที่ยังไม่ได้คิด
+        setShowvideo(false);
+        setShowquiz(true);
+        // const { data, error } = await supabase
+        // .rpc('get_quiz_by_lesson', {
+        // l_lesson_id:lessons[0].id
+        // })
+        // if (error) console.error(error)
+        // else setQuiz(data);
+
+        // out put
+        // [
+        //     {
+        //       "get_quiz_by_lesson": [
+        //         {
+        //           "id": 2,
+        //           "question": "2+2",
+        //           "media": null,
+        //           "created_at": "2025-02-27T19:31:51+00:00",
+        //           "opts1": "1",
+        //           "opts2": "2",
+        //           "opts3": "3",
+        //           "answer": "4",
+        //           "lesson_id": 1
+        //         },
+        //         {
+        //           "id": 3,
+        //           "question": "3*3",
+        //           "media": "",
+        //           "created_at": "2025-02-27T20:42:05+00:00",
+        //           "opts1": "6",
+        //           "opts2": "10",
+        //           "opts3": "5",
+        //           "answer": "9",
+        //           "lesson_id": 1
+        //         }
+        //       ]
+        //     }
+        //   ]
+    };
+
     if (loading) {
         return <div className={styles.loadingState}>loading...</div>;
     }
@@ -608,8 +675,9 @@ const CourseInfo = () => {
 
             <Row className={styles.contentRow}>
                 <Col xs={16} className={styles.mainContentCol}>
+                    {showvideo && (
                     <div className={styles.videoContainer}>
-                        {selectedVideoUrl ? (
+                        {selectedVideoUrl  && ( //: edit to check  both showvideo & selectedVideoUrl
                             <div className={
                                 (!userRole || (userRole === 'student' && !isEnrolled) || 
                                 (userRole === 'instructor' && instructorName !== profiledata?.ins_name)) 
@@ -648,16 +716,72 @@ const CourseInfo = () => {
                                     </>
                                 )}
                             </div>
-                        ) : (
-                            <p>There are no videos to show.</p>
                         )}
-                    </div>
-                    <div className={styles.lessonList}>
-                        <div className={styles.descriptionText}>
-                                <h2>{selectedTitle}</h2>
-                                <p>{selectedDescription || 'No description'}</p>
+                        {!selectedVideoUrl && ( //: edit to have no selectedVideoUrl
+                            <p>There are no videos to show.</p>
+                    )}
+                </div>)}
+                    {selectedVideoUrl && showvideo && ( //: edit show when 
+                        <div className={styles.lessonList}>
+                            <div className={styles.descriptionText}>
+                                    <h2>{selectedTitle}</h2>
+                                    <p>{selectedDescription || 'No description'}</p>
+                            </div>
                         </div>
-                    </div>
+                    )}
+                    {showquiz && (
+                        <div>
+                            <div>
+                                <h1>Question 1</h1>
+                            </div>
+                            <div>
+                                <h3>question blablablablablablablablablablablablablablablablablabla</h3>
+                            </div>
+                            <div>
+                                <h3>Select an option:</h3>
+                                <label>
+                                    <input
+                                    type="radio"
+                                    value="option1"
+                                    //   checked={selectedOption === "option1"}
+                                    //   onChange={handleChange}
+                                    />
+                                    Option 1
+                                </label>
+                                <br />
+                                <label>
+                                    <input
+                                    type="radio"
+                                    value="option2"
+                                    //   checked={selectedOption === "option2"}
+                                    //   onChange={handleChange}
+                                    />
+                                    Option 2
+                                </label>
+                                <br />
+                                <label>
+                                    <input
+                                    type="radio"
+                                    value="option3"
+                                    //   checked={selectedOption === "option3"}
+                                    //   onChange={handleChange}
+                                    />
+                                    Option 3
+                                </label>
+                                <br />
+                                <label>
+                                    <input
+                                    type="radio"
+                                    value="option3"
+                                    //   checked={selectedOption === "option3"}
+                                    //   onChange={handleChange}
+                                    />
+                                    Option 4
+                                </label>
+                                {/* <p>Selected: {selectedOption}</p> */}
+                            </div>
+                        </div>
+                    )}
                 </Col>
 
                 <Col xs={8} className={styles.sidebarCol}>
@@ -671,7 +795,7 @@ const CourseInfo = () => {
                                 >
                                     {lesson.title} {expandedLesson === index ? '▲' : '▼'}
                                 </h4>
-                                {expandedLesson === index && (
+                                {expandedLesson === index && ( //: lesson content
                                     <div className={styles.lessonContent}>
                                         <div 
                                             onClick={() => handleVideoClick(lesson.media, lesson.title, lesson.description)} 
@@ -698,6 +822,11 @@ const CourseInfo = () => {
                                                 className={styles.contentLink}
                                             >
                                                 Download documents
+                                        </div>
+                                        )}
+                                        {quiz && (
+                                        <div className={styles.contentLink} onClick={() => handleQuizClick()}>
+                                            test
                                         </div>
                                         )}
                                 </div>
