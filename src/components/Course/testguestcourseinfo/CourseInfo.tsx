@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import styles from './CourseInfo.module.css';
 import { useParams, useNavigate } from 'react-router-dom';
-import { supabase } from '../../utils/supabaseClient';  // แก้ไข path
+import { supabase } from '../../../utils/supabaseClient';  // แก้ไข path
 import { Grid, Row, Col } from 'rsuite';
 import { useWallet } from '@solana/wallet-adapter-react'; // เพิ่ม import
 import Swal from 'sweetalert2';
