@@ -157,7 +157,8 @@ const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         setRpcData(originalData); // คืนค่าข้อมูลต้นฉบับเมื่อไม่มีการค้นหา
     } else {
         const filteredData = originalData.filter(course => 
-            course.title.toLowerCase().includes(value.toLowerCase())
+            course.title.toLowerCase().includes(value.toLowerCase()) || // ค้นหาชื่อคอร์ส
+            course.ins_name.toLowerCase().includes(value.toLowerCase()) // ค้นหาชื่อผู้สอน
         );
         setRpcData(filteredData);
     }
@@ -252,8 +253,8 @@ const items = [
                         alt={course.title}
                         className={styles.imagecard}
                       />
-                      <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
                       <div className={styles.cardContent}>
+                      <Card.Header as="h3" className={styles.cardTitle}>{course.title}</Card.Header>
                         <div className={styles.instructorName}>
                           <p className={styles.cardText}>Instructer : {course.ins_name}</p>
                           <p className={styles.cardText}>Create at: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
