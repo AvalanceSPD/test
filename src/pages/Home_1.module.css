@@ -240,7 +240,7 @@
     display: flex;
     justify-content: space-between; /* จัดให้มีระยะห่างเท่ากัน */
     align-items: center; /* จัดแนวแนวตั้ง */
-    margin-bottom: 5px; /* ลด margin ด้านบน */
+    margin-bottom: 15px; /* ลด margin ด้านบน */
     margin-top: 5px;
     flex-direction: column; /* จัดเรียงเนื้อหาในแนวตั้ง */
     justify-content: center; /* จัดให้เนื้อหาอยู่กลาง */

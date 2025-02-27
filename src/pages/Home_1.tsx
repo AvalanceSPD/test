@@ -52,6 +52,7 @@ const Home_1 = () => {
   const [originalData, setOriginalData] = useState<rpcData[]>([]);
   const [sort, setSort] = useState({keyToSort: "MAKE", direction: "asc"});
   const [searchTerm, setSearchTerm] = useState('');
+  const [sortBy, setSortBy] = useState<string>('');
 
 
   // : slider settings
@@ -121,6 +122,7 @@ const Home_1 = () => {
         return new Date(b.create_at).getTime() - new Date(a.create_at).getTime(); // จัดเรียงจากใหม่ไปเก่า
     });
     setRpcData(sortedData);
+    setSortBy('Latest Date');
 };
 
 const handleSortByDateOld = () => {
@@ -128,6 +130,7 @@ const handleSortByDateOld = () => {
       return new Date(a.create_at).getTime() - new Date(b.create_at).getTime(); // จัดเรียงจากใหม่ไปเก่า
   });
   setRpcData(sortedData);
+  setSortBy('Released Date');
 };
 
 const handleSortAZ = () => {
@@ -135,6 +138,7 @@ const handleSortAZ = () => {
         return a.title.localeCompare(b.title); // จัดเรียงตามชื่อจาก A ถึง Z
     });
     setRpcData(sortedData);
+    setSortBy('A ~ Z');
 };
 
 const handleSortZA = () => {
@@ -142,6 +146,7 @@ const handleSortZA = () => {
         return b.title.localeCompare(a.title); // จัดเรียงตามชื่อจาก Z ถึง A
     });
     setRpcData(sortedData);
+    setSortBy('Z ~ A');
 };
 
 const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -161,7 +166,7 @@ const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
 const items = [
   <Dropdown.Item key={1} onClick={handleSortAZ}>A ~ Z</Dropdown.Item>,
   <Dropdown.Item key={2} onClick={handleSortZA}>Z ~ A</Dropdown.Item>,
-  <Dropdown.Item key={3} onClick={handleSortByDateNew}>lasted Date</Dropdown.Item>,
+  <Dropdown.Item key={3} onClick={handleSortByDateNew}>Latest Date</Dropdown.Item>,
   <Dropdown.Item key={4} onClick={handleSortByDateOld}>Released Date</Dropdown.Item>,
 ];
 
@@ -230,8 +235,8 @@ const items = [
                       onChange={handleSearch}
                       className={styles.searchInput}
                     />
-                  <Dropdown title="Sort" placement="bottomEnd">
-                    {items}
+                  <Dropdown title={`Sort by: ${sortBy || 'Select'}`} placement="bottomEnd">
+                      {items}
                   </Dropdown>
                 </div>
             </div>
