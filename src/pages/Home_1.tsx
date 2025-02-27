@@ -250,9 +250,10 @@ const items = [
                       <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
                       <div className={styles.cardContent}>
                         <div className={styles.instructorName}>
-                          <p className={styles.cardText}>ผู้สอน : {course.ins_name}</p>
+                          <p className={styles.cardText}>Instructer : {course.ins_name}</p>
+                          <p className={styles.cardText}>Create at: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
                         </div>
-                        <p className={styles.cardText}>วันที่สร้าง: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
+                      </div>
                         <div className={styles.cardbottomdiv}>
                           <div>
                             <Button 
@@ -265,7 +266,6 @@ const items = [
                             </Button>
                           </div>
                         </div>
-                      </div>
                     </Card>
                   </Col>
                 ))}
