@@ -18,35 +18,6 @@ interface Course {
     create_by: string;
 }
 
-interface Session {
-  id: number;
-  title: string;
-  subSessions: SubSession[];
-}
-
-interface SubSession {
-  id: number;
-  title: string;
-  videoUrl?: string;
-  description?: string;
-}
-
-interface Document {
-  id: number;
-  title: string;
-  url?: string;
-}
-
-interface Quiz {
-  id: number;
-  title: string;
-}
-
-interface MainContent {
-  previewVideo?: string;
-  mainDescription?: string;
-}
-
 interface Lesson {
     id: number;
     title: string;
@@ -54,6 +25,14 @@ interface Lesson {
     description: string;
     file?: string;
 }
+
+interface profiledata {
+    wallet_address: string,
+    username: string,
+    ins_name: string,
+    is_instructor: boolean,
+    is_student: boolean
+  }
 
 // เพิ่ม interface สำหรับ Modal
 interface InputModalProps {
@@ -133,6 +112,7 @@ const CourseInfo = () => {
     const [selectedTitle, setSelectedTitle] = useState('');
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
     const [instructorName, setInstructorName] = useState<string | null>(null);
+    const [profiledata, setProfiledata] = useState<profiledata | null>(null);
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -284,6 +264,9 @@ const CourseInfo = () => {
               } if (data.is_instructor == true) {
                 setIsRegistered(true);
                 setUserRole('instructor');
+              } if (data) {
+                setProfiledata(data);
+      
               } if (data.is_student == true) {
                 setIsRegistered(true);
                 setUserRole('student');
@@ -574,7 +557,7 @@ const CourseInfo = () => {
                     <div className={styles.headerBox}>
                         <Row>
                             <Col xs={8} className={styles.thumbnailCol}>
-                    <div className={styles.thumbnailContainer}>
+                                <div className={styles.thumbnailContainer}>
                                     {course.thumbnail && (
                                         <img 
                                             src={course.thumbnail} 
@@ -589,31 +572,31 @@ const CourseInfo = () => {
                                 </div>
                             </Col>
                             <Col xs={16} className={styles.lessonTitleCol}>
-                    <div className={styles.lessonTitle}>
+                                <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
                                         <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
                                         <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
                                         <p>Create by: {instructorName || 'Loading...'}</p>
-                    </div>
+                                    </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
                                         <div className={styles.buttonContainer}>
-                                            {!isEnrolled ? (
-                        <button 
+                                            {userRole !== 'instructor' && !isEnrolled ? (
+                                                <button 
                                                     className={styles.enrollButton}
                                                     onClick={handleEnroll}
-                        >
+                                                >
                                                     Enroll
-                        </button>
-                                            ) : (
-                        <button 
+                                                </button>
+                                            ) : isEnrolled ? (
+                                                <button 
                                                     className={styles.cancelButton}
                                                     onClick={handleCancelEnrollment}
-                        >
+                                                >
                                                     Cancel Enrollment
-                        </button>
-                                            )}
+                                                </button>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
@@ -628,19 +611,25 @@ const CourseInfo = () => {
                     <div className={styles.videoContainer}>
                         {selectedVideoUrl ? (
                             <div className={
-                                (!userRole || (userRole === 'student' && !isEnrolled)) 
+                                (!userRole || (userRole === 'student' && !isEnrolled) || 
+                                (userRole === 'instructor' && instructorName !== profiledata?.ins_name)) 
                                 ? styles.blurContainer 
                                 : ''
                             }>
-                                    <iframe
+                                <iframe
                                     src={selectedVideoUrl}
-                                        frameBorder="0"
-                                        allowFullScreen
-                                        className={styles.video}
-                                    />
+                                    frameBorder="0"
+                                    allowFullScreen
+                                    className={styles.video}
+                                />
                                 {!userRole && (
                                     <div className={styles.blurOverlay}>
                                         <p>Please log in to watch the video.</p>
+                                    </div>
+                                )}
+                                {userRole === 'instructor' && instructorName !== profiledata?.ins_name && (
+                                    <div className={styles.blurOverlay}>
+                                        <p>You are not the owner of this course.</p>
                                     </div>
                                 )}
                                 {userRole === 'student' && (
@@ -652,7 +641,7 @@ const CourseInfo = () => {
                                                 ) : (
                                                     <p>You are not eligible to enroll for this course.</p>
                                                 )}
-                                    </div>
+                                            </div>
                                         ) : (
                                             <div>You have already enrolled for course.</div>
                                         )}
@@ -661,8 +650,8 @@ const CourseInfo = () => {
                             </div>
                         ) : (
                             <p>There are no videos to show.</p>
-                    )}
-                </div>
+                        )}
+                    </div>
                     <div className={styles.lessonList}>
                         <div className={styles.descriptionText}>
                                 <h2>{selectedTitle}</h2>
