@@ -168,7 +168,7 @@ export const InsRegister = () => {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginBox}>
-        <h1>ลงทะเบียน</h1>
+        <h1>ลงทะเบียนเป็นผู้สอน</h1>
         <div className={styles.buttonContainer}>
           <WalletMultiButton className={styles.walletButton} />
         </div>

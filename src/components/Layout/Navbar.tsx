@@ -40,8 +40,8 @@ export const Navbar = () => {
             })
             if (error) console.error(error)
             else 
-              console.log(data)
-              console.log(data.wallet_address)
+              // console.log(data)
+              // console.log(data.wallet_address)
           
           if (error) {
             setIsRegistered(false);
@@ -58,8 +58,7 @@ export const Navbar = () => {
             console.log('student');
           } else {
             setShowLogin(false);
-            setShowRegister(true);
-            console.log('here is problem');
+            setShowRegister(false);
           }
           
         } catch (error) {

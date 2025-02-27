@@ -130,7 +130,7 @@ export const RegisterModal = ({
 
   return (
     <div className={styles.authContainer}>
-      <h1>ลงทะเบียนผู้ใช้ใหม่</h1>
+      <h1>ลงทะเบียนนักเรียนใหม่</h1>
       <div className={styles.buttonContainer}>
         <WalletMultiButton className={styles.walletButton} />
         {publicKey && (
