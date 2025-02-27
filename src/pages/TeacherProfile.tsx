@@ -100,7 +100,7 @@ const TeacherProfile = () => {
                 p_public_key:publicKey
               })
             if (rpcError) console.error(rpcError)
-            else console.log(rpcData)
+            // else console.log(rpcData)
             //= json format
             //=   {
             //=      "id": int,
