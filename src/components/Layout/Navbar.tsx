@@ -39,19 +39,24 @@ export const Navbar = () => {
               p_public_key:publicKey
             })
             if (error) console.error(error)
-            // else 
-              // console.log(data)
+            else 
+              console.log(data)
             //   console.log(data.wallet_address)
           
           if (error) {
             setIsRegistered(false);
-            setUserRole(null);
+            console.log('error check user');
+            
+            // setUserRole(null);
           } if (data.is_instructor == true) {
             setIsRegistered(true);
             setUserRole('instructor');
+            console.log('instructor');
+            
           } if (data.is_student == true) {
             setIsRegistered(true);
             setUserRole('student');
+            console.log('student');
           } else {
             setShowLogin(false);
             setShowRegister(true);
@@ -67,7 +72,7 @@ export const Navbar = () => {
     };
 
     checkUser();
-  }, [publicKey]);
+  }, [publicKey, isRegistered]);
 
   const handleLoginClick = () => {
     setShowLogin(true);
@@ -130,6 +135,8 @@ export const Navbar = () => {
 
   const handleProfileClick = () => {
     setShowDropdown(false);
+    console.log(userRole);
+    
     switch (userRole) {
       case 'student':
         navigate('/student-profile');
@@ -171,12 +178,12 @@ export const Navbar = () => {
               >
                 หน้าแรก
               </button>
-              <button 
+              {/* <button 
                 onClick={() => navigate('/all-lessons')}
                 className={styles.navButton}
               >
                 บทเรียนทั้งหมด
-              </button>
+              </button> */}
             </div>
           )}
         </div>

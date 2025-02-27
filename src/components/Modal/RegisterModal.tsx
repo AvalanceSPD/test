@@ -113,7 +113,7 @@ export const RegisterModal = ({
         console.error(rpcerror)
         throw rpcerror;
       }
-      else console.log(rpcdata)
+      // else console.log(rpcdata)
 
     setSuccess(true);
     setTimeout(() => {
