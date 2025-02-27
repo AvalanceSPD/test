@@ -73,7 +73,7 @@ export const Navbar = () => {
     };
 
     checkUser();
-  }, [publicKey]);
+  }, [publicKey, isRegistered]);
 
   const handleLoginClick = () => {
     setShowLogin(true);
