@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../../utils/supabaseClient';  // แก้ไข path
 import { Grid, Row, Col } from 'rsuite';
 import { useWallet } from '@solana/wallet-adapter-react'; // เพิ่ม import
+import Swal from 'sweetalert2';
 
 
 interface Course {
@@ -18,32 +19,32 @@ interface Course {
 }
 
 interface Session {
-    id: number;
-    title: string;
-    subSessions: SubSession[];
+  id: number;
+  title: string;
+  subSessions: SubSession[];
 }
 
 interface SubSession {
-    id: number;
-    title: string;
-    videoUrl?: string;
-    description?: string;
+  id: number;
+  title: string;
+  videoUrl?: string;
+  description?: string;
 }
 
 interface Document {
-    id: number;
-    title: string;
-    url?: string;
+  id: number;
+  title: string;
+  url?: string;
 }
 
 interface Quiz {
-    id: number;
-    title: string;
+  id: number;
+  title: string;
 }
 
 interface MainContent {
-    previewVideo?: string;
-    mainDescription?: string;
+  previewVideo?: string;
+  mainDescription?: string;
 }
 
 interface Lesson {
@@ -56,64 +57,64 @@ interface Lesson {
 
 // เพิ่ม interface สำหรับ Modal
 interface InputModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (value: string) => void;
-    title: string;
-    placeholder: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (value: string) => void;
+  title: string;
+  placeholder: string;
 }
 
 // สร้าง Component Modal แยก
 const InputModal: React.FC<InputModalProps> = ({ isOpen, onClose, onSubmit, title, placeholder }) => {
-    const [value, setValue] = useState('');
+  const [value, setValue] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (value.trim()) {
-            onSubmit(value);
-            setValue('');
-            onClose();
-        }
-    };
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (value.trim()) {
+      onSubmit(value);
+      setValue('');
+      onClose();
+    }
+  };
 
-    return (
-        <Modal
-            isOpen={isOpen}
-            onRequestClose={onClose}
-            className={styles.modal}
-            overlayClassName={styles.overlay}
-        >
-            <div className={styles.modalContent}>
-                <h2>{title}</h2>
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        value={value}
-                        onChange={(e) => setValue(e.target.value)}
-                        placeholder={placeholder}
-                        className={styles.modalInput}
-                        autoFocus
-                    />
-                    <div className={styles.modalButtons}>
-                        <button type="button" onClick={onClose} className={styles.cancelButton}>
-                            ยกเลิก
-                        </button>
-                        <button type="submit" className={styles.submitButton}>
-                            บันทึก
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </Modal>
-    );
+  return (
+    <Modal
+      isOpen={isOpen}
+      onRequestClose={onClose}
+      className={styles.modal}
+      overlayClassName={styles.overlay}
+    >
+      <div className={styles.modalContent}>
+        <h2>{title}</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder={placeholder}
+            className={styles.modalInput}
+            autoFocus
+          />
+          <div className={styles.modalButtons}>
+            <button type="button" onClick={onClose} className={styles.cancelButton}>
+              ยกเลิก
+            </button>
+            <button type="submit" className={styles.submitButton}>
+              บันทึก
+            </button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
 };
 
 // เพิ่ม interface สำหรับ URL Modal
 interface UrlModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (data: { title: string; url: string }) => void;
-    title: string;
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (data: { title: string; url: string }) => void;
+  title: string;
 }
 
 
@@ -131,6 +132,7 @@ const CourseInfo = () => {
     const [selectedDescription, setSelectedDescription] = useState<string>('');
     const [selectedTitle, setSelectedTitle] = useState('');
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
+    const [instructorName, setInstructorName] = useState<string | null>(null);
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -156,75 +158,94 @@ const CourseInfo = () => {
     // เพิ่ม state สำหรับเก็บข้อมูลเอกสาร
     const [lessonDocument, setLessonDocument] = useState<string | null>(null);
     
-    useEffect(() => {
-        const fetchCourseData = async () => {
-            try {
-                setLoading(true);
-                
-                // ตรวจสอบว่ามี courseId หรือไม่
-                if (!courseId) {
-                    throw new Error('ไม่พบรหัสบทเรียน');
-                }
+    const fetchCourseData = async () => {
+        try {
+            setLoading(true);
+            
+            // ตรวจสอบว่ามี courseId หรือไม่
+            if (!courseId) {
+                throw new Error('ไม่พบรหัสบทเรียน');
+            }
 
-                // แปลง courseId เป็นตัวเลข
-                const numericCourseId = parseInt(courseId);
-                
-                // ตรวจสอบว่าเป็นตัวเลขที่ถูกต้องหรือไม่
-                if (isNaN(numericCourseId) || numericCourseId <= 0) {
-                    throw new Error('รหัสบทเรียนไม่ถูกต้อง');
-                }
+            // แปลง courseId เป็นตัวเลข
+            const numericCourseId = parseInt(courseId);
+            
+            // ตรวจสอบว่าเป็นตัวเลขที่ถูกต้องหรือไม่
+            if (isNaN(numericCourseId) || numericCourseId <= 0) {
+                throw new Error('รหัสบทเรียนไม่ถูกต้อง');
+            }
 
-                const { data, error } = await supabase
-                    .from('course')
-                    .select('*')
-                    .eq('id', numericCourseId)
-                    .single();
+            const { data, error } = await supabase
+                .from('course')
+                .select('*')
+                .eq('id', numericCourseId)
+                .single();
 
-                if (error) {
-                    throw error;
-                }
+            if (error) {
+                throw error;
+            }
 
-                if (!data) {
-                    throw new Error('ไม่พบข้อมูลบทเรียน');
-                }
+            if (!data) {
+                throw new Error('ไม่พบข้อมูลบทเรียน');
+            }
 
-                setCourse(data);
+            setCourse(data);
 
-                // ดึงข้อมูล lessons
-                const { data: lessonData, error: lessonError } = await supabase
-                    .from('lesson')
-                    .select('*')
-                    .eq('course_id', numericCourseId)
-                    .order('id', { ascending: true });
+            // ดึงข้อมูล lessons
+            const { data: lessonData, error: lessonError } = await supabase
+                .from('lesson')
+                .select('*')
+                .eq('course_id', numericCourseId)
+                .order('id', { ascending: true });
 
-                if (lessonError) throw lessonError;
-                setLessons(lessonData || []);
+            if (lessonError) throw lessonError;
+            setLessons(lessonData || []);
 
                 // console.log('Lesson Data:', lessonData); // ตรวจสอบข้อมูลที่ดึงมา
 
-                if (lessonData && lessonData.length > 0) {
-                    const firstLesson = lessonData[0];
-                    const videoId = firstLesson.media.split('v=')[1].split('&')[0];
-                    const embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                    setSelectedVideoUrl(embedUrl);
-                    setSelectedDescription(firstLesson.description);
-                    setSelectedTitle(firstLesson.title);
-                } else {
-                    console.log('No lessons found for this course.'); // แจ้งเมื่อไม่มีบทเรียน
-                }
-
-            } catch (err: any) {
-                console.error('Error fetching course:', err);
-                setError(err.message || 'ไม่สามารถโหลดข้อมูลบทเรียนได้');
-                // ถ้าไม่พบบทเรียนหรือ ID ไม่ถูกต้อง ให้กลับไปหน้าหลัก
-                if (err.message.includes('ไม่พบ') || err.message.includes('ไม่ถูกต้อง')) {
-                    navigate('/'); // หรือหน้าอื่นที่เหมาะสม
-                }
-            } finally {
-                setLoading(false);
+            if (lessonData && lessonData.length > 0) {
+                const firstLesson = lessonData[0];
+                const videoId = firstLesson.media.split('v=')[1].split('&')[0];
+                const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                setSelectedVideoUrl(embedUrl);
+                setSelectedDescription(firstLesson.description);
+                setSelectedTitle(firstLesson.title);
+            } else {
+                console.log('No lessons found for this course.'); // แจ้งเมื่อไม่มีบทเรียน
             }
-        };
 
+            // ดึงชื่อผู้สอน
+            const fetchInstructorName = async () => {
+                if (data && data.create_by) {
+                    const { data: instructorData, error: instructorError } = await supabase
+                        .from('instructors_list')
+                        .select('ins_name')
+                        .eq('id', data.create_by)
+                        .single();
+
+                    if (instructorError) {
+                        console.error('Error fetching instructor name:', instructorError);
+                    } else {
+                        setInstructorName(instructorData?.ins_name);
+                    }
+                }
+            };
+
+            await fetchInstructorName();
+
+        } catch (err: any) {
+            console.error('Error fetching course:', err);
+            setError(err.message || 'ไม่สามารถโหลดข้อมูลบทเรียนได้');
+            // ถ้าไม่พบบทเรียนหรือ ID ไม่ถูกต้อง ให้กลับไปหน้าหลัก
+            if (err.message.includes('ไม่พบ') || err.message.includes('ไม่ถูกต้อง')) {
+                navigate('/'); // หรือหน้าอื่นที่เหมาะสม
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchCourseData();
     }, [courseId, navigate]);
 
@@ -442,6 +463,7 @@ const CourseInfo = () => {
         }
 
         try {
+            console.log('Checking enrollment...'); // เพิ่ม log
             // เช็คว่าลงทะเบียนไปแล้วหรือยัง
             const { data: existingEnrollment, error: checkError } = await supabase
                 .from('enrolled_course')
@@ -455,29 +477,33 @@ const CourseInfo = () => {
             }
 
             if (existingEnrollment) {
-                alert('คุณได้ลงทะเบียนในคอร์สนี้แล้ว');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'You are already enrolled in this course.',
+                });
                 return;
             }
 
-            // บันทึกการลงทะเบียน
             const { error: insertError } = await supabase
                 .from('enrolled_course')
-                .insert([
-                    {
-                        course_id: courseId,
-                        std_id: studentListId
-                    }
-                ]);
+                .insert([{ course_id: courseId, std_id: studentListId }]);
 
             if (insertError) throw insertError;
 
-            // อัพเดท state หลังลงทะเบียนสำเร็จ
             setIsEnrolled(true);
-            alert('ลงทะเบียนสำเร็จ');
+            console.log('Enrollment successful');
+            Swal.fire({
+                icon: 'success',
+                title: 'Enrollment successful',
+                text: 'You have successfully enrolled in the course!',
+            });
+
+            await fetchCourseData();
 
         } catch (err) {
             console.error('Error enrolling:', err);
-            alert('เกิดข้อผิดพลาดในการลงทะเบียน');
+            alert('An error occurred during enrollment');
         }
     };
 
@@ -487,32 +513,50 @@ const CourseInfo = () => {
             return;
         }
 
-        try {
-            // ลบการลงทะเบียนจาก enrolled_course
-            const { error } = await supabase
-                .from('enrolled_course')
-                .delete()
-                .eq('std_id', studentListId)
-                .eq('course_id', courseId);
+        // แสดง pop-up ยืนยันการยกเลิกการลงทะเบียน
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, cancel it!'
+        });
 
-            if (error) {
-                console.error('Error canceling enrollment:', error);
-                alert('เกิดข้อผิดพลาดในการยกเลิกการลงทะเบียน');
-                return;
+        if (result.isConfirmed) {
+            try {
+                console.log('Attempting to delete enrollment...');
+                const { error } = await supabase
+                    .from('enrolled_course')
+                    .delete()
+                    .eq('course_id', courseId)
+                    .eq('std_id', studentListId);
+
+                if (error) throw error;
+
+                setIsEnrolled(false);
+                console.log('Enrollment canceled successfully');
+                Swal.fire(
+                    'Canceled!',
+                    'Your enrollment has been canceled.',
+                    'success'
+                );
+
+                await fetchCourseData();
+
+            } catch (err) {
+                console.error('Error canceling enrollment:', err);
+                Swal.fire(
+                    'Error!',
+                    'An error occurred while canceling enrollment.',
+                    'error'
+                );
             }
-
-            // อัพเดทสถานะการลงทะเบียน
-            setIsEnrolled(false);
-            alert('ยกเลิกการลงทะเบียนเรียบร้อยแล้ว');
-
-        } catch (err) {
-            console.error('Error in handleCancelEnrollment:', err);
-            alert('เกิดข้อผิดพลาดในการยกเลิกการลงทะเบียน');
         }
     };
 
     if (loading) {
-        return <div className={styles.loadingState}>กำลังโหลด...</div>;
+        return <div className={styles.loadingState}>loading...</div>;
     }
 
     if (error) {
@@ -520,7 +564,7 @@ const CourseInfo = () => {
     }
 
     if (!course) {
-        return <div className={styles.errorState}>ไม่พบบทเรียนที่ต้องการ</div>;
+        return <div className={styles.errorState}>The required course was not found.</div>;
     }
 
     return (
@@ -530,7 +574,7 @@ const CourseInfo = () => {
                     <div className={styles.headerBox}>
                         <Row>
                             <Col xs={8} className={styles.thumbnailCol}>
-                                <div className={styles.thumbnailContainer}>
+                    <div className={styles.thumbnailContainer}>
                                     {course.thumbnail && (
                                         <img 
                                             src={course.thumbnail} 
@@ -545,34 +589,32 @@ const CourseInfo = () => {
                                 </div>
                             </Col>
                             <Col xs={16} className={styles.lessonTitleCol}>
-                                <div className={styles.lessonTitle}>
+                    <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
-                                        <p>สร้างเมื่อ: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
-                                        <p>อัปเดตล่าสุด: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
-                                        <p>สร้างโดย: {course.create_by}</p>
-                                    </div>
+                                        <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
+                                        <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
+                                        <p>Create by: {instructorName || 'Loading...'}</p>
+                    </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
-                                        {userRole === 'student' && (
-                                            <div className={styles.buttonContainer}>
-                                                <button 
-                                                    className={`${styles.enrollButton} ${isEnrolled ? styles.enrolled : ''}`}
+                                        <div className={styles.buttonContainer}>
+                                            {!isEnrolled ? (
+                        <button 
+                                                    className={styles.enrollButton}
                                                     onClick={handleEnroll}
-                                                    disabled={isEnrolled}
-                                                >
-                                                    {isEnrolled ? 'Enrolled' : 'Enroll'}
-                                                </button>
-                                                {isEnrolled && (
-                                                    <button 
-                                                        className={styles.cancelButton}
-                                                        onClick={handleCancelEnrollment}
-                                                    >
-                                                        Cancel Enrolled
-                                                    </button>
-                                                )}
-                                            </div>
-                                        )}
+                        >
+                                                    Enroll
+                        </button>
+                                            ) : (
+                        <button 
+                                                    className={styles.cancelButton}
+                                                    onClick={handleCancelEnrollment}
+                        >
+                                                    Cancel Enrollment
+                        </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </Col>
@@ -590,15 +632,15 @@ const CourseInfo = () => {
                                 ? styles.blurContainer 
                                 : ''
                             }>
-                                <iframe
+                                    <iframe
                                     src={selectedVideoUrl}
-                                    frameBorder="0"
-                                    allowFullScreen
-                                    className={styles.video}
-                                />
+                                        frameBorder="0"
+                                        allowFullScreen
+                                        className={styles.video}
+                                    />
                                 {!userRole && (
                                     <div className={styles.blurOverlay}>
-                                        <p>กรุณาเข้าสู่ระบบเพื่อรับชมวิดีโอ</p>
+                                        <p>Please log in to watch the video.</p>
                                     </div>
                                 )}
                                 {userRole === 'student' && (
@@ -606,25 +648,25 @@ const CourseInfo = () => {
                                         {!isEnrolled ? (
                                             <div className={styles.blurOverlay}>
                                                 {isInStudentsList ? (
-                                                    <p>กรุณาลงทะเบียนเรียนเพื่อรับชมวิดีโอ</p>
+                                                    <p>Please enroll to watch the video.</p>
                                                 ) : (
-                                                    <p>คุณไม่มีสิทธิ์ลงทะเบียนเรียนในรายวิชานี้</p>
+                                                    <p>You are not eligible to enroll for this course.</p>
                                                 )}
-                                            </div>
+                                    </div>
                                         ) : (
-                                            <div>คุณได้ลงทะเบียนเรียนแล้ว</div>
+                                            <div>You have already enrolled for course.</div>
                                         )}
                                     </>
                                 )}
                             </div>
                         ) : (
-                            <p>ไม่มีวิดีโอให้แสดง</p>
-                        )}
-                    </div>
+                            <p>There are no videos to show.</p>
+                    )}
+                </div>
                     <div className={styles.lessonList}>
                         <div className={styles.descriptionText}>
                                 <h2>{selectedTitle}</h2>
-                                <p>{selectedDescription || 'ไม่มีคำอธิบาย'}</p>
+                                <p>{selectedDescription || 'No description'}</p>
                         </div>
                     </div>
                 </Col>
@@ -646,7 +688,7 @@ const CourseInfo = () => {
                                             onClick={() => handleVideoClick(lesson.media, lesson.title, lesson.description)} 
                                             className={styles.contentLink}
                                         >
-                                            ดูวิดีโอ
+                                            Watch the video
                                         </div>
                                         {lesson.file && (
                                             <div 
@@ -661,15 +703,15 @@ const CourseInfo = () => {
                                                         console.log('Download URL:', data.publicUrl);
                                                         window.open(data.publicUrl, '_blank'); // เปิด URL ในแท็บใหม่
                                                     } else {
-                                                        alert('ไม่พบ URL สำหรับดาวน์โหลด');
+                                                        alert('The download URL was not found.');
                                                     }
                                                 }} 
                                                 className={styles.contentLink}
                                             >
-                                                ดาวน์โหลดเอกสาร
-                                            </div>
+                                                Download documents
+                                        </div>
                                         )}
-                                    </div>
+                                </div>
                                 )}
                             </div>
                         ))}

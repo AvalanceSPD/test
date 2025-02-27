@@ -54,7 +54,6 @@ const Home = () => {
           <div className={styles.studentDashboard}>
             <div className={styles.section}>
               <h2>คอร์สเรียนของฉัน</h2>
-              {/* แสดงรายการคอร์สที่ลงทะเบียน */}
               <div className={styles.courseGrid}>
                 {/* ตัวอย่างคอร์ส */}
                 <div className={styles.courseCard}>

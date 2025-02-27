@@ -24,6 +24,7 @@
     "react-slick": "^0.30.3",
     "rsuite": "^5.77.0",
     "slick-carousel": "^1.8.1",
+    "sweetalert2": "^11.17.2",
     "tweetnacl": "^1.0.3",
     "web-vitals": "^4.2.4"
   },
