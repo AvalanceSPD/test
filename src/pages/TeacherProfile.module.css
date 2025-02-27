@@ -144,7 +144,7 @@ justify-content: space-between; /* จัดให้มีระยะห่า
 /* align-items: center; จัดให้เนื้อหาทั้งหมดอยู่กลาง */
 display: flex;
 flex-direction: column; /* จัดเรียงในแนวตั้ง */
-height: 300px; /* ปรับความสูงตามต้องการ */
+height: 450px; /* ปรับความสูงตามต้องการ */
 overflow: hidden; /* ซ่อนเนื้อหาที่เกิน */
 justify-content: center; /* จัดให้เนื้อหาอยู่กลาง */
 }
