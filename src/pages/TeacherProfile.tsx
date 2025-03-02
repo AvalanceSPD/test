@@ -165,9 +165,7 @@ const TeacherProfile = () => {
                     </div>
                       <div className={styles.cardbottomdiv}>
                         <div>
-                          <Button 
-                            color="violet" 
-                            appearance="primary" 
+                          <Button
                             onClick={() => handlecoursebtn(course.id)} 
                             className={styles.cardbtn}
                           >

@@ -196,8 +196,6 @@ const StudentProfile = () => {
                             <div className={styles.cardbottomdiv}>
                               <div>
                                 <Button 
-                                  color="violet" 
-                                  appearance="primary" 
                                   onClick={() => handlecoursebtn(course.id)} 
                                   className={styles.cardbtn}
                                 >

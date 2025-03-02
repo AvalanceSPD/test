@@ -204,10 +204,10 @@
   justify-content: center; /* จัดให้เนื้อหาอยู่กลาง */
 }
 .cardbtn {
-  background-color: #636AE8;
+  background-color: #636AE8 !important;
   width: 10vh;
   height: 3vh;
-  color: white; /* สีข้อความในปุ่ม */
+  color: white !important; /* สีข้อความในปุ่ม */
   border: none; /* กำหนดไม่ให้มีขอบ */
   padding: 0px 0px; /* กำหนดระยะห่างภายในปุ่ม */
   text-align: center; /* จัดข้อความให้อยู่กลางปุ่ม */
