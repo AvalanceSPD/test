@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation  } from 'react-router-dom';
 import { AuthModal } from '../Modal/AuthModal';
 import { LoginModal } from '../Modal/LoginModal';
 import { RegisterModal } from '../Modal/RegisterModal';
@@ -10,6 +10,8 @@ import { supabase } from '../../utils/supabaseClient';
 export const Navbar = () => {
   const { publicKey, disconnect } = useWallet();
   const navigate = useNavigate();
+  const location = useLocation();
+  const referrer = location.state?.referrer;
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -40,7 +42,12 @@ export const Navbar = () => {
               p_public_key:publicKey
             })
             if (error) console.error(error)
-            else 
+              else if (location.pathname === '/insregister') {
+                // ถ้าอยู่ที่หน้า insregister และมี public key
+                setShowLogin(false);
+                setShowRegister(false);
+                return;
+              } 
               // console.log(data)
               // console.log(data.wallet_address)
           
@@ -52,14 +59,14 @@ export const Navbar = () => {
           } if (data.is_instructor == true) {
             setIsRegistered(true);
             setUserRole('instructor');
-            // console.log('instructor');
+            console.log('instructor');
           } else if (data.is_student == true) {
             setIsRegistered(true);
             setUserRole('student');
-            // console.log('student');
+            console.log('student');
           } else {
             setShowLogin(false);
-            setShowRegister(false);
+            setShowRegister(true);
           }
           
         } catch (error) {

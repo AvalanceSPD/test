@@ -717,6 +717,7 @@ const CourseInfo = () => {
             confirmButtonText: 'OK'
         }).then(() => {
             console.log('Score:', totalScore); // แสดงคะแนนใน console
+            setQuized(true);
         });
         
         const { data, error } = await supabase

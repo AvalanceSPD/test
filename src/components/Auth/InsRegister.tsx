@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
@@ -21,6 +21,7 @@ export const InsRegister = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [counter, setCounter] = useState(0)
 
 //   useEffect(() => {
 //     if (!publicKey) {
@@ -28,7 +29,12 @@ export const InsRegister = () => {
 //     }
 //   }, [publicKey, navigate]);
 
+  const handleCounter = () => {
+    setCounter(counter+1);
+  }
+
   const handleRegister = async () => {
+    handleCounter();
     if (!publicKey || !username.trim()) {
       setError('กรุณากรอกชื่อผู้ใช้');
       return;

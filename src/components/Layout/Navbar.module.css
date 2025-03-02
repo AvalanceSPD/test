@@ -33,6 +33,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin: 0px 2vh 0px 0px;
 }
 
 .loginButton {
