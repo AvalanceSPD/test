@@ -40,6 +40,7 @@ const TeacherProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [rpcData, setRpcData] = useState<rpcData[]>([]);
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
 
   useEffect(() => {
     
@@ -129,11 +130,28 @@ const TeacherProfile = () => {
       navigate(`/course/${course_id}`);
     }  
         // console.log('this is public key: ',publicKey);
+
+        useEffect(() => {
+          const fetchBackgroundImage = async () => {
+              const { data} = await supabase
+                  .storage
+                  .from('slide_img') // เปลี่ยนเป็นชื่อ bucket ของคุณ
+                  .getPublicUrl('image_2025-03-02_235106686.png'); // เปลี่ยนเป็น path ของภาพที่ต้องการ
+  
+              if (error) {
+                  console.error('Error fetching image:', error);
+              } else {
+                  setBackgroundImage(data.publicUrl); // ตั้งค่า URL ของภาพ
+              }
+          };
+  
+          fetchBackgroundImage();
+      }, []);
   return (
     <div className={styles.container}>
-      <div className={styles.backgroundSection}>
-        <img src="/2.jpg" alt="Background" />
-      </div>
+        <div className={styles.backgroundSection}>
+          {backgroundImage && <img src={backgroundImage} alt="Background" />}
+        </div>
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <div className={styles.courseheader}>
