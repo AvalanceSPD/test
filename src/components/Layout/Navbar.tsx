@@ -16,6 +16,7 @@ export const Navbar = () => {
   const [userRole, setUserRole] = useState<'student' | 'instructor' | null>(null);
   const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   //: ปิด dropdown เมื่อคลิกนอกพื้นที่
   useEffect(() => {
@@ -73,6 +74,20 @@ export const Navbar = () => {
 
     checkUser();
   }, [publicKey, isRegistered]);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      const { data} = await supabase
+        .storage
+        .from('slide_img')
+        .getPublicUrl('new.png');
+
+
+        setLogoUrl(data.publicUrl);
+    };
+
+    fetchLogo();
+  }, []);
 
   const handleLoginClick = () => {
     setShowLogin(true);
@@ -153,20 +168,20 @@ export const Navbar = () => {
     <>
       <nav className={styles.navbar}>
         <div className={styles.leftSection}>
-          <Link to="/home_1">
+          {logoUrl && (
             <img 
-              src="/logo.png" 
+              src={logoUrl} 
               alt="Logo" 
               className={styles.logo}
             />
-          </Link>
+          )}
           {/* //: instructor */}
           {userRole === 'instructor' && (
             <button 
               onClick={() => navigate('/create-lesson')}
               className={styles.navButton}
             >
-              สร้างบทเรียน
+              Create Course
             </button>
           )}
           {/* //: student */}
@@ -176,7 +191,7 @@ export const Navbar = () => {
                 onClick={() => navigate('/home_1')}
                 className={styles.navButton}
               >
-                หน้าแรก
+                Home
               </button>
               {/* <button 
                 onClick={() => navigate('/all-lessons')}
@@ -204,7 +219,7 @@ export const Navbar = () => {
                       onClick={handleProfileClick}
                       className={`${styles.dropdownItem} ${styles.profileItem}`}
                     >
-                      โปรไฟล์
+                      Profile
                     </button>
                   )}
                   {!isRegistered && (
@@ -212,14 +227,14 @@ export const Navbar = () => {
                       onClick={handleRegisterClick}
                       className={`${styles.dropdownItem} ${styles.registerItem}`}
                     >
-                      ลงทะเบียนผู้ใช้
+                      Register
                     </button>
                   )}
                   <button 
                     onClick={handleDisconnect}
                     className={styles.dropdownItem}
                   >
-                    ออกจากระบบ
+                    Logout
                   </button>
                 </div>
               )}
@@ -229,7 +244,7 @@ export const Navbar = () => {
               onClick={handleLoginClick}
               className={styles.loginButton}
             >
-              เข้าสู่ระบบ
+              Login
             </button>
           )}
         </div>

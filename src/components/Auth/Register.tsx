@@ -134,7 +134,7 @@ export const Register = ({ onLoginClick }: RegisterProps) => {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginBox}>
-        <h1>ลงทะเบียน</h1>
+        <h1>Register</h1>
         <div className={styles.buttonContainer}>
           <WalletMultiButton className={styles.walletButton} />
         </div>
@@ -143,14 +143,14 @@ export const Register = ({ onLoginClick }: RegisterProps) => {
             {error && <div className={styles.errorMessage}>{error}</div>}
             {success && (
               <div className={styles.successMessage}>
-                ลงทะเบียนสำเร็จ! กำลังกลับไปยังหน้าเข้าสู่ระบบ...
+                Successfully registered! Returning to the login page...
               </div>
             )}
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="ชื่อผู้ใช้"
+              placeholder="Username"
               className={styles.input}
               disabled={isLoading || success}
               minLength={3}
@@ -162,20 +162,20 @@ export const Register = ({ onLoginClick }: RegisterProps) => {
               className={styles.select}
               disabled={isLoading || success}
             >
-              <option value="student">นักเรียน</option>
-              <option value="teacher">ครู</option>
+              <option value="student">Student</option>
+              <option value="teacher">Instructer</option>
             </select>
             <button 
               onClick={handleRegister} 
               className={styles.registerButton}
               disabled={isLoading || success || !username.trim()}
             >
-              {isLoading ? 'กำลังลงทะเบียน...' : 'ลงทะเบียน'}
+              {isLoading ? 'Currently registering...' : 'Register'}
             </button>
           </div>
         )}
         <button onClick={onLoginClick}>
-          มีบัญชีอยู่แล้ว? เข้าสู่ระบบ
+          Already have an account? Login
         </button>
       </div>
     </div>

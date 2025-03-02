@@ -906,7 +906,7 @@ const CourseInfo = () => {
                                                 if (isUserAllowed()) {
                                                     handleVideoClick(lesson.media, lesson.title, lesson.description);
                                                 } else {
-                                                    Swal.fire('You must be enrolled or logged in to access this document.');
+                                                    Swal.fire('You must be enrolled or logged in to access.');
                                                 }
                                             }} 
                                             className={styles.contentLink}

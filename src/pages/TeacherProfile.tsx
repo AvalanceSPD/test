@@ -134,7 +134,6 @@ const TeacherProfile = () => {
       <div className={styles.backgroundSection}>
         <img src="/2.jpg" alt="Background" />
       </div>
-
       <div className={styles.contentWrapper}>
         <div className={styles.mainContent}>
           <div className={styles.courseheader}>
@@ -145,44 +144,44 @@ const TeacherProfile = () => {
               <button className={styles.createButton}>Create lesson</button>
             </div>
           </div>
-          
-          <div className={styles.lessonGrid}>
-            {/* Grid สำหรับ lessons */}
-            <Grid fluid>
-            <Row className="show-grid">
-            {rpcData.map((course) => (
-            <Col sm={12} lg={6} xxl={6} key={course.id}>
-              <Card shaded bordered size="sm" className={styles.divcard}>
-                <img
-                  src={course.thumbnail}
-                  alt={course.title}
-                  className={styles.imagecard}
-                />
-                <div className={styles.cardContent}>
-                <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
-                  <div className={styles.instructorName}>
-                    <p className={styles.cardText}>Instructer : {course.ins_name}</p>
-                    <p className={styles.cardText}>Create at: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
-                  </div>
-                </div>
-                  <div className={styles.cardbottomdiv}>
-                    <div>
-                      <Button 
-                        color="violet" 
-                        appearance="primary" 
-                        onClick={() => handlecoursebtn(course.id)} 
-                        className={styles.cardbtn}
-                      >
-                        Info
-                      </Button>
+              {/* Grid สำหรับ lessons */}
+              <div className={styles.course_card}>
+                <Grid fluid>
+                <Row className="show-grid">
+                {rpcData.map((course) => (
+                <Col sm={24} lg={12} xxl={6} key={course.id}>
+                  <Card shaded bordered size="sm" className={styles.divcard}>
+                    <img
+                      src={course.thumbnail}
+                      alt={course.title}
+                      className={styles.imagecard}
+                    />
+                    <div className={styles.cardContent}>
+                    <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
+                      <div className={styles.instructorName}>
+                        <p className={styles.cardText}>Instructer : {course.ins_name}</p>
+                        <p className={styles.cardText}>Create at: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
+                      </div>
                     </div>
-                  </div>
-              </Card>
-            </Col>
-            ))}
-            </Row>
-          </Grid>
+                      <div className={styles.cardbottomdiv}>
+                        <div>
+                          <Button 
+                            color="violet" 
+                            appearance="primary" 
+                            onClick={() => handlecoursebtn(course.id)} 
+                            className={styles.cardbtn}
+                          >
+                            Info
+                          </Button>
+                        </div>
+                      </div>
+                  </Card>
+                </Col>
+                ))}
+                </Row>
+                </Grid>
           </div>
+
         </div>
 
         <div className={styles.profileSidebar}>

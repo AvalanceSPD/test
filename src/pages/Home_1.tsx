@@ -37,8 +37,6 @@ interface rpcData {
   create_at: string;
 }
 
-const slides = ["/1.jpg", "/2.jpg", "/3.jpg"];
-
 const Home_1 = () => {
   // const Home_1: React.FC<CourseDataProps> = ({ items }) => {
 
@@ -53,7 +51,8 @@ const Home_1 = () => {
   const [sort, setSort] = useState({keyToSort: "MAKE", direction: "asc"});
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<string>('');
-
+  const [slides, setSlides] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // : slider settings
   const settings = {
@@ -203,8 +202,46 @@ const items = [
     navigate(`/course/${course_id}`);
   }
 
-  if (isLoading) {
+  // Fetch slides data
+  useEffect(() => {
+    const fetchSlides = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('slide_img')
+          .select('file_name');
+
+        if (error) {
+          console.error('Error fetching slides:', error);
+          setError('Error fetching slides');
+          return;
+        }
+
+        const imageUrls = data.map((item) => {
+          const { data: publicUrlData } = supabase.storage.from('slide_img').getPublicUrl(item.file_name);
+          if (!publicUrlData.publicUrl) {
+            throw new Error(`Could not get public URL for ${item.file_name}`);
+          }
+          return publicUrlData.publicUrl; // Access publicUrl from the data object
+        });
+
+        setSlides(imageUrls);
+      } catch (err) {
+        console.error('Error:', err);
+        setError('Error fetching slides');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlides();
+  }, []);
+
+  if (loading) {
     return <div className={styles.loading}>กำลังโหลด...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.errorState}>{error}</div>;
   }
 
   //= หน้า Home สำหรับ Guest
@@ -225,7 +262,7 @@ const items = [
         <div className={styles.courseWrapper}>
           <div className={styles.courseheader}>
             <div className={styles.coursediv1}>
-                <h1>Course</h1>
+                <h2>Course</h2>
             </div>
             <div className={styles.coursediv2}>
                 <div className={styles.sortSearchContainer}>

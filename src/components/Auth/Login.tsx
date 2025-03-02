@@ -105,7 +105,7 @@ export const Login = ({ onRegisterClick }: LoginProps) => {
       )}
       <div className={styles.loginContainer}>
         <div className={styles.loginBox}>
-          <p>กรุณาเชื่อมต่อกระเป๋า Phantom เพื่อเข้าสู่ระบบ</p>
+          <p>Please connect your Phantom Wallet to log in.</p>
           
           {error && <div className={styles.errorMessage}>{error}</div>}
           
@@ -114,7 +114,7 @@ export const Login = ({ onRegisterClick }: LoginProps) => {
             
             {isLoading && (
               <div className={styles.loadingMessage}>
-                กำลังตรวจสอบข้อมูล...
+                Checking information...
               </div>
             )}
 
@@ -125,7 +125,7 @@ export const Login = ({ onRegisterClick }: LoginProps) => {
                     onClick={handleLogin}
                     className={styles.loginButton}
                   >
-                    เข้าสู่ระบบ
+                    Login
                   </button>
                 )}
                 
@@ -135,10 +135,10 @@ export const Login = ({ onRegisterClick }: LoginProps) => {
                       onClick={handleRegister}
                       className={styles.registerButton}
                     >
-                      ลงทะเบียนผู้ใช้ใหม่
+                      Register new user
                     </button>
                     <div className={styles.newUserMessage}>
-                      คุณยังไม่มีบัญชีผู้ใช้ กรุณาลงทะเบียนเพื่อเข้าใช้งาน
+                      You don't have an account yet. Please register to use it.
                     </div>
                   </>
                 )}

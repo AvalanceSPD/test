@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { supabase } from '../utils/supabaseClient';
-import styles from './TeacherProfile.module.css';
+import styles from './StudentProfile.module.css';
 import { CopyButton } from '../components/compo/CopyButton'
 import { Grid, Row, Col, Card, Button} from "rsuite";
 import "rsuite/Grid/styles/index.css";
@@ -41,6 +41,7 @@ const StudentProfile = () => {
   const [error, setError] = useState<string | null>(null);
   const [rpcData, setRpcData] = useState<rpcData[]>([]);
   const [nullData, setNulldata] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
 
   useEffect(() => {
     
@@ -133,11 +134,27 @@ const StudentProfile = () => {
     }
     // console.log('RPC : ',rpcData);
     
+    useEffect(() => {
+        const fetchBackgroundImage = async () => {
+            const { data} = await supabase
+                .storage
+                .from('slide_img') // เปลี่ยนเป็นชื่อ bucket ของคุณ
+                .getPublicUrl('image_2025-03-02_235106686.png'); // เปลี่ยนเป็น path ของภาพที่ต้องการ
+
+            if (error) {
+                console.error('Error fetching image:', error);
+            } else {
+                setBackgroundImage(data.publicUrl); // ตั้งค่า URL ของภาพ
+            }
+        };
+
+        fetchBackgroundImage();
+    }, []);
 
     return (
       <div className={styles.container}>
         <div className={styles.backgroundSection}>
-          <img src="/2.jpg" alt="Background" />
+          {backgroundImage && <img src={backgroundImage} alt="Background" />}
         </div>
   
         <div className={styles.contentWrapper}>
@@ -149,16 +166,16 @@ const StudentProfile = () => {
               <div className={styles.createbtn}>
               </div>
             </div>
-            
-            <div className={styles.lessonGrid}>
               {/* เงื่อนไขถ้านักเรียนไม่ได้ลงทะเบียนเรียนเลยให้เเสดงข้อความนี้ */}
               {nullData ?(
-                <div>
-                  <h3>You haven't enrolled in any courses yet</h3>
-                  <button onClick={() => navigate('/home_1')}>Get courses you would like</button>
+                <div className={styles.containers}>
+                  <h3 className={styles.message}>You haven't enrolled in any courses yet</h3>
+                  <button className={styles.button} onClick={() => navigate('/home_1')}>
+                    Get courses you would like
+                  </button>
                 </div>
               ) : (
-                <div>
+                <div className={styles.course_card}>
                   <Grid fluid>
                   <Row className="show-grid">
                     {rpcData.map((course) => (
@@ -196,7 +213,7 @@ const StudentProfile = () => {
                 </div>
               )}
               {/* Grid สำหรับ lessons */}
-            </div>
+            
           </div>
   
           <div className={styles.profileSidebar}>

@@ -17,7 +17,6 @@ export const LoginModal = ({ onRegisterClick, onLoginSuccess }: LoginModalProps)
   const [userRole, setUserRole] = useState<'student' | 'instructor' | null>(null);
  
   useEffect(() => {
-    
     const checkExistingUser = async () => {
       if (!publicKey) return;
 
@@ -27,24 +26,24 @@ export const LoginModal = ({ onRegisterClick, onLoginSuccess }: LoginModalProps)
       try {
         const { data, error } = await supabase
             .rpc('check_role_in_navebar', {
-              p_public_key:publicKey
-            })
-            if (error) console.error(error)
-              
-          if (error) {
-            setUserRole(null);
-            onRegisterClick();
-          } if (data.is_instructor == true) {
-            setUserRole('instructor');
-            onLoginSuccess('/teacher-profile');
-          } if (data.is_student == true) {
-            setUserRole('student');
-            onLoginSuccess('/student-profile');
-          }
+              p_public_key: publicKey
+            });
+        
+        if (error) {
+          console.error(error);
+          setUserRole(null);
+          onRegisterClick();
+        } else if (data.is_instructor === true) {
+          setUserRole('instructor');
+          onLoginSuccess('/teacher-profile');
+        } else if (data.is_student === true) {
+          setUserRole('student');
+          onLoginSuccess('/student-profile');
+        }
 
       } catch (err) {
         console.error('Error checking user:', err);
-        setError('เกิดข้อผิดพลาดในการตรวจสอบข้อมูล');
+        setError('An error occurred while checking user data');
       } finally {
         setIsLoading(false);
       }
@@ -53,16 +52,15 @@ export const LoginModal = ({ onRegisterClick, onLoginSuccess }: LoginModalProps)
     checkExistingUser();
   }, [publicKey]);
 
-  // ลบส่วน UI ที่ไม่จำเป็น เพราะจะ redirect ทันทีเมื่อพบข้อมูลผู้ใช้
   return (
     <div className={styles.authContainer}>
-      <h1>เชื่อมต่อกระเป๋า</h1>
+      <h1>Connect Wallet</h1>
       {error && <div className={styles.errorMessage}>{error}</div>}
       <div className={styles.buttonContainer}>
         <WalletMultiButton className={styles.walletButton} />
         {isLoading && (
           <div className={styles.loadingMessage}>
-            กำลังตรวจสอบข้อมูล...
+            Checking user data...
           </div>
         )}
       </div>

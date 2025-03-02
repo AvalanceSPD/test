@@ -2,7 +2,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 0.1rem 0.5rem;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: fixed;
@@ -19,8 +19,8 @@
 }
 
 .logo {
-  height: 40px;
-  width: auto;
+  height: 18%;
+  width: 18%;
 }
 
 .rightSection {
@@ -133,23 +133,15 @@
   padding: 8px 16px;
   border: none;
   border-radius: 6px;
-  background-color: #f5f5f5;
-  color: #333;
-  font-weight: 500;
+  background-color: transparent; /* ไม่มีสีพื้นหลัง */
+  color: #adadad; /* สีข้อความ */
+  font-weight: 800;
   cursor: pointer;
-  transition: all 0.2s ease;
+  margin-bottom: 8px;
+  transition: background-color 0.3s ease, color 0.3s ease; /* เพิ่มการเปลี่ยนสี */
 }
 
 .navButton:hover {
-  background-color: #e0e0e0;
+  background-color: #8288eb; /* สีเมื่อ hover */
+  color: white; /* เปลี่ยนสีข้อความเมื่อ hover */
 }
-
-/* สำหรับปุ่มสร้างบทเรียนของอาจารย์ */
-.leftSection .navButton {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.leftSection .navButton:hover {
-  background-color: #45a049;
-} 
