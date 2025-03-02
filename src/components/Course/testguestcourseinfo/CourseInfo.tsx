@@ -56,6 +56,11 @@ interface Quiz {
     lesson_id: number;
 }
 
+interface QuizScore {
+    total_score: number;
+    max_score: number;
+}
+
 // สร้าง Component Modal แยก
 const InputModal: React.FC<InputModalProps> = ({ isOpen, onClose, onSubmit, title, placeholder }) => {
   const [value, setValue] = useState('');
@@ -121,6 +126,7 @@ const CourseInfo = () => {
     const [error, setError] = useState<string | null>(null);
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [quiz, setQuiz] = useState<Quiz[]>([]);
+    const [QuizeScore, setQuizeScore] = useState<QuizScore[]>([]);
     const [selectedVideoUrl, setSelectedVideoUrl] = useState<string>('');
     const [selectedDescription, setSelectedDescription] = useState<string>('');
     const [selectedTitle, setSelectedTitle] = useState('');
@@ -129,6 +135,8 @@ const CourseInfo = () => {
     const [profiledata, setProfiledata] = useState<profiledata | null>(null);
     const [showvideo, setShowvideo] = useState(true);
     const [showquiz, setShowquiz] = useState(false);
+    const [lessonID_, setLessonID_] = useState(0)
+    const [quized, setQuized] = useState(false)
 
     // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -164,7 +172,7 @@ const CourseInfo = () => {
 
     const [shuffledOptions, setShuffledOptions] = useState<string[]>([]); // เก็บตัวเลือกที่สุ่ม
 
-    const [score, setScore] = useState(0); // ตัวแปรสำหรับเก็บคะแนน
+    const [L_score, setScore] = useState(0); // ตัวแปรสำหรับเก็บคะแนน
     const [quizCompleted, setQuizCompleted] = useState(false); // ตัวแปรสำหรับตรวจสอบว่า quiz เสร็จสิ้นหรือไม่
 
     const [quizzes, setQuizzes] = useState<any[]>([]); // เก็บข้อมูล quiz
@@ -476,6 +484,9 @@ const CourseInfo = () => {
 
     const toggleLesson = (index: number) => {
         setExpandedLesson(expandedLesson === index ? null : index);
+        console.log(lessonID_);
+        
+        handlechecksubmited(lessonID_);
     };
 
     const handleEnroll = async () => {
@@ -578,9 +589,25 @@ const CourseInfo = () => {
     };
 
 
-    // useEffect(() => {
-        
-    // }, [courseId, navigate]);
+    const handlechecksubmited = async (lessonId: number) => {
+        const { data, error } = await supabase
+        .rpc('check_quiz_score', {
+        p_lesson_id: lessonId, 
+        p_wallet_address: publicKey
+        })
+        if (data!= null) {
+            setQuizeScore(data);
+            // console.log(data)
+            setQuized(true);
+        } else if (data == null) {
+            // console.log(data)
+            setQuized(false)
+        }
+        console.log(quized);
+        console.log('handlechecksubmited',lessonId);
+        console.log(QuizeScore);
+    }
+
 
     const handleQuizClick = async (lessonId: number) => {
         setShowvideo(false);
@@ -591,7 +618,8 @@ const CourseInfo = () => {
                 .from('quiz')
                 .select('*')
                 .eq('lesson_id', lessonId);
-
+                console.log('handleQuizClick',lessonId);
+                
             if (error) {
                 console.error('Error fetching quizzes:', error);
                 return;
@@ -599,12 +627,18 @@ const CourseInfo = () => {
 
             setQuiz(data || []);
             setSelectedAnswers({}); // รีเซ็ตคำตอบ
-            setCurrentQuizIndex(0); // รีเซ็ต index เมื่อโหลด quiz ใหม่
-            
+            setCurrentQuizIndex(0); // รีเซ็ต index เมื่อโหลด quiz ใหม่                
         } catch (err) {
             console.error('Error:', err);
         }
     };
+
+    const handlesumQuizClickAndchecksubmited = async (lessonId: number) => {
+        handleQuizClick(lessonId);
+        handlechecksubmited(lessonId);
+        setLessonID_(lessonId);
+        setQuized(true);
+    }
 
     // ฟังก์ชันสำหรับสุ่มตำแหน่งตัวเลือก
     const shuffleOptions = (options: string[]) => {
@@ -634,7 +668,7 @@ const CourseInfo = () => {
         };
 
         checkQuizzes();
-    }, []);
+    }, [lessonID_]);
 
     // ฟังก์ชันสำหรับไปยัง quiz ถัดไป
     const nextQuiz = () => {
@@ -663,7 +697,7 @@ const CourseInfo = () => {
         }
     }, [currentQuizIndex, quiz]);
 
-    const handleQuizCompletion = () => {
+    const handleQuizCompletion = async () => {
         let totalScore = 0;
 
         quiz.forEach((question) => {
@@ -684,10 +718,19 @@ const CourseInfo = () => {
         }).then(() => {
             console.log('Score:', totalScore); // แสดงคะแนนใน console
         });
+        
+        const { data, error } = await supabase
+        .rpc('insert_quiz_score', {
+        p_lesson_id: lessonID_, 
+        p_total_score: totalScore,
+        p_wallet_address: publicKey
+        })
+        if (error) console.error(error)
+        else console.log(data)
     };
 
-    // ปุ่มสำหรับส่งคำตอบเมื่อเสร็จสิ้น quiz
-    const handleSubmitQuiz = () => {
+    //: ปุ่มสำหรับส่งคำตอบเมื่อเสร็จสิ้น quiz
+    const handleSubmitQuiz = async () => {
         handleQuizCompletion();
     };
 
@@ -717,7 +760,7 @@ const CourseInfo = () => {
         };
 
         fetchQuizzes();
-    }, []);
+    }, []);    
 
     if (loading) {
         return <div className={styles.loadingState}>loading...</div>;
@@ -845,47 +888,61 @@ const CourseInfo = () => {
                     )}
                     {showquiz && quiz.length > 0 && (
                         <div className={styles.quizContainer}>
-                            <div key={quiz[currentQuizIndex].id}>
+                            {quized && (
                                 <div>
-                                    <h1 className={styles.questionTitle}>Question {currentQuizIndex + 1}</h1>
+                                    <h3>Show score</h3>
+                                    <h5>key word <br />
+                                    handlesumQuizClickAndchecksubmited <br />
+                                    handleQuizClick <br />
+                                    handlechecksubmited <br/>
+                                    </h5>
                                 </div>
+                            )}
+                            {!quized && showquiz && quiz.length > 0 && (
                                 <div>
-                                    <h3>{quiz[currentQuizIndex].question}</h3>
-                                </div>
-                                <div>
-                                    <h3>Select an option:</h3>
-                                    {shuffledOptions.map((option, optionIndex) => (
-                                        <div key={optionIndex}>
-                                            <label className={`${styles.optionLabel} ${selectedAnswers[quiz[currentQuizIndex].id] === option ? styles.selectedOption : ''}`}>
-                                                <input
-                                                    type="radio"
-                                                    value={option}
-                                                    name={`question-${quiz[currentQuizIndex].id}`}
-                                                    checked={selectedAnswers[quiz[currentQuizIndex].id] === option}
-                                                    onChange={(e) => setSelectedAnswers({
-                                                        ...selectedAnswers,
-                                                        [quiz[currentQuizIndex].id]: e.target.value
-                                                    })}
-                                                />
-                                                {option}
-                                            </label>
+                                    <div key={quiz[currentQuizIndex].id}>
+                                        <div>
+                                            <h1 className={styles.questionTitle}>Question {currentQuizIndex + 1}</h1>
                                         </div>
-                                    ))}
+                                        <div>
+                                            <h3>{quiz[currentQuizIndex].question}</h3>
+                                        </div>
+                                        <div>
+                                            <h3>Select an option:</h3>
+                                            {shuffledOptions.map((option, optionIndex) => (
+                                                <div key={optionIndex}>
+                                                    <label className={`${styles.optionLabel} ${selectedAnswers[quiz[currentQuizIndex].id] === option ? styles.selectedOption : ''}`}>
+                                                        <input
+                                                            type="radio"
+                                                            value={option}
+                                                            name={`question-${quiz[currentQuizIndex].id}`}
+                                                            checked={selectedAnswers[quiz[currentQuizIndex].id] === option}
+                                                            onChange={(e) => setSelectedAnswers({
+                                                                ...selectedAnswers,
+                                                                [quiz[currentQuizIndex].id]: e.target.value
+                                                            })}
+                                                        />
+                                                        {option}
+                                                    </label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className={styles.buttonContainer}>
+                                        <button className={styles.quizButton} onClick={previousQuiz} disabled={currentQuizIndex === 0}>
+                                            Previous
+                                        </button>
+                                        <button className={styles.quizButton} onClick={nextQuiz} disabled={currentQuizIndex === quiz.length - 1}>
+                                            Next
+                                        </button>
+                                        {currentQuizIndex === quiz.length - 1 && (
+                                            <button className={styles.quizButton} onClick={handleSubmitQuiz}>
+                                                Submit Quiz
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className={styles.buttonContainer}>
-                                <button className={styles.quizButton} onClick={previousQuiz} disabled={currentQuizIndex === 0}>
-                                    Previous
-                                </button>
-                                <button className={styles.quizButton} onClick={nextQuiz} disabled={currentQuizIndex === quiz.length - 1}>
-                                    Next
-                                </button>
-                                {currentQuizIndex === quiz.length - 1 && (
-                                    <button className={styles.quizButton} onClick={handleSubmitQuiz}>
-                                        Submit Quiz
-                                    </button>
-                                )}
-                            </div>
+                            )}
                         </div>
                     )}
                 </Col>
@@ -953,7 +1010,8 @@ const CourseInfo = () => {
                                             <div 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    handleQuizClick(lesson.id);
+                                                    // handleQuizClick(lesson.id);
+                                                    handlesumQuizClickAndchecksubmited(lesson.id);
                                                 }} 
                                                 className={styles.contentLink}
                                             >

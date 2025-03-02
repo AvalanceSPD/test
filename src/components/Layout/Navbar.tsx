@@ -52,11 +52,11 @@ export const Navbar = () => {
           } if (data.is_instructor == true) {
             setIsRegistered(true);
             setUserRole('instructor');
-            console.log('instructor');
+            // console.log('instructor');
           } else if (data.is_student == true) {
             setIsRegistered(true);
             setUserRole('student');
-            console.log('student');
+            // console.log('student');
           } else {
             setShowLogin(false);
             setShowRegister(false);
