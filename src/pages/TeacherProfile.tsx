@@ -30,6 +30,7 @@ interface rpcData {
   description: string;
   thumbnail: string;
   ins_name: string;
+  create_at: string;
 }
 
 const TeacherProfile = () => {
@@ -149,34 +150,36 @@ const TeacherProfile = () => {
             {/* Grid สำหรับ lessons */}
             <Grid fluid>
             <Row className="show-grid">
-              {rpcData.map((course) => (
-                <Col key={course.id} sm={24} lg={12} xxl={8}>
-                  <div>
-                    <Card shaded bordered size="sm" className={styles.divcard}>
-                      <img
-                        src={course.thumbnail}
-                        alt={course.title}
-                        width={200}
-                        height={160}
-                        className={styles.imagecard}
-                        sizes="sm"
-                      />
-                      <Card.Header as="h4">{course.title}</Card.Header>
-                      {/* <Card.Body>{course.description}</Card.Body> */}
-                      <div className={styles.cardbottomdiv}>
-                        <div>
-                          <p>Instructor : {course.ins_name}</p>
-                        </div>
-                        <div>
-                          <Button color="violet" appearance="primary" onClick={() => handlecoursebtn(course.id)} className={styles.cardbtn}>
-                            Violet
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
+            {rpcData.map((course) => (
+            <Col sm={12} lg={6} xxl={6} key={course.id}>
+              <Card shaded bordered size="sm" className={styles.divcard}>
+                <img
+                  src={course.thumbnail}
+                  alt={course.title}
+                  className={styles.imagecard}
+                />
+                <div className={styles.cardContent}>
+                <Card.Header as="h4" className={styles.cardTitle}>{course.title}</Card.Header>
+                  <div className={styles.instructorName}>
+                    <p className={styles.cardText}>Instructer : {course.ins_name}</p>
+                    <p className={styles.cardText}>Create at: {course.create_at ? new Date(course.create_at).toLocaleDateString() : 'ไม่ระบุวันที่'}</p>
                   </div>
-                </Col>
-              ))}
+                </div>
+                  <div className={styles.cardbottomdiv}>
+                    <div>
+                      <Button 
+                        color="violet" 
+                        appearance="primary" 
+                        onClick={() => handlecoursebtn(course.id)} 
+                        className={styles.cardbtn}
+                      >
+                        Info
+                      </Button>
+                    </div>
+                  </div>
+              </Card>
+            </Col>
+            ))}
             </Row>
           </Grid>
           </div>
@@ -194,16 +197,16 @@ const TeacherProfile = () => {
 
             <div className={styles.profileDetails}>
               <div className={styles.detailItem}>
-                <span className={styles.label}>ชื่อผู้ใช้:</span>
+                <span className={styles.label}>Username:</span>
                 <span className={styles.value}>{profiledata?.username}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.label}>ชื่อเต็ม:</span>
+                <span className={styles.label}>Name:</span>
                 <span className={styles.value}>{profiledata?.ins_name}</span>
               </div>
               <div className={styles.detailItem}>
-                <span className={styles.label}>บทบาท:</span>
-                <span className={styles.value}>ผู้สอน</span>
+                <span className={styles.label}>Role:</span>
+                <span className={styles.value}>Instructer</span>
               </div>
               <div className={styles.detailItem}>
                 <span className={styles.label}>Public key:</span>

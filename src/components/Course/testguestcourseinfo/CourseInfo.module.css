@@ -1035,3 +1035,60 @@ button.deleteButton:hover {
 .cancelButton:hover {
     background-color: #e03131;
 }
+
+.quizContainer {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.questionTitle {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.optionLabel {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.optionLabel:hover {
+    background-color: #e0f7fa; /* เปลี่ยนสีเมื่อ hover */
+}
+
+.selectedOption {
+    background-color: #b2ebf2; /* สีเมื่อเลือก */
+    border-color: #009688; /* เปลี่ยนสีขอบเมื่อเลือก */
+}
+
+.buttonContainer {
+    margin-top: 20px;
+}
+
+.quizButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-right: 10px;
+}
+
+.quizButton:hover {
+    background-color: #0056b3; /* เปลี่ยนสีเมื่อ hover */
+}
+
+.quizButton:disabled {
+    background-color: #ccc; /* สีเมื่อปุ่มถูกปิดใช้งาน */
+    cursor: not-allowed;
+}

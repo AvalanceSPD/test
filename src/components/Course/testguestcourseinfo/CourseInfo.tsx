@@ -18,42 +18,22 @@ interface Course {
     create_by: string;
 }
 
-interface Session {
-  id: number;
-  title: string;
-  subSessions: SubSession[];
-}
-
-interface SubSession {
-  id: number;
-  title: string;
-  videoUrl?: string;
-  description?: string;
-}
-
-interface Document {
-  id: number;
-  title: string;
-  url?: string;
-}
-
-interface Quiz {
-  id: number;
-  title: string;
-}
-
-interface MainContent {
-  previewVideo?: string;
-  mainDescription?: string;
-}
-
 interface Lesson {
     id: number;
     title: string;
     media: string;
     description: string;
     file?: string;
+    hasQuiz: boolean;
 }
+
+interface profiledata {
+    wallet_address: string,
+    username: string,
+    ins_name: string,
+    is_instructor: boolean,
+    is_student: boolean
+  }
 
 // เพิ่ม interface สำหรับ Modal
 interface InputModalProps {
@@ -146,6 +126,7 @@ const CourseInfo = () => {
     const [selectedTitle, setSelectedTitle] = useState('');
     const [expandedLesson, setExpandedLesson] = useState<number | null>(null);
     const [instructorName, setInstructorName] = useState<string | null>(null);
+    const [profiledata, setProfiledata] = useState<profiledata | null>(null);
     const [showvideo, setShowvideo] = useState(true);
     const [showquiz, setShowquiz] = useState(false);
 
@@ -173,6 +154,21 @@ const CourseInfo = () => {
     // เพิ่ม state สำหรับเก็บข้อมูลเอกสาร
     const [lessonDocument, setLessonDocument] = useState<string | null>(null);
     
+    // เพิ่ม state เก็บข้อมูลว่า lesson ไหนมี quiz บ้าง
+    const [lessonsWithQuiz, setLessonsWithQuiz] = useState<number[]>([]);
+
+    // เพิ่ม state สำหรับเก็บคำตอบ
+    const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
+
+    const [currentQuizIndex, setCurrentQuizIndex] = useState(0); // ติดตาม quiz ปัจจุบัน
+
+    const [shuffledOptions, setShuffledOptions] = useState<string[]>([]); // เก็บตัวเลือกที่สุ่ม
+
+    const [score, setScore] = useState(0); // ตัวแปรสำหรับเก็บคะแนน
+    const [quizCompleted, setQuizCompleted] = useState(false); // ตัวแปรสำหรับตรวจสอบว่า quiz เสร็จสิ้นหรือไม่
+
+    const [quizzes, setQuizzes] = useState<any[]>([]); // เก็บข้อมูล quiz
+
     const fetchCourseData = async () => {
         try {
             setLoading(true);
@@ -299,6 +295,9 @@ const CourseInfo = () => {
               } if (data.is_instructor == true) {
                 setIsRegistered(true);
                 setUserRole('instructor');
+              } if (data) {
+                setProfiledata(data);
+      
               } if (data.is_student == true) {
                 setIsRegistered(true);
                 setUserRole('student');
@@ -581,46 +580,142 @@ const CourseInfo = () => {
         
     // }, [courseId, navigate]);
 
-    const handleQuizClick = async () => { //: function ที่ยังไม่ได้คิด
+    const handleQuizClick = async (lessonId: number) => {
         setShowvideo(false);
         setShowquiz(true);
-        // const { data, error } = await supabase
-        // .rpc('get_quiz_by_lesson', {
-        // l_lesson_id:lessons[0].id
-        // })
-        // if (error) console.error(error)
-        // else setQuiz(data);
+        
+        try {
+            const { data, error } = await supabase
+                .from('quiz')
+                .select('*')
+                .eq('lesson_id', lessonId);
 
-        // out put
-        // [
-        //     {
-        //       "get_quiz_by_lesson": [
-        //         {
-        //           "id": 2,
-        //           "question": "2+2",
-        //           "media": null,
-        //           "created_at": "2025-02-27T19:31:51+00:00",
-        //           "opts1": "1",
-        //           "opts2": "2",
-        //           "opts3": "3",
-        //           "answer": "4",
-        //           "lesson_id": 1
-        //         },
-        //         {
-        //           "id": 3,
-        //           "question": "3*3",
-        //           "media": "",
-        //           "created_at": "2025-02-27T20:42:05+00:00",
-        //           "opts1": "6",
-        //           "opts2": "10",
-        //           "opts3": "5",
-        //           "answer": "9",
-        //           "lesson_id": 1
-        //         }
-        //       ]
-        //     }
-        //   ]
+            if (error) {
+                console.error('Error fetching quizzes:', error);
+                return;
+            }
+
+            setQuiz(data || []);
+            setSelectedAnswers({}); // รีเซ็ตคำตอบ
+            setCurrentQuizIndex(0); // รีเซ็ต index เมื่อโหลด quiz ใหม่
+            
+        } catch (err) {
+            console.error('Error:', err);
+        }
     };
+
+    // ฟังก์ชันสำหรับสุ่มตำแหน่งตัวเลือก
+    const shuffleOptions = (options: string[]) => {
+        for (let i = options.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [options[i], options[j]] = [options[j], options[i]];
+        }
+        return options;
+    };
+
+    // เพิ่มฟังก์ชันตรวจสอบ quiz ในแต่ละ lesson
+    useEffect(() => {
+        const checkQuizzes = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('quiz')
+                    .select('lesson_id');
+                
+                if (error) throw error;
+                
+                // เก็บ lesson_id ที่มี quiz
+                const lessonIds = [...new Set(data.map(q => q.lesson_id))];
+                setLessonsWithQuiz(lessonIds);
+            } catch (err) {
+                console.error('Error checking quizzes:', err);
+            }
+        };
+
+        checkQuizzes();
+    }, []);
+
+    // ฟังก์ชันสำหรับไปยัง quiz ถัดไป
+    const nextQuiz = () => {
+        if (currentQuizIndex < quiz.length - 1) {
+            setCurrentQuizIndex(currentQuizIndex + 1);
+        }
+    };
+
+    // ฟังก์ชันสำหรับย้อนกลับไปยัง quiz ก่อนหน้า
+    const previousQuiz = () => {
+        if (currentQuizIndex > 0) {
+            setCurrentQuizIndex(currentQuizIndex - 1);
+        }
+    };
+
+    // ใช้ useEffect เพื่อติดตามการเปลี่ยนแปลงของ currentQuizIndex
+    useEffect(() => {
+        if (quiz.length > 0) {
+            const options = [
+                quiz[currentQuizIndex].opts1,
+                quiz[currentQuizIndex].opts2,
+                quiz[currentQuizIndex].opts3,
+                quiz[currentQuizIndex].answer // รวมคำตอบในตัวเลือก
+            ];
+            setShuffledOptions(shuffleOptions(options)); // สุ่มตัวเลือกสำหรับ quiz ปัจจุบัน
+        }
+    }, [currentQuizIndex, quiz]);
+
+    const handleQuizCompletion = () => {
+        let totalScore = 0;
+
+        quiz.forEach((question) => {
+            if (selectedAnswers[question.id] === question.answer) {
+                totalScore += 1; // เพิ่มคะแนนเมื่อคำตอบถูกต้อง
+            }
+        });
+
+        setScore(totalScore); // บันทึกคะแนน
+        setQuizCompleted(true); // ตั้งค่าให้ quiz เสร็จสิ้น
+
+        // แสดงคะแนนใน SweetAlert
+        Swal.fire({
+            title: 'Quiz Completed!',
+            text: `Your score is ${totalScore} out of ${quiz.length}`,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        }).then(() => {
+            console.log('Score:', totalScore); // แสดงคะแนนใน console
+        });
+    };
+
+    // ปุ่มสำหรับส่งคำตอบเมื่อเสร็จสิ้น quiz
+    const handleSubmitQuiz = () => {
+        handleQuizCompletion();
+    };
+
+    const isUserAllowed = () => {
+        // ตรวจสอบว่าผู้ใช้ล็อกอินหรือไม่
+        if (!publicKey) return false;
+        // ตรวจสอบว่าผู้ใช้เป็น instructor หรือ enroll ในบทเรียนนั้น
+        return isEnrolled; // สมมติว่า isEnrolled เป็น state ที่เก็บสถานะ
+    };
+
+    useEffect(() => {
+        const fetchQuizzes = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('quiz')
+                    .select('*');
+
+                if (error) {
+                    console.error('Error fetching quizzes:', error);
+                    return;
+                }
+
+                setQuizzes(data || []); // เก็บข้อมูล quiz
+            } catch (err) {
+                console.error('Error:', err);
+            }
+        };
+
+        fetchQuizzes();
+    }, []);
 
     if (loading) {
         return <div className={styles.loadingState}>loading...</div>;
@@ -641,7 +736,7 @@ const CourseInfo = () => {
                     <div className={styles.headerBox}>
                         <Row>
                             <Col xs={8} className={styles.thumbnailCol}>
-                    <div className={styles.thumbnailContainer}>
+                                <div className={styles.thumbnailContainer}>
                                     {course.thumbnail && (
                                         <img 
                                             src={course.thumbnail} 
@@ -656,31 +751,31 @@ const CourseInfo = () => {
                                 </div>
                             </Col>
                             <Col xs={16} className={styles.lessonTitleCol}>
-                    <div className={styles.lessonTitle}>
+                                <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
                                         <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
                                         <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
                                         <p>Create by: {instructorName || 'Loading...'}</p>
-                    </div>
+                                    </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
                                         <div className={styles.buttonContainer}>
-                                            {!isEnrolled ? (
-                        <button 
+                                            {userRole !== 'instructor' && !isEnrolled ? (
+                                                <button 
                                                     className={styles.enrollButton}
                                                     onClick={handleEnroll}
-                        >
+                                                >
                                                     Enroll
-                        </button>
-                                            ) : (
-                        <button 
+                                                </button>
+                                            ) : isEnrolled ? (
+                                                <button 
                                                     className={styles.cancelButton}
                                                     onClick={handleCancelEnrollment}
-                        >
+                                                >
                                                     Cancel Enrollment
-                        </button>
-                                            )}
+                                                </button>
+                                            ) : null}
                                         </div>
                                     </div>
                                 </div>
@@ -696,19 +791,25 @@ const CourseInfo = () => {
                     <div className={styles.videoContainer}>
                         {selectedVideoUrl  && ( //: edit to check  both showvideo & selectedVideoUrl
                             <div className={
-                                (!userRole || (userRole === 'student' && !isEnrolled)) 
+                                (!userRole || (userRole === 'student' && !isEnrolled) || 
+                                (userRole === 'instructor' && instructorName !== profiledata?.ins_name)) 
                                 ? styles.blurContainer 
                                 : ''
                             }>
-                                    <iframe
+                                <iframe
                                     src={selectedVideoUrl}
-                                        frameBorder="0"
-                                        allowFullScreen
-                                        className={styles.video}
-                                    />
+                                    frameBorder="0"
+                                    allowFullScreen
+                                    className={styles.video}
+                                />
                                 {!userRole && (
                                     <div className={styles.blurOverlay}>
                                         <p>Please log in to watch the video.</p>
+                                    </div>
+                                )}
+                                {userRole === 'instructor' && instructorName !== profiledata?.ins_name && (
+                                    <div className={styles.blurOverlay}>
+                                        <p>You are not the owner of this course.</p>
                                     </div>
                                 )}
                                 {userRole === 'student' && (
@@ -720,7 +821,7 @@ const CourseInfo = () => {
                                                 ) : (
                                                     <p>You are not eligible to enroll for this course.</p>
                                                 )}
-                                    </div>
+                                            </div>
                                         ) : (
                                             <div>You have already enrolled for course.</div>
                                         )}
@@ -740,56 +841,48 @@ const CourseInfo = () => {
                             </div>
                         </div>
                     )}
-                    {showquiz && (
-                        <div>
-                            <div>
-                                <h1>Question 1</h1>
+                    {showquiz && quiz.length > 0 && (
+                        <div className={styles.quizContainer}>
+                            <div key={quiz[currentQuizIndex].id}>
+                                <div>
+                                    <h1 className={styles.questionTitle}>Question {currentQuizIndex + 1}</h1>
+                                </div>
+                                <div>
+                                    <h3>{quiz[currentQuizIndex].question}</h3>
+                                </div>
+                                <div>
+                                    <h3>Select an option:</h3>
+                                    {shuffledOptions.map((option, optionIndex) => (
+                                        <div key={optionIndex}>
+                                            <label className={`${styles.optionLabel} ${selectedAnswers[quiz[currentQuizIndex].id] === option ? styles.selectedOption : ''}`}>
+                                                <input
+                                                    type="radio"
+                                                    value={option}
+                                                    name={`question-${quiz[currentQuizIndex].id}`}
+                                                    checked={selectedAnswers[quiz[currentQuizIndex].id] === option}
+                                                    onChange={(e) => setSelectedAnswers({
+                                                        ...selectedAnswers,
+                                                        [quiz[currentQuizIndex].id]: e.target.value
+                                                    })}
+                                                />
+                                                {option}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                            <div>
-                                <h3>question blablablablablablablablablablablablablablablablablabla</h3>
-                            </div>
-                            <div>
-                                <h3>Select an option:</h3>
-                                <label>
-                                    <input
-                                    type="radio"
-                                    value="option1"
-                                    //   checked={selectedOption === "option1"}
-                                    //   onChange={handleChange}
-                                    />
-                                    Option 1
-                                </label>
-                                <br />
-                                <label>
-                                    <input
-                                    type="radio"
-                                    value="option2"
-                                    //   checked={selectedOption === "option2"}
-                                    //   onChange={handleChange}
-                                    />
-                                    Option 2
-                                </label>
-                                <br />
-                                <label>
-                                    <input
-                                    type="radio"
-                                    value="option3"
-                                    //   checked={selectedOption === "option3"}
-                                    //   onChange={handleChange}
-                                    />
-                                    Option 3
-                                </label>
-                                <br />
-                                <label>
-                                    <input
-                                    type="radio"
-                                    value="option3"
-                                    //   checked={selectedOption === "option3"}
-                                    //   onChange={handleChange}
-                                    />
-                                    Option 4
-                                </label>
-                                {/* <p>Selected: {selectedOption}</p> */}
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.quizButton} onClick={previousQuiz} disabled={currentQuizIndex === 0}>
+                                    Previous
+                                </button>
+                                <button className={styles.quizButton} onClick={nextQuiz} disabled={currentQuizIndex === quiz.length - 1}>
+                                    Next
+                                </button>
+                                {currentQuizIndex === quiz.length - 1 && (
+                                    <button className={styles.quizButton} onClick={handleSubmitQuiz}>
+                                        Submit Quiz
+                                    </button>
+                                )}
                             </div>
                         </div>
                     )}
@@ -802,14 +895,20 @@ const CourseInfo = () => {
                             <div key={lesson.id} className={styles.lessonContainer}>
                                 <h4 
                                     className={styles.lessonTitle} 
-                                    onClick={() => toggleLesson(index)} // เปิด/ปิด dropdown
+                                    onClick={() => toggleLesson(index)}
                                 >
                                     {lesson.title} {expandedLesson === index ? '▲' : '▼'}
                                 </h4>
-                                {expandedLesson === index && ( //: lesson content
+                                {expandedLesson === index && (
                                     <div className={styles.lessonContent}>
                                         <div 
-                                            onClick={() => handleVideoClick(lesson.media, lesson.title, lesson.description)} 
+                                            onClick={() => {
+                                                if (isUserAllowed()) {
+                                                    handleVideoClick(lesson.media, lesson.title, lesson.description);
+                                                } else {
+                                                    Swal.fire('You must be enrolled or logged in to access this document.');
+                                                }
+                                            }} 
                                             className={styles.contentLink}
                                         >
                                             Watch the video
@@ -818,29 +917,38 @@ const CourseInfo = () => {
                                             <div 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    // ใช้ getPublicUrl แทน createSignedUrl
-                                                    const { data } = supabase.storage
-                                                        .from('document')
-                                                        .getPublicUrl(lesson.file!); // ใช้ ! เพื่อบอกว่า file ไม่เป็น null
+                                                    if (isUserAllowed()) {
+                                                        const { data } = supabase.storage
+                                                            .from('document')
+                                                            .getPublicUrl(lesson.file!);
 
-                                                    if (data?.publicUrl) {
-                                                        console.log('Download URL:', data.publicUrl);
-                                                        window.open(data.publicUrl, '_blank'); // เปิด URL ในแท็บใหม่
+                                                        if (data?.publicUrl) {
+                                                            window.open(data.publicUrl, '_blank');
+                                                        } else {
+                                                            alert('The download URL was not found.');
+                                                        }
                                                     } else {
-                                                        alert('The download URL was not found.');
+                                                        Swal.fire('You must be enrolled or logged in to download this document.');
                                                     }
                                                 }} 
                                                 className={styles.contentLink}
                                             >
                                                 Download documents
-                                        </div>
+                                            </div>
                                         )}
-                                        {quiz && (
-                                        <div className={styles.contentLink} onClick={() => handleQuizClick()}>
-                                            test
-                                        </div>
+                                        {/* ตรวจสอบว่า lesson มี quiz หรือไม่ */}
+                                        {quizzes.some(quiz => quiz.lesson_id === lesson.id) && isUserAllowed() && (
+                                            <div 
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleQuizClick(lesson.id);
+                                                }} 
+                                                className={styles.contentLink}
+                                            >
+                                                Take Quiz
+                                            </div>
                                         )}
-                                </div>
+                                    </div>
                                 )}
                             </div>
                         ))}
