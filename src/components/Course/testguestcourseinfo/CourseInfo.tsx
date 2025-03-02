@@ -169,6 +169,8 @@ const CourseInfo = () => {
 
     const [quizzes, setQuizzes] = useState<any[]>([]); // เก็บข้อมูล quiz
 
+    const [isOwner, setIsOwner] = useState(false); // เพิ่ม state สำหรับตรวจสอบว่าเป็นเจ้าของบทเรียนหรือไม่
+
     const fetchCourseData = async () => {
         try {
             setLoading(true);
@@ -903,12 +905,12 @@ const CourseInfo = () => {
                                     <div className={styles.lessonContent}>
                                         <div 
                                             onClick={() => {
-                                                if (isUserAllowed()) {
+                                                if (isUserAllowed() || (userRole === 'instructor' && instructorName === profiledata?.ins_name)) {
                                                     handleVideoClick(lesson.media, lesson.title, lesson.description);
                                                 } else {
                                                     Swal.fire({
                                                         title: 'Warning',
-                                                        text: 'You must be enrolled or logged in to access.',
+                                                        text: 'You must be enrolled or logged in to Watch this video.',
                                                         icon: 'warning', // เพิ่มไอคอนเตือน
                                                         confirmButtonText: 'OK' // ปุ่มยืนยัน
                                                     });
@@ -922,7 +924,7 @@ const CourseInfo = () => {
                                             <div 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    if (isUserAllowed()) {
+                                                    if (isUserAllowed() || (userRole === 'instructor' && instructorName === profiledata?.ins_name)) {
                                                         const { data } = supabase.storage
                                                             .from('document')
                                                             .getPublicUrl(lesson.file!);
@@ -947,7 +949,7 @@ const CourseInfo = () => {
                                             </div>
                                         )}
                                         {/* ตรวจสอบว่า lesson มี quiz หรือไม่ */}
-                                        {quizzes.some(quiz => quiz.lesson_id === lesson.id) && isUserAllowed() && (
+                                        {quizzes.some(quiz => quiz.lesson_id === lesson.id) && (isUserAllowed() || (userRole === 'instructor' && isOwner)) && (
                                             <div 
                                                 onClick={(e) => {
                                                     e.stopPropagation();
