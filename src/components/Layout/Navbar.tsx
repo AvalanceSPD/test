@@ -175,18 +175,8 @@ export const Navbar = () => {
               className={styles.logo}
             />
           )}
-          {/* //: instructor */}
-          {userRole === 'instructor' && (
-            <button 
-              onClick={() => navigate('/create-lesson')}
-              className={styles.navButton}
-            >
-              Create Course
-            </button>
-          )}
-          {/* //: student */}
-          {userRole === 'student' && (
-            <div className={styles.studentNav}>
+            {/* //: student */}
+          <div className={styles.studentNav}>
               <button 
                 onClick={() => navigate('/home_1')}
                 className={styles.navButton}
@@ -200,6 +190,14 @@ export const Navbar = () => {
                 บทเรียนทั้งหมด
               </button> */}
             </div>
+          {/* //: instructor */}
+          {userRole === 'instructor' && (
+            <button 
+              onClick={() => navigate('/create-lesson')}
+              className={styles.navButton}
+            >
+              Create Course
+            </button>
           )}
         </div>
           {/* //: drop down */}
