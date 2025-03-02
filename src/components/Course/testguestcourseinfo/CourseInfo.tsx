@@ -906,7 +906,12 @@ const CourseInfo = () => {
                                                 if (isUserAllowed()) {
                                                     handleVideoClick(lesson.media, lesson.title, lesson.description);
                                                 } else {
-                                                    Swal.fire('You must be enrolled or logged in to access.');
+                                                    Swal.fire({
+                                                        title: 'Warning',
+                                                        text: 'You must be enrolled or logged in to access.',
+                                                        icon: 'warning', // เพิ่มไอคอนเตือน
+                                                        confirmButtonText: 'OK' // ปุ่มยืนยัน
+                                                    });
                                                 }
                                             }} 
                                             className={styles.contentLink}
@@ -928,7 +933,12 @@ const CourseInfo = () => {
                                                             alert('The download URL was not found.');
                                                         }
                                                     } else {
-                                                        Swal.fire('You must be enrolled or logged in to download this document.');
+                                                        Swal.fire({
+                                                            title: 'Warning',
+                                                            text: 'You must be enrolled or logged in to download this document.',
+                                                            icon: 'warning', // เพิ่มไอคอนเตือน
+                                                            confirmButtonText: 'OK' // ปุ่มยืนยัน
+                                                        });
                                                     }
                                                 }} 
                                                 className={styles.contentLink}

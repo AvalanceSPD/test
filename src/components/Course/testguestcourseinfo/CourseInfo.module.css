@@ -1,5 +1,8 @@
 body {
     background-color: #ffffff; /* สีพื้นหลังของทั้งหน้า */
+    font-family: 'Arial', sans-serif; /* เปลี่ยนฟอนต์ */
+    line-height: 1.6; /* เพิ่มระยะห่างระหว่างบรรทัด */
+    color: #333; /* สีข้อความ */
 }
 
 .container {
@@ -927,18 +930,20 @@ button.deleteButton:hover {
 .contentLink {
     display: inline-block; /* ทำให้เป็นบล็อกในแนวนอน */
     padding: 8px 12px; /* ขนาดปุ่ม */
-    background-color: #ddd; /* สีพื้นหลัง */
-    color: rgb(0, 0, 0); /* สีตัวอักษร */
+    background-color: #ececec; /* สีพื้นหลัง */
+    color: rgb(78, 78, 78); /* สีตัวอักษร */
     border-radius: 5px; /* มุมโค้ง */
-    /* text-align: center; จัดข้อความให้อยู่กลาง */
     cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อ hover */
-    text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+    text-decoration: none; /* ไม่มีขีดเส้นใต้ */ 
     margin-top: 5px; /* ระยะห่างด้านบน */
     transition: background-color 0.3s; /* เพิ่มการเปลี่ยนสีพื้นหลัง */
+    font-weight: 500; /* เพิ่มความหนาของตัวอักษร */
+    font-size: 1rem; /* ขนาดฟอนต์ */
 }
 
 .contentLink:hover {
-    background-color: #ebebeb; /* เปลี่ยนสีเมื่อ hover */
+    background-color: #8288eb; /* เปลี่ยนสีเมื่อ hover */
+    color: rgb(255, 255, 255); /* สีตัวอักษร */
 }
 
 .guestOverlay {
@@ -1018,12 +1023,12 @@ button.deleteButton:hover {
 }
 
 .enrollButton {
-    background-color: #4263eb;
+    background-color: #8288eb;
     color: white;
 }
 
 .enrollButton:hover {
-    background-color: #364fc7;
+    background-color: #8288eb;
 }
 
 .cancelButton {
@@ -1061,12 +1066,14 @@ button.deleteButton:hover {
 }
 
 .optionLabel:hover {
-    background-color: #e0f7fa; /* เปลี่ยนสีเมื่อ hover */
+    background-color: #8288eb; /* เปลี่ยนสีเมื่อ hover */
+    color: white;
 }
 
 .selectedOption {
-    background-color: #b2ebf2; /* สีเมื่อเลือก */
-    border-color: #009688; /* เปลี่ยนสีขอบเมื่อเลือก */
+    background-color: #8288eb; /* สีเมื่อเลือก */
+    border-color: #8288eb; /* เปลี่ยนสีขอบเมื่อเลือก */
+    color: white;
 }
 
 .buttonContainer {
@@ -1074,7 +1081,7 @@ button.deleteButton:hover {
 }
 
 .quizButton {
-    background-color: #007bff;
+    background-color: #8288eb;
     color: white;
     border: none;
     border-radius: 5px;
@@ -1085,10 +1092,22 @@ button.deleteButton:hover {
 }
 
 .quizButton:hover {
-    background-color: #0056b3; /* เปลี่ยนสีเมื่อ hover */
+    background-color: #8288eb; /* เปลี่ยนสีเมื่อ hover */
 }
 
 .quizButton:disabled {
     background-color: #ccc; /* สีเมื่อปุ่มถูกปิดใช้งาน */
     cursor: not-allowed;
+}
+
+h1 {
+    font-size: 2rem; /* ขนาดฟอนต์หัวข้อ */
+    font-weight: bold; /* น้ำหนักฟอนต์ */
+    margin-bottom: 20px; /* ระยะห่างด้านล่าง */
+}
+
+h2 {
+    font-size: 1.5rem; /* ขนาดฟอนต์หัวข้อรอง */
+    font-weight: semi-bold; /* น้ำหนักฟอนต์ */
+    margin-bottom: 15px; /* ระยะห่างด้านล่าง */
 }

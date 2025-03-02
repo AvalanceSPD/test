@@ -1,8 +1,14 @@
+body {
+  font-family: 'Arial', sans-serif; /* เปลี่ยนฟอนต์ */
+  line-height: 1.6; /* เพิ่มระยะห่างระหว่างบรรทัด */
+  color: #333; /* สีข้อความ */
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.1rem 0.5rem;
+  padding: 0rem 0.5rem;
   background-color: white;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: fixed;
@@ -31,7 +37,7 @@
 
 .loginButton {
   padding: 0.5rem 1.5rem;
-  background-color: #512da8;
+  background-color: #8288eb;
   color: white;
   border: none;
   border-radius: 8px;
@@ -41,7 +47,7 @@
 }
 
 .loginButton:hover {
-  background-color: #311b92;
+  background-color: #8288eb;
 }
 
 .profileContainer {
@@ -84,14 +90,15 @@
   background: none;
   text-align: left;
   cursor: pointer;
-  color: #333;
+  color: #adadad;
   font-size: 14px;
   transition: background-color 0.2s;
   white-space: nowrap;
 }
 
 .dropdownItem:hover {
-  background-color: #f5f5f5;
+  background-color: #8288eb;
+  color: #ffffff;
 }
 
 .dropdownItem:first-child {
@@ -115,13 +122,14 @@
 }
 
 .profileItem {
-  color: #333;
+  color: #adadad;
   font-weight: 500;
   border-bottom: 1px solid #eee;
 }
 
 .profileItem:hover {
-  background-color: #f0f0f0;
+  background-color: #8288eb;
+  color: #ffffff;
 }
 
 .studentNav {

@@ -1,3 +1,8 @@
+body {
+  font-family: 'Arial', sans-serif; /* เปลี่ยนฟอนต์ */
+  line-height: 1.6; /* เพิ่มระยะห่างระหว่างบรรทัด */
+  color: #333; /* สีข้อความ */
+}
 .container {
   /* text-align: center;   */
   padding: 20px;
@@ -5,7 +10,7 @@
   max-width: max-content;
   background-color: #ffffff;
   }
-  
+
   .content {
     text-align: center;
     max-width: 800px;
@@ -235,7 +240,7 @@
   max-height: 400px;
   width: auto;
   height: 500px; /* ปรับความสูงตามต้องการ */
-  margin: 5px;
+  margin: 10px;
   background-color: #ffffff;
   padding: 0px;
   /* border: 2px solid #000000; */
