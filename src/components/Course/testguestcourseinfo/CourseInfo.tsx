@@ -126,7 +126,7 @@ const CourseInfo = () => {
     const [error, setError] = useState<string | null>(null);
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [quiz, setQuiz] = useState<Quiz[]>([]);
-    const [QuizeScore, setQuizeScore] = useState<QuizScore[]>([]);
+    const [QuizeScore, setQuizeScore] = useState<QuizScore | null>(null);
     const [selectedVideoUrl, setSelectedVideoUrl] = useState<string>('');
     const [selectedDescription, setSelectedDescription] = useState<string>('');
     const [selectedTitle, setSelectedTitle] = useState('');
@@ -588,6 +588,24 @@ const CourseInfo = () => {
         }
     };
 
+    useEffect(() => {
+        const checkScore = async () => {
+            const { data, error } = await supabase
+                .rpc('check_quiz_score', {
+                    p_lesson_id: lessonID_, 
+                    p_wallet_address: publicKey
+                });
+    
+            if (data) {
+                setQuizeScore(data);  // set ข้อมูลเป็น object
+            } else if (error) {
+                console.log(error);
+            }
+        };
+        checkScore();
+    }, [lessonID_]);
+    
+    console.log(QuizeScore);
 
     const handlechecksubmited = async (lessonId: number) => {
         const { data, error } = await supabase
@@ -603,9 +621,9 @@ const CourseInfo = () => {
             // console.log(data)
             setQuized(false)
         }
-        console.log(quized);
-        console.log('handlechecksubmited',lessonId);
-        console.log(QuizeScore);
+        // console.log(quized);
+        // console.log('handlechecksubmited',lessonId);
+        // console.log(QuizeScore);
     }
 
 
@@ -633,12 +651,14 @@ const CourseInfo = () => {
         }
     };
 
-    const handlesumQuizClickAndchecksubmited = async (lessonId: number) => {
+    const handleshandleTakeQuiz = async (lessonId: number) => {
         handleQuizClick(lessonId);
         handlechecksubmited(lessonId);
         setLessonID_(lessonId);
         setQuized(true);
     }
+
+
 
     // ฟังก์ชันสำหรับสุ่มตำแหน่งตัวเลือก
     const shuffleOptions = (options: string[]) => {
@@ -728,6 +748,8 @@ const CourseInfo = () => {
         })
         if (error) console.error(error)
         else console.log(data)
+
+        handlechecksubmited(lessonID_);
     };
 
     //: ปุ่มสำหรับส่งคำตอบเมื่อเสร็จสิ้น quiz
@@ -892,11 +914,7 @@ const CourseInfo = () => {
                             {quized && (
                                 <div>
                                     <h3>Show score</h3>
-                                    <h5>key word <br />
-                                    handlesumQuizClickAndchecksubmited <br />
-                                    handleQuizClick <br />
-                                    handlechecksubmited <br/>
-                                    </h5>
+                                    <p>Total score : {QuizeScore ? QuizeScore.total_score : 'Loading...'} / {QuizeScore ? QuizeScore.max_score : 'Loading...'}</p>
                                 </div>
                             )}
                             {!quized && showquiz && quiz.length > 0 && (
@@ -1012,7 +1030,7 @@ const CourseInfo = () => {
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     // handleQuizClick(lesson.id);
-                                                    handlesumQuizClickAndchecksubmited(lesson.id);
+                                                    handleshandleTakeQuiz(lesson.id);
                                                 }} 
                                                 className={styles.contentLink}
                                             >
