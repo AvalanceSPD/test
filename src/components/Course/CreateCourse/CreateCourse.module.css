@@ -11,6 +11,7 @@ body {
 .header {
     background: #f8f9fa;
     padding: 40px;
+    margin-bottom: 2rem;
 }
 
 .headerBox {
@@ -22,6 +23,10 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
+    background-color: #f5f5f5;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     /* width: 100%; */
 }
 
@@ -29,6 +34,21 @@ body {
     display: flex;
     gap: 24px;
     flex: 1;
+}
+
+.headerBox h1 {
+    margin: 0;
+    color: #333;
+    font-size: 2rem;
+}
+
+.warningMessage {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 4px;
+    color: #856404;
 }
 
 .thumbnailContainer {
@@ -802,6 +822,7 @@ button.deleteButton:hover {
 .contentRow {
     padding: 40px 20px;
     display: flex;
+    margin-bottom: 2rem;
 }
 
 .mainContentCol {
@@ -812,6 +833,7 @@ button.deleteButton:hover {
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    padding: 0 1rem;
 }
 
 .sidebarCol {
@@ -852,6 +874,7 @@ button.deleteButton:hover {
     .headerBox {
         flex-direction: column;
         align-items: flex-start;
+        padding: 1.5rem;
     }
 
     .headerContent {
@@ -866,6 +889,14 @@ button.deleteButton:hover {
 
     .lessonTitle {
         margin-top: 0;
+    }
+
+    .formSection {
+        padding: 1.5rem;
+    }
+    
+    .submitButton {
+        width: 100%;
     }
 }
 
@@ -897,48 +928,203 @@ button.deleteButton:hover {
 }
 
 .lessonContainer {
-    margin-bottom: 15px; /* เพิ่มระยะห่างระหว่างบทเรียน */
-    padding: 10px;
-    border: 1px solid #ddd; /* เพิ่มกรอบให้กับ container */
-    border-radius: 5px; /* มุมโค้ง */
-    background-color: #f9f9f9; /* สีพื้นหลัง */
+    margin-bottom: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-.lessonTitle {
-    font-size: 16px; /* ขนาดตัวอักษร */
-    margin-bottom: 5px; /* ระยะห่างด้านล่าง */
-}
-
-.lessonContent {
+.lessonHeader {
     display: flex;
-    flex-direction: column; /* จัดเรียงปุ่มในแนวตั้ง */
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f5f5f5;
+    cursor: pointer;
 }
 
-.contentButton {
-    padding: 8px 12px; /* ขนาดปุ่ม */
-    background-color: #007bff; /* สีพื้นหลังปุ่ม */
-    color: white; /* สีตัวอักษร */
-    border: none; /* ไม่มีกรอบ */
-    border-radius: 5px; /* มุมโค้ง */
-    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อ hover */
-    transition: background-color 0.3s; /* เพิ่มการเปลี่ยนสีพื้นหลัง */
+.lessonHeader h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
 }
 
-.contentLink {
-    display: inline-block; /* ทำให้เป็นบล็อกในแนวนอน */
-    padding: 8px 12px; /* ขนาดปุ่ม */
-    background-color: #ddd; /* สีพื้นหลัง */
-    color: rgb(0, 0, 0); /* สีตัวอักษร */
-    border-radius: 5px; /* มุมโค้ง */
-    /* text-align: center; จัดข้อความให้อยู่กลาง */
-    cursor: pointer; /* เปลี่ยนเคอร์เซอร์เมื่อ hover */
-    text-decoration: none; /* ไม่มีขีดเส้นใต้ */
-    margin-top: 5px; /* ระยะห่างด้านบน */
-    transition: background-color 0.3s; /* เพิ่มการเปลี่ยนสีพื้นหลัง */
+.lessonForm {
+    padding: 1.5rem;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
 }
 
-.contentLink:hover {
-    background-color: #ebebeb; /* เปลี่ยนสีเมื่อ hover */
+.videoPreview {
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 560px;
+}
+
+.previewVideo {
+    width: 100%;
+    height: 315px;
+    border-radius: 4px;
+}
+
+.errorText {
+    color: #dc3545;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.fileUploaded {
+    color: #28a745;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.quizSection {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.quizSection h4 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.quizContainer {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    border: 1px solid #eee;
+}
+
+.quizContainer h5 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.removeButton {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    transition: background-color 0.3s;
+}
+
+.removeButton:hover {
+    background-color: #c82333;
+}
+
+.submitSection {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.submitButton {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+}
+
+.submitButton:hover {
+    background-color: #0069d9;
+}
+
+.submitButton:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.formSection {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.formSection h2 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.formGroup {
+    margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.formInput {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.formTextarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-height: 150px;
+    resize: vertical;
+}
+
+.thumbnailPreview {
+    margin-top: 1rem;
+    max-width: 300px;
+}
+
+.thumbnailPreview img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.addButton {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: background-color 0.3s;
+}
+
+.addButton:hover {
+    background-color: #45a049;
+}
+
+.emptyState {
+    padding: 2rem;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    color: #777;
 }
 
 .guestOverlay {

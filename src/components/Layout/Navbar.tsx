@@ -200,7 +200,7 @@ export const Navbar = () => {
           {/* //: instructor */}
           {userRole === 'instructor' && (
             <button 
-              onClick={() => navigate('/create-lesson')}
+              onClick={() => navigate('/createcourse')}
               className={styles.navButton}
             >
               Create Course
