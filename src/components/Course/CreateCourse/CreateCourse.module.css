@@ -9,13 +9,12 @@ body {
 }
 
 .header {
+    margin-bottom: 2rem;
     background: #f8f9fa;
     padding: 40px;
-    margin-bottom: 2rem;
 }
 
 .headerBox {
-    /* background: white; */
     border-radius: 12px;
     padding: 24px;
     display: flex;
@@ -23,11 +22,8 @@ body {
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
-    background-color: #f5f5f5;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* width: 100%; */
+    /* background-color: #f5f5f5; */
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .headerContent {
@@ -38,7 +34,7 @@ body {
 
 .headerBox h1 {
     margin: 0;
-    color: #333;
+    /* color: #333; */
     font-size: 2rem;
 }
 
@@ -51,16 +47,22 @@ body {
     color: #856404;
 }
 
-.thumbnailContainer {
+.thumbnailCol {
     flex: 0 0 30%;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
+}
+
+.thumbnailContainer {
+    width: 100%;
     max-width: 280px;
-    margin-right: 50px;
     aspect-ratio: 1/1;
-    background: #ffffff;
     border-radius: 8px;
     overflow: hidden;
-    flex-shrink: 0;
+    border: 2px dashed #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
 }
 
 .thumbnail {
@@ -69,15 +71,62 @@ body {
     object-fit: cover;
 }
 
-.lessonTitle {
-    flex: 1;
+.uploadPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 280px;
+    width: 280px;
+    cursor: pointer;
+    color: #666;
+    text-align: center;
+    padding: 20px;
+}
+
+.thumbnailInput {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
     cursor: pointer;
 }
 
-.lessonTitle h1 {
-    margin: 0 0 16px 0;
+.lessonTitleCol {
+    flex: 1;
+}
+
+.lessonTitle {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    /* align-items: center; */
+    padding: 1rem;
+    padding-left: 2rem;
+    /* background-color: #f5f5f5; */
+    cursor: pointer;
+    font-weight: bold;
     color: #333;
+    width: 100%;
+}
+
+.titleInput {
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 2px solid #e0e0e0;
+    background: transparent;
     font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 16px;
+}
+
+.titleInput:focus {
+    outline: none;
+    border-bottom-color: #4263eb;
 }
 
 .courseInfo {
@@ -89,30 +138,8 @@ body {
     margin-bottom: 16px;
 }
 
-.descriptionText {
-    color: #444;
-    line-height: 1.6;
-    white-space: pre-wrap;   
-}
-
-.titleInput {
-    width: 50%;
-    padding: 12px 0;
-    border: none;
-    border-bottom: 2px solid #e0e0e0;
-    background: transparent;
-    font-size: 24px;
-    font-weight: 500;
-    color: #333;
-}
-
-.titleInput:focus {
-    outline: none;
-    border-bottom-color: #4263eb;
-}
-
 .headerDescription {
-    width: 50%;
+    width: 100%;
     min-height: 100px;
     padding: 12px;
     border: 1px solid #e0e0e0;
@@ -128,43 +155,12 @@ body {
     border-color: #4263eb;
 }
 
-.uploadLabel {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    background: white;
+.contentRow {
+    padding: 0 40px 40px 40px;
 }
 
-.uploadPlaceholder {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    color: #666;
-}
-
-.uploadPlaceholder svg {
-    width: 40px;
-    height: 40px;
-    color: #999;
-}
-
-/* ปรับ mainContent ให้อยู่ตรงกับ header */
-.mainContent {
-    padding: 40px 20px;
-}
-
-/* ส่วนคอลัมน์ซ้าย */
-.leftSection {
+.mainContentCol {
     padding-right: 20px;
-    background: white;
-    max-width: 90%;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
 }
 
 .videoContainer {
@@ -173,69 +169,61 @@ body {
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 24px;
-    width: 100%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px dashed #dee2e6;
     position: relative;
+    border: 1px solid #dee2e6;
 }
 
 .video {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     border-radius: 12px;
 }
 
-
-.descriptionInput {
-    width: 96%;
-    min-height: 120px;
-    padding: 16px;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    resize: vertical;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* ส่วนคอลัมน์ขวา */
-.rightSection {
-    position: sticky; /* ทำให้เป็น sticky */
-    top: 120px; /* ปรับค่าตามความสูงของ Navbar */
-    z-index: 100; /* เพื่อให้แน่ใจว่ามันอยู่เหนือเนื้อหาอื่น */
-    background-color: white; /* เพิ่มพื้นหลังเพื่อให้เห็นชัดเจน */
-    border-radius: 12px;
-    padding: 15px;
-    height: auto;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+.emptyVideoState {
     display: flex;
-    flex-direction: column;
-    flex: 1;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #666;
+    text-align: center;
+    padding: 20px;
 }
 
-.navigationSection {
+.lessonList {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.descriptionText {
+    color: #444;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.descriptionText h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5rem;
     margin-bottom: 16px;
 }
 
-.navigationSection h4 {
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    color: #333;
+.sidebarCol {
+    padding-left: 20px;
 }
 
-.emptyMessage {
-    color: #666;
-    font-size: 14px;
-    padding: 8px;
-    background: #f8f9fa;
-    border-radius: 6px;
-    text-align: center;
-    margin-top: 20px;
+.rightSection {
+    position: sticky;
+    top: 0;
+    /* height: calc(100vh - 60px); Replace 60px with your actual navbar height */
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
 
 .rightSection h3 {
@@ -244,687 +232,28 @@ body {
     color: #333;
 }
 
-/* Media Queries สำหรับความ responsive */
-@media (max-width: 800px) {
-    .rightSection {
-        padding: 10px;
-    }
-
-    .navigationSection h4 {
-        font-size: 14px;
-    }
-
-    .emptyMessage {
-        font-size: 12px;
-    }
-
-    .rightSection h3 {
-        font-size: 16px;
-    }
-}
-
-@media (max-width: 700px) {
-    .rightSection {
-        padding: 8px;
-    }
-
-    .navigationSection h4 {
-        font-size: 12px;
-    }
-
-    .emptyMessage {
-        font-size: 10px;
-    }
-
-    .rightSection h3 {
-        font-size: 14px;
-    }
-}
-
-/* Session Items */
-.sessionItem {
-    background: #f8f9fa;
-    border-radius: 8px;
-    margin-bottom: 8px;
-}
-
-.sessionHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 16px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    margin-bottom: 8px;
-}
-
-.sessionActions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.actionButton {
-    width: 30px;
-    height: 30px;
-    background: #4263eb;
+.addButton {
+    background-color: #4263eb;
     color: white;
     border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.deleteButton {
-    width: 24px;
-    height: 24px;
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-.actionButton:hover {
-    background: #364fc7;
-}
-
-.deleteButton:hover {
-    background: #c82333;
-}
-
-.subSessionItem {
-    padding: 10px 16px;
-    margin: 4px 0;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.2s ease;
-}
-
-.subSessionContent {
-    flex: 1;
-    cursor: pointer;
-    padding-right: 8px;
-}
-
-.subSessionActions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.videoIndicator {
-    display: flex;
-    align-items: center;
-    color: #666;
-}
-
-.subSessionItem:hover {
-    border-color: #4263eb;
-}
-
-.subSessionItem.selected {
-    background: #4263eb;
-    color: white;
-    border-color: #4263eb;
-}
-
-.subSessionItem.selected .videoIndicator {
-    color: white;
-}
-
-.subSessionItem.selected .deleteButton {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.subSessionItem.selected .deleteButton:hover {
-    background: rgba(255, 255, 255, 0.3);
-}
-
-/* Document Items */
-.documentItem {
-    padding: 12px 16px;
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Quiz Items */
-.quizItem {
-    padding: 12px 16px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.quizItem:hover {
-    border-color: #4263eb;
-    background: #f8f9fa;
-}
-
-.quizItem.selected {
-    background: #4263eb;
-    color: white;
-    border-color: #4263eb;
-}
-
-.quizItem.selected button {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-/* Buttons */
-button {
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: none;
-    background: #4263eb;
-    color: white;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-button:hover {
-    background: #364fc7;
-}
-
-button.deleteButton {
-    background: #e03131;
-}
-
-button.deleteButton:hover {
-    background: #c92a2a;
-}
-
-.modal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    border-radius: 12px;
-    padding: 0;
-    outline: none;
-    width: 90%;
-    max-width: 500px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-}
-
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modalContent {
-    padding: 24px;
-}
-
-.modalContent h2 {
-    margin: 0 0 20px 0;
-    color: #333;
-    font-size: 20px;
-}
-
-.modalField {
-    margin-bottom: 16px;
-}
-
-.modalField label {
-    display: block;
-    margin-bottom: 8px;
-    color: #333;
-    font-weight: 500;
-}
-
-.modalInput {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s;
-}
-
-.modalInput:focus {
-    border-color: #4263eb;
-    outline: none;
-}
-
-.modalButtons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-}
-
-.submitButton {
-    padding: 10px 20px;
-    background: #4263eb;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.submitButton:hover {
-    background: #364fc7;
-}
-
-/* ปรับปรุงสไตล์ปุ่มเมื่อ disabled */
-.submitButton:disabled {
-    background: #cccccc;
-    cursor: not-allowed;
-}
-
-/* อัปเดตสไตล์สำหรับ SubSession */
-.subSessionList {
-    margin-left: 20px;
-}
-
-.saveButton {
-    width: 100%;
-    padding: 12px;
-    background: #4263eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin-top: 16px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.saveButton:hover {
-    background: #364fc7;
-}
-
-/* ปรับปรุงสไตล์สำหรับ textarea เมื่อ disabled */
-.descriptionInput:disabled {
-    background: #f8f9fa;
-    cursor: not-allowed;
-}
-
-.contentToggle {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.toggleButton {
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #e0e0e0;
-    background: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.toggleButton.active {
-    background: #4263eb;
-    color: white;
-    border-color: #4263eb;
-}
-
-.deleteButton {
-    background: #dc3545;
-    color: white;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 8px;
-}
-
-.deleteButton:hover {
-    background: #c82333;
-}
-
-/* ปรับปรุงสไตล์ที่มีอยู่ */
-.quizForm {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.questionCard {
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.questionNumber {
-    width: auto;
-    padding: 8px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    font-size: 14px;
-    background: white;
-}
-
-.questionInput {
-    width: 100%;
-    min-height: 100px;
-    padding: 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    resize: vertical;
-    font-size: 14px;
-}
-
-.addImageButton {
-    width: 100%;
-    padding: 12px;
-    background: #4263eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.answerSection {
-    margin-top: 16px;
-}
-
-.answerHeader {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 12px;
-}
-
-.radioOptions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.radioOption {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.radioInput {
-    width: 16px;
-    height: 16px;
-}
-
-.optionInput {
-    flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.answerTypeSelector {
-    margin-top: 20px;
-}
-
-.answerTypeLabelWrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.answerTypeLabelWrapper label {
-    font-size: 14px;
-    color: #666;
-}
-
-.answerTypeButtons {
-    display: flex;
-    gap: 8px;
-}
-
-.typeButton {
-    padding: 8px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s;
-}
-
-.typeButton.active {
-    background: #4263eb;
-    color: white;
-    border-color: #4263eb;
-}
-
-.addQuestionButton {
-    width: 100%;
-    padding: 12px;
-    background: #4263eb;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    margin-top: 20px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.addQuestionButton:hover {
-    background: #364fc7;
-}
-
-.quizHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 0 20px;
-}
-
-.backButton {
-    padding: 8px 16px;
-    background: #e0e0e0;
-    border: none;
+    padding: 0.75rem 1.5rem;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    transition: background-color 0.3s;
 }
 
-.quizFormContainer {
-    background: white;
-    border-radius: 12px;
-    height: 100%;
-    overflow-y: auto;
+.addButton:hover {
+    background-color: #5573eb;
 }
 
-.quizHeader {
-    position: sticky;
-    top: 0;
-    background: white;
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1;
-}
-
-.quizHeader h2 {
-    margin: 0;
-    font-size: 20px;
-    color: #333;
-}
-
-.backButton {
-    padding: 8px 16px;
-    background: #e0e0e0;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.backButton:hover {
-    background: #d0d0d0;
-}
-
-.loadingState {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-size: 1.2rem;
-    color: #666;
-}
-
-.errorState {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-size: 1.2rem;
-    color: #dc3545;
-}
-
-.contentRow {
-    padding: 40px 20px;
-    display: flex;
-    margin-bottom: 2rem;
-}
-
-.mainContentCol {
-    margin-right: 50px;
-    flex: 2;
-    background: white;
-    max-width: 70%;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-    padding: 0 1rem;
-}
-
-.sidebarCol {
-    background: white;
-    /* border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; */
-}
-
-.navigationSection {
-    margin-bottom: 24px;
-}
-
-.navigationSection h4 {
-    margin-bottom: 12px;
-    color: #333;
-}
-
-.emptyMessage {
-    color: #666;
-    font-size: 0.9rem;
-    padding: 12px;
-    background: #f8f9fa;
-    border-radius: 8px;
+.emptyState {
+    padding: 2rem;
     text-align: center;
-}
-
-.rightSection h3 {
-    margin-bottom: 20px;
-    width: 100%;
-    color: #333;
-    font-size: 1.2rem;
-}
-
-/* Media Queries สำหรับความ responsive */
-@media (max-width: 768px) {
-    .headerBox {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1.5rem;
-    }
-
-    .headerContent {
-        gap: 16px;
-    }
-
-    .thumbnailContainer {
-        width: 100%;
-        max-width: none;
-        margin-bottom: 16px;
-    }
-
-    .lessonTitle {
-        margin-top: 0;
-    }
-
-    .formSection {
-        padding: 1.5rem;
-    }
-    
-    .submitButton {
-        width: 100%;
-    }
-}
-
-@media (max-width: 576px) {
-    .headerBox {
-        padding: 16px;
-    }
-
-    .headerContent {
-        gap: 12px;
-    }
-
-    .thumbnailContainer {
-        max-width: 100%;
-    }
-
-    .lessonTitle h1 {
-        font-size: 20px;
-    }
-
-    .courseInfo p {
-        font-size: 14px;
-    }
-}
-
-.lessonContent {
-    padding-left: 20px;
-    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    color: #777;
 }
 
 .lessonContainer {
@@ -934,43 +263,39 @@ button.deleteButton:hover {
     overflow: hidden;
 }
 
-.lessonHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background-color: #f5f5f5;
-    cursor: pointer;
-}
-
-.lessonHeader h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #333;
-}
-
-.lessonForm {
+.lessonContent {
     padding: 1.5rem;
     background-color: #fff;
     border-top: 1px solid #ddd;
 }
 
-.videoPreview {
-    margin-top: 1rem;
-    width: 100%;
-    max-width: 560px;
+.formGroup {
+    margin-bottom: 1.5rem;
 }
 
-.previewVideo {
+.formGroup label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #555;
+}
+
+.formInput {
     width: 100%;
-    height: 315px;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
     border-radius: 4px;
+    font-size: 1rem;
 }
 
-.errorText {
-    color: #dc3545;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
+.formTextarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    min-height: 150px;
+    resize: vertical;
 }
 
 .fileUploaded {
@@ -1035,6 +360,7 @@ button.deleteButton:hover {
     cursor: pointer;
     font-size: 1.2rem;
     transition: background-color 0.3s;
+    width: 100%;
 }
 
 .submitButton:hover {
@@ -1046,178 +372,50 @@ button.deleteButton:hover {
     cursor: not-allowed;
 }
 
-.formSection {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+/* Media Queries สำหรับความ responsive */
+@media (max-width: 768px) {
+    .headerBox {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.5rem;
+    }
+
+    .thumbnailContainer {
+        width: 100%;
+        max-width: none;
+        margin-bottom: 16px;
+    }
+
+    .contentRow {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .mainContentCol, .sidebarCol {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .rightSection {
+        position: static;
+    }
 }
 
-.formSection h2 {
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-    color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
-}
+@media (max-width: 576px) {
+    .header {
+        padding: 20px;
+    }
 
-.formGroup {
-    margin-bottom: 1.5rem;
-}
+    .headerBox {
+        padding: 16px;
+    }
 
-.formGroup label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    color: #555;
-}
+    .titleInput {
+        font-size: 20px;
+    }
 
-.formInput {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.formTextarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 1rem;
-    min-height: 150px;
-    resize: vertical;
-}
-
-.thumbnailPreview {
-    margin-top: 1rem;
-    max-width: 300px;
-}
-
-.thumbnailPreview img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-
-.addButton {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    transition: background-color 0.3s;
-}
-
-.addButton:hover {
-    background-color: #45a049;
-}
-
-.emptyState {
-    padding: 2rem;
-    text-align: center;
-    background-color: #f9f9f9;
-    border-radius: 4px;
-    color: #777;
-}
-
-.guestOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-    padding: 20px;
-}
-
-
-.blurContainer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    transform: translateZ(0);
-    will-change: transform;
-}
-
-.blurContainer iframe {
-    width: 100%;
-    height: 100%;
-    filter: blur(8px);
-    pointer-events: none;
-    opacity: 0.7;
-}
-
-.blurOverlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    text-align: center;
-}
-
-.blurOverlay p {
-    color: #333;
-    font-size: 18px;
-    font-weight: bold;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.buttonContainer {
-    display: flex;
-    justify-content: flex-end; /* จัดตำแหน่งไปทางขวา */
-    margin-top: 20px; /* เพิ่มระยะห่างด้านบน */
-    width: 100%; /* ทำให้ container กว้างเต็มที่ */
-}
-
-.enrollButton, .cancelButton {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-.enrollButton {
-    background-color: #4263eb;
-    color: white;
-}
-
-.enrollButton:hover {
-    background-color: #364fc7;
-}
-
-.cancelButton {
-    background-color: #fa5252;
-    color: white;
-    margin-left: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
-}
-
-.cancelButton:hover {
-    background-color: #e03131;
+    .courseInfo p {
+        font-size: 14px;
+    }
 }

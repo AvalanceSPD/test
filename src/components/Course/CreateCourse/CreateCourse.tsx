@@ -15,7 +15,7 @@ interface Lesson {
     hasQuiz: boolean;
 }
 
-interface profiledata {
+interface ProfileData {
     wallet_address: string,
     username: string,
     ins_name: string,
@@ -54,7 +54,7 @@ const CreateCourse = () => {
     // User state
     const [userRole, setUserRole] = useState<'student' | 'instructor' | null>(null);
     const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
-    const [profiledata, setProfiledata] = useState<profiledata | null>(null);
+    const [profileData, setProfileData] = useState<ProfileData | null>(null);
     const [instructorId, setInstructorId] = useState<string | null>(null);
     
     // UI state
@@ -68,8 +68,8 @@ const CreateCourse = () => {
             try {
               const { data, error } = await supabase
                 .rpc('check_role_in_navebar', {
-                  p_public_key:publicKey
-                })
+                  p_public_key: publicKey
+                });
                 if (error) {
                     console.error(error);
                     setIsRegistered(false);
@@ -77,13 +77,13 @@ const CreateCourse = () => {
                     return;
                 }
               
-              if (data.is_instructor == true) {
+              if (data.is_instructor === true) {
                 setIsRegistered(true);
                 setUserRole('instructor');
                 
-                // ดึง instructor_id
+                // Fetch instructor_id
                 try {
-                    // ดึง user_id ก่อน
+                    // Fetch user_id first
                     const { data: userData, error: userError } = await supabase
                         .from('users')
                         .select('id')
@@ -96,7 +96,7 @@ const CreateCourse = () => {
                     }
                     
                     if (userData && userData.id) {
-                        // ใช้ user_id เพื่อดึง instructor_id
+                        // Use user_id to fetch instructor_id
                         const { data: instructorData, error: instructorError } = await supabase
                             .from('instructors_list')
                             .select('id')
@@ -116,10 +116,10 @@ const CreateCourse = () => {
               }
               
               if (data) {
-                setProfiledata(data);
+                setProfileData(data);
               }
               
-              if (data.is_student == true) {
+              if (data.is_student === true) {
                 setIsRegistered(true);
                 setUserRole('student');
               }
@@ -137,10 +137,8 @@ const CreateCourse = () => {
         checkUser();
     }, [publicKey]);
 
-    // ตรวจสอบว่าผู้ใช้เป็น instructor หรือไม่
+    // Check if the user is an instructor
     useEffect(() => {
-        // เพิ่มเงื่อนไขให้ตรวจสอบเฉพาะเมื่อ userRole ถูกกำหนดค่าแล้ว (ไม่ใช่ null)
-        // และเมื่อ userRole ไม่ใช่ instructor จึงจะแสดงข้อความ Access Denied
         if (userRole !== null && userRole !== 'instructor') {
             console.log('User role is not instructor:', userRole);
             Swal.fire({
@@ -154,19 +152,19 @@ const CreateCourse = () => {
         }
     }, [userRole, navigate]);
 
-    // เพิ่ม useEffect เพื่อแสดงข้อมูลสถานะเมื่อ userRole หรือ instructorId เปลี่ยนแปลง
+    // Log current user role and instructor ID
     useEffect(() => {
         console.log('Current user role:', userRole);
         console.log('Current instructor ID:', instructorId);
     }, [userRole, instructorId]);
 
-    // ฟังก์ชันสำหรับอัปโหลดรูปภาพ
+    // Function to handle thumbnail upload
     const handleThumbnailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             setCourseThumbnail(file);
             
-            // สร้าง URL สำหรับแสดงตัวอย่างรูปภาพ
+            // Create a URL for the thumbnail preview
             const reader = new FileReader();
             reader.onloadend = () => {
                 setThumbnailPreview(reader.result as string);
@@ -175,7 +173,7 @@ const CreateCourse = () => {
         }
     };
 
-    // ฟังก์ชันสำหรับเพิ่ม lesson ใหม่
+    // Function to add a new lesson
     const addNewLesson = () => {
         const newLesson: Lesson = {
             id: lessons.length + 1,
@@ -191,7 +189,7 @@ const CreateCourse = () => {
         setExpandedLesson(lessons.length);
     };
 
-    // ฟังก์ชันสำหรับอัปเดต lesson
+    // Function to update a lesson
     const updateLesson = (index: number, field: keyof Lesson, value: string) => {
         const updatedLessons = [...lessons];
         updatedLessons[index] = {
@@ -201,14 +199,14 @@ const CreateCourse = () => {
         setLessons(updatedLessons);
     };
 
-    // ฟังก์ชันสำหรับลบ lesson
+    // Function to remove a lesson
     const removeLesson = (index: number) => {
         const updatedLessons = lessons.filter((_, i) => i !== index);
         setLessons(updatedLessons);
         setExpandedLesson(null);
     };
 
-    // ฟังก์ชันสำหรับเพิ่ม quiz
+    // Function to add a new quiz
     const addQuizToLesson = (lessonIndex: number) => {
         const newQuiz: Quiz = {
             id: quizzes.length + 1,
@@ -223,13 +221,13 @@ const CreateCourse = () => {
         setQuizzes([...quizzes, newQuiz]);
         setCurrentQuiz(newQuiz);
         
-        // อัปเดต lesson ให้มี hasQuiz เป็น true
+        // Update lesson to have hasQuiz as true
         const updatedLessons = [...lessons];
         updatedLessons[lessonIndex].hasQuiz = true;
         setLessons(updatedLessons);
     };
 
-    // ฟังก์ชันสำหรับอัปเดต quiz
+    // Function to update a quiz
     const updateQuiz = (quizId: number, field: keyof Quiz, value: string) => {
         const updatedQuizzes = [...quizzes];
         const quizIndex = updatedQuizzes.findIndex(q => q.id === quizId);
@@ -243,12 +241,12 @@ const CreateCourse = () => {
         }
     };
 
-    // ฟังก์ชันสำหรับลบ quiz
+    // Function to remove a quiz
     const removeQuiz = (quizId: number, lessonId: number) => {
         const updatedQuizzes = quizzes.filter(q => q.id !== quizId);
         setQuizzes(updatedQuizzes);
         
-        // อัปเดต lesson ให้มี hasQuiz เป็น false ถ้าไม่มี quiz เหลือ
+        // Update lesson to have hasQuiz as false if no quiz remains
         const hasRemainingQuiz = updatedQuizzes.some(q => q.lesson_id === lessonId);
         const lessonIndex = lessons.findIndex(l => l.id === lessonId);
         
@@ -259,13 +257,13 @@ const CreateCourse = () => {
         }
     };
 
-    // ฟังก์ชันสำหรับอัปโหลดไฟล์เอกสาร
+    // Function to handle file upload
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, lessonIndex: number) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             
             try {
-                // อัปโหลดไฟล์ไปยัง Supabase Storage
+                // Upload file to Supabase Storage
                 const { data, error } = await supabase.storage
                     .from('document')
                     .upload(`${Date.now()}_${file.name}`, file);
@@ -274,7 +272,7 @@ const CreateCourse = () => {
                     throw error;
                 }
                 
-                // อัปเดต lesson ด้วยพาธของไฟล์
+                // Update lesson with file path
                 const updatedLessons = [...lessons];
                 updatedLessons[lessonIndex].file = data.path;
                 setLessons(updatedLessons);
@@ -297,14 +295,13 @@ const CreateCourse = () => {
         }
     };
 
-    // ฟังก์ชันสำหรับบันทึกคอร์ส
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         
         if (!instructorId) {
             Swal.fire({
                 title: 'Error',
-                text: 'ไม่พบข้อมูลผู้สอน กรุณาลองใหม่อีกครั้ง',
+                text: 'Instructor ID not found, please try again',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
@@ -314,7 +311,7 @@ const CreateCourse = () => {
         if (!courseTitle || !courseDescription || !courseThumbnail) {
             Swal.fire({
                 title: 'Error',
-                text: 'กรุณากรอกข้อมูลคอร์สให้ครบถ้วน',
+                text: 'Please fill in all course information',
                 icon: 'error',
                 confirmButtonText: 'OK'
             });
@@ -331,7 +328,7 @@ const CreateCourse = () => {
             return;
         }
         
-        // ตรวจสอบว่า lesson ทุกตัวมีข้อมูลครบถ้วน
+        // Check if all lessons have complete information
         const invalidLessons = lessons.filter(lesson => !lesson.title || !lesson.media || !lesson.description);
         if (invalidLessons.length > 0) {
             Swal.fire({
@@ -346,11 +343,11 @@ const CreateCourse = () => {
         setLoading(true);
         
         try {
-            // 1. อัปโหลดรูปภาพ thumbnail
+            // 1. Upload thumbnail image
             let thumbnailPath = '';
             if (courseThumbnail) {
                 const { data: thumbnailData, error: thumbnailError } = await supabase.storage
-                    .from('thumbnails')
+                    .from('thumbnail')
                     .upload(`${Date.now()}_${courseThumbnail.name}`, courseThumbnail);
                 
                 if (thumbnailError) {
@@ -359,15 +356,15 @@ const CreateCourse = () => {
                 
                 thumbnailPath = thumbnailData.path;
                 
-                // สร้าง URL สำหรับรูปภาพ
+                // Create URL for the thumbnail
                 const { data: urlData } = supabase.storage
-                    .from('thumbnails')
+                    .from('thumbnail')
                     .getPublicUrl(thumbnailPath);
                 
                 thumbnailPath = urlData.publicUrl;
             }
             
-            // 2. สร้างคอร์สใหม่
+            // 2. Create new course
             const { data: courseData, error: courseError } = await supabase
                 .from('course')
                 .insert([
@@ -386,7 +383,7 @@ const CreateCourse = () => {
             
             const courseId = courseData[0].id;
             
-            // 3. สร้าง lessons
+            // 3. Create lessons
             for (const lesson of lessons) {
                 const { data: lessonData, error: lessonError } = await supabase
                     .from('lesson')
@@ -396,7 +393,7 @@ const CreateCourse = () => {
                             media: lesson.media,
                             description: lesson.description,
                             file: lesson.file,
-                            course_id: courseId
+                            course_id: courseId,
                         }
                     ])
                     .select();
@@ -407,7 +404,7 @@ const CreateCourse = () => {
                 
                 const lessonId = lessonData[0].id;
                 
-                // 4. สร้าง quizzes สำหรับ lesson นี้
+                // 4. Create quizzes for this lesson
                 const lessonQuizzes = quizzes.filter(q => q.lesson_id === lesson.id);
                 
                 for (const quiz of lessonQuizzes) {
@@ -438,7 +435,6 @@ const CreateCourse = () => {
             }).then(() => {
                 navigate(`/course/${courseId}`);
             });
-            
         } catch (error: any) {
             console.error('Error creating course:', error);
             Swal.fire({
@@ -452,18 +448,19 @@ const CreateCourse = () => {
         }
     };
 
+    // Function to toggle lesson visibility
     const toggleLesson = (index: number) => {
         setExpandedLesson(expandedLesson === index ? null : index);
         setCurrentLessonIndex(index);
     };
 
-    // ตรวจสอบว่า URL YouTube ถูกต้องหรือไม่
+    // Check if YouTube URL is valid
     const isValidYoutubeUrl = (url: string) => {
         const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/;
         return pattern.test(url);
     };
 
-    // แปลง YouTube URL เป็น embed URL
+    // Convert YouTube URL to embed URL
     const getYoutubeEmbedUrl = (url: string) => {
         if (!url) return '';
         
@@ -480,94 +477,125 @@ const CreateCourse = () => {
             <Row className={styles.header}>
                 <Col xs={24}>
                     <div className={styles.headerBox}>
-                        <h1>สร้างคอร์สใหม่</h1>
-                        {userRole !== 'instructor' && (
-                            <div className={styles.warningMessage}>
-                                <p>คุณต้องเป็นผู้สอนเพื่อสร้างคอร์ส</p>
-                    </div>
-                        )}
-                    </div>
-                </Col>
-            </Row>
-
-            {userRole === 'instructor' && (
-                <form onSubmit={handleSubmit}>
-            <Row className={styles.contentRow}>
-                        <Col xs={24} className={styles.mainContentCol}>
-                            <div className={styles.formSection}>
-                                <h2>ข้อมูลคอร์ส</h2>
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="courseTitle">ชื่อคอร์ส *</label>
+                        <Row>
+                            <Col xs={8} className={styles.thumbnailCol}>
+                                <div className={styles.thumbnailContainer}>
+                                    {thumbnailPreview ? (
+                                        <img 
+                                            src={thumbnailPreview} 
+                                            alt="Course thumbnail" 
+                                            className={styles.thumbnail}
+                                        />
+                                    ) : (
+                                        <div className={styles.uploadPlaceholder}>
+                                            <span>Upload Thumbnail Image</span>
+                                            <input
+                                                type="file"
+                                                id="courseThumbnail"
+                                                accept="image/*"
+                                                onChange={handleThumbnailChange}
+                                                required
+                                                className={styles.thumbnailInput}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </Col>
+                            <Col xs={16} className={styles.lessonTitleCol}>
+                                <div className={styles.lessonTitle}>
+                                    <h1>Create New Course</h1>
+                                    {userRole !== 'instructor' && (
+                                        <div className={styles.warningMessage}>
+                                            <p>You must be an instructor to create a course</p>
+                                        </div>
+                                    )}
                                     <input
                                         type="text"
                                         id="courseTitle"
                                         value={courseTitle}
                                         onChange={(e) => setCourseTitle(e.target.value)}
                                         required
-                                        className={styles.formInput}
+                                        className={styles.titleInput}
+                                        placeholder="Course Title *"
                                     />
+                                    <div className={styles.courseInfo}>
+                                        <p>Create by: {profileData?.ins_name || 'Loading...'}</p>
+                                    </div>
+                                    <div className={styles.descriptionText}>
+                                        <textarea
+                                            id="courseDescription"
+                                            value={courseDescription}
+                                            onChange={(e) => setCourseDescription(e.target.value)}
+                                            required
+                                            className={styles.headerDescription}
+                                            placeholder="Course Description *"
+                                        />
+                                    </div>
                                 </div>
-                                
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="courseDescription">คำอธิบายคอร์ส *</label>
-                                    <textarea
-                                        id="courseDescription"
-                                        value={courseDescription}
-                                        onChange={(e) => setCourseDescription(e.target.value)}
-                                        required
-                                        className={styles.formTextarea}
+                            </Col>
+                        </Row>
+                    </div>
+                </Col>
+            </Row>
+
+            {userRole === 'instructor' && (
+                <form onSubmit={handleSubmit}>
+                    <Row className={styles.contentRow}>
+                        <Col xs={16} className={styles.mainContentCol}>
+                            <div className={styles.videoContainer}>
+                                {lessons.length > 0 && currentLessonIndex !== null && lessons[currentLessonIndex].media && isValidYoutubeUrl(lessons[currentLessonIndex].media) ? (
+                                    <iframe
+                                        src={getYoutubeEmbedUrl(lessons[currentLessonIndex].media)}
+                                        frameBorder="0"
+                                        allowFullScreen
+                                        className={styles.video}
                                     />
-                                </div>
-                                
-                                <div className={styles.formGroup}>
-                                    <label htmlFor="courseThumbnail">รูปภาพปก *</label>
-                                    <input
-                                        type="file"
-                                        id="courseThumbnail"
-                                        accept="image/*"
-                                        onChange={handleThumbnailChange}
-                                        required
-                                        className={styles.formInput}
-                                    />
-                                    
-                                    {thumbnailPreview && (
-                                        <div className={styles.thumbnailPreview}>
-                                            <img src={thumbnailPreview} alt="Thumbnail preview" />
-                                        </div>
-                                    )}
-                                </div>
+                                ) : (
+                                    <div className={styles.emptyVideoState}>
+                                        <p>Add lessons and videos to see a preview</p>
+                                    </div>
+                                )}
                             </div>
                             
-                            <div className={styles.formSection}>
-                                <h2>บทเรียน</h2>
+                            {lessons.length > 0 && currentLessonIndex !== null && (
+                                <div className={styles.lessonList}>
+                                    <div className={styles.descriptionText}>
+                                        <h2>{lessons[currentLessonIndex].title || 'Lesson Title'}</h2>
+                                        <p>{lessons[currentLessonIndex].description || 'Lesson Description'}</p>
+                                    </div>
+                                </div>
+                            )}
+                        </Col>
+
+                        <Col xs={8} className={styles.sidebarCol}>
+                            <div className={styles.rightSection}>
+                                <h3>Contents</h3>
                                 <button
                                     type="button"
                                     onClick={addNewLesson}
                                     className={styles.addButton}
                                 >
-                                    + เพิ่มบทเรียนใหม่
+                                    + Add New Lesson
                                 </button>
                                 
                                 {lessons.length === 0 && (
                                     <div className={styles.emptyState}>
-                                        <p>ยังไม่มีบทเรียน กรุณาเพิ่มบทเรียนอย่างน้อย 1 บทเรียน</p>
+                                        <p>No lessons yet. Please add at least one lesson.</p>
                                     </div>
                                 )}
                                 
                                 {lessons.map((lesson, index) => (
                                     <div key={index} className={styles.lessonContainer}>
-                                        <div 
-                                            className={styles.lessonHeader}
+                                        <h4 
+                                            className={styles.lessonTitle} 
                                             onClick={() => toggleLesson(index)}
                                         >
-                                            <h3>{lesson.title || `บทเรียนที่ ${index + 1}`}</h3>
-                                            <span>{expandedLesson === index ? '▲' : '▼'}</span>
-                                        </div>
-                                        
+                                            {lesson.title || `Lesson ${index + 1}`} {expandedLesson === index ? '▲' : '▼'}
+                                        </h4>
                                         {expandedLesson === index && (
-                                            <div className={styles.lessonForm}>
+                                            <div className={styles.lessonContent}>
                                                 <div className={styles.formGroup}>
-                                                    <label htmlFor={`lessonTitle-${index}`}>ชื่อบทเรียน *</label>
+                                                    <label htmlFor={`lessonTitle-${index}`}>Lesson Title *</label>
                                                     <input
                                                         type="text"
                                                         id={`lessonTitle-${index}`}
@@ -579,7 +607,7 @@ const CreateCourse = () => {
                                                 </div>
                                                 
                                                 <div className={styles.formGroup}>
-                                                    <label htmlFor={`lessonMedia-${index}`}>URL วิดีโอ YouTube *</label>
+                                                    <label htmlFor={`lessonMedia-${index}`}>YouTube Video URL *</label>
                                                     <input
                                                         type="text"
                                                         id={`lessonMedia-${index}`}
@@ -589,25 +617,10 @@ const CreateCourse = () => {
                                                         className={styles.formInput}
                                                         placeholder="https://www.youtube.com/watch?v=..."
                                                     />
-                                                    
-                                                    {lesson.media && !isValidYoutubeUrl(lesson.media) && (
-                                                        <p className={styles.errorText}>URL ไม่ถูกต้อง กรุณาใส่ URL ของ YouTube</p>
-                                                    )}
-                                                    
-                                                    {lesson.media && isValidYoutubeUrl(lesson.media) && (
-                                                        <div className={styles.videoPreview}>
-                                                            <iframe
-                                                                src={getYoutubeEmbedUrl(lesson.media)}
-                                                                frameBorder="0"
-                                                                allowFullScreen
-                                                                className={styles.previewVideo}
-                                                            />
-                                        </div>
-                                        )}
                                                 </div>
                                                 
                                                 <div className={styles.formGroup}>
-                                                    <label htmlFor={`lessonDescription-${index}`}>คำอธิบายบทเรียน *</label>
+                                                    <label htmlFor={`lessonDescription-${index}`}>Lesson Description *</label>
                                                     <textarea
                                                         id={`lessonDescription-${index}`}
                                                         value={lesson.description}
@@ -618,7 +631,7 @@ const CreateCourse = () => {
                                                 </div>
                                                 
                                                 <div className={styles.formGroup}>
-                                                    <label htmlFor={`lessonFile-${index}`}>เอกสารประกอบ (ถ้ามี)</label>
+                                                    <label htmlFor={`lessonFile-${index}`}>Supporting Documents (if any)</label>
                                                     <input
                                                         type="file"
                                                         id={`lessonFile-${index}`}
@@ -627,27 +640,27 @@ const CreateCourse = () => {
                                                     />
                                                     
                                                     {lesson.file && (
-                                                        <p className={styles.fileUploaded}>อัปโหลดไฟล์แล้ว</p>
+                                                        <p className={styles.fileUploaded}>File uploaded</p>
                                                     )}
                                                 </div>
                                                 
                                                 <div className={styles.quizSection}>
-                                                    <h4>แบบทดสอบ</h4>
+                                                    <h4>Quizzes</h4>
                                                     
                                                     <button
                                                         type="button"
                                                         onClick={() => addQuizToLesson(index)}
                                                         className={styles.addButton}
                                                     >
-                                                        + เพิ่มแบบทดสอบ
+                                                        + Add Quiz
                                                     </button>
                                                     
                                                     {quizzes.filter(q => q.lesson_id === lesson.id).map((quiz, quizIndex) => (
                                                         <div key={quizIndex} className={styles.quizContainer}>
-                                                            <h5>คำถามที่ {quizIndex + 1}</h5>
+                                                            <h5>Question {quizIndex + 1}</h5>
                                                             
                                                             <div className={styles.formGroup}>
-                                                                <label htmlFor={`quizQuestion-${quiz.id}`}>คำถาม *</label>
+                                                                <label htmlFor={`quizQuestion-${quiz.id}`}>Question *</label>
                                                                 <input
                                                                     type="text"
                                                                     id={`quizQuestion-${quiz.id}`}
@@ -659,7 +672,7 @@ const CreateCourse = () => {
                                                             </div>
                                                             
                                                             <div className={styles.formGroup}>
-                                                                <label htmlFor={`quizOpt1-${quiz.id}`}>ตัวเลือกที่ 1 *</label>
+                                                                <label htmlFor={`quizOpt1-${quiz.id}`}>Option 1 *</label>
                                                                 <input
                                                                     type="text"
                                                                     id={`quizOpt1-${quiz.id}`}
@@ -671,7 +684,7 @@ const CreateCourse = () => {
                                                             </div>
                                                             
                                                             <div className={styles.formGroup}>
-                                                                <label htmlFor={`quizOpt2-${quiz.id}`}>ตัวเลือกที่ 2 *</label>
+                                                                <label htmlFor={`quizOpt2-${quiz.id}`}>Option 2 *</label>
                                                                 <input
                                                                     type="text"
                                                                     id={`quizOpt2-${quiz.id}`}
@@ -683,7 +696,7 @@ const CreateCourse = () => {
                                                             </div>
                                                             
                                                             <div className={styles.formGroup}>
-                                                                <label htmlFor={`quizOpt3-${quiz.id}`}>ตัวเลือกที่ 3 *</label>
+                                                                <label htmlFor={`quizOpt3-${quiz.id}`}>Option 3 *</label>
                                                                 <input
                                                                     type="text"
                                                                     id={`quizOpt3-${quiz.id}`}
@@ -695,7 +708,7 @@ const CreateCourse = () => {
                                                             </div>
                                                             
                                                             <div className={styles.formGroup}>
-                                                                <label htmlFor={`quizAnswer-${quiz.id}`}>คำตอบที่ถูกต้อง *</label>
+                                                                <label htmlFor={`quizAnswer-${quiz.id}`}>Correct Answer *</label>
                                                                 <input
                                                                     type="text"
                                                                     id={`quizAnswer-${quiz.id}`}
@@ -711,7 +724,7 @@ const CreateCourse = () => {
                                                                 onClick={() => removeQuiz(quiz.id, lesson.id)}
                                                                 className={styles.removeButton}
                                                             >
-                                                                ลบแบบทดสอบนี้
+                                                                Remove this quiz
                                                             </button>
                                                         </div>
                                                     ))}
@@ -722,25 +735,25 @@ const CreateCourse = () => {
                                                     onClick={() => removeLesson(index)}
                                                     className={styles.removeButton}
                                                 >
-                                                    ลบบทเรียนนี้
+                                                    Remove this lesson
                                                 </button>
-                                        </div>
+                                            </div>
                                         )}
-                                </div>
+                                    </div>
                                 ))}
+                                
+                                <div className={styles.submitSection}>
+                                    <button
+                                        type="submit"
+                                        className={styles.submitButton}
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Saving...' : 'Create Course'}
+                                    </button>
+                                </div>
                             </div>
-                            
-                            <div className={styles.submitSection}>
-                                <button
-                                    type="submit"
-                                    className={styles.submitButton}
-                                    disabled={loading}
-                                >
-                                    {loading ? 'กำลังบันทึก...' : 'สร้างคอร์ส'}
-                                </button>
-                    </div>
-                </Col>
-            </Row>
+                        </Col>
+                    </Row>
                 </form>
             )}
         </Grid>
