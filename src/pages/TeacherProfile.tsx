@@ -147,6 +147,10 @@ const TeacherProfile = () => {
   
           fetchBackgroundImage();
       }, []);
+      
+      const handlecreatebtn = async () => {
+        navigate('/createcourse');
+      }  
   return (
     <div className={styles.container}>
         <div className={styles.backgroundSection}>
@@ -159,7 +163,7 @@ const TeacherProfile = () => {
               <h1>Course manager</h1>
             </div>
             <div className={styles.createbtn}>
-              <button className={styles.createButton}>Create lesson</button>
+              <button className={styles.createButton} onClick={handlecreatebtn}>Create lesson</button>
             </div>
           </div>
               {/* Grid สำหรับ lessons */}
