@@ -828,42 +828,44 @@ const CourseInfo = () => {
                                     </div>
                                     <div className={styles.descriptionText}>
                                         {course.description}
-                                        <div className={styles.buttonContainer}>
-                                            {userRole !== 'instructor' && !isEnrolled ? (
-                                                <button 
-                                                    className={styles.enrollButton}
-                                                    onClick={handleEnroll}
-                                                >
-                                                    Enroll
-                                                </button>
-                                            ) : isEnrolled ? (
-                                                <button 
-                                                    className={styles.cancelButton}
-                                                    onClick={handleCancelEnrollment}
-                                                >
-                                                    Cancel Enrollment
-                                                </button>
-                                            ) : userRole == 'instructor' ? (
-                                                <div className={styles.insbtn}>
-                                                    <div>
-                                                        <button 
-                                                            className={styles.editButton}
-                                                            // onClick={handleEnroll}
-                                                        >
-                                                            Edit
-                                                        </button>
-                                                    </div>
-                                                    <div>
-                                                        <button className={styles.cancelButton}>Delete</button>
-                                                    </div>
-                                                </div>
-                                            ) : null}
-
-                                        </div>
                                     </div>
                                 </div>
                             </Col>
                         </Row>
+                                {userRole !== 'instructor' && !isEnrolled ? (
+                                    <div className={styles.buttonContainer}>
+                                    <button 
+                                        className={styles.enrollButton}
+                                        onClick={handleEnroll}
+                                    >
+                                        Enroll
+                                    </button>
+                                    </div>
+                                ) : isEnrolled ? (
+                                    <div className={styles.buttonContainer}>
+                                    <button 
+                                        className={styles.cancelButton}
+                                        onClick={handleCancelEnrollment}
+                                    >
+                                        Cancel Enrollment
+                                    </button>
+                                    </div>
+                                ) : null}
+                        {userRole === 'instructor' && instructorName === profiledata?.ins_name && (
+                            <div className={styles.insbtn}>
+                                <div>
+                                    <button 
+                                        className={styles.editButton}
+                                        // onClick={handleEnroll}
+                                    >
+                                        Edit
+                                    </button>
+                                </div>
+                                <div>
+                                    <button className={styles.cancelButton}>Delete</button>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </Col>
             </Row>

@@ -647,14 +647,6 @@ const CreateCourse = () => {
                                                 <div className={styles.quizSection}>
                                                     <h4>Quizzes</h4>
                                                     
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => addQuizToLesson(index)}
-                                                        className={styles.addButton}
-                                                    >
-                                                        + Add Quiz
-                                                    </button>
-                                                    
                                                     {quizzes.filter(q => q.lesson_id === lesson.id).map((quiz, quizIndex) => (
                                                         <div key={quizIndex} className={styles.quizContainer}>
                                                             <h5>Question {quizIndex + 1}</h5>
@@ -666,6 +658,18 @@ const CreateCourse = () => {
                                                                     id={`quizQuestion-${quiz.id}`}
                                                                     value={quiz.question}
                                                                     onChange={(e) => updateQuiz(quiz.id, 'question', e.target.value)}
+                                                                    required
+                                                                    className={styles.formInput}
+                                                                />
+                                                            </div>
+
+                                                            <div className={styles.formGroup}>
+                                                                <label htmlFor={`quizAnswer-${quiz.id}`}>Correct Answer *</label>
+                                                                <input
+                                                                    type="text"
+                                                                    id={`quizAnswer-${quiz.id}`}
+                                                                    value={quiz.answer}
+                                                                    onChange={(e) => updateQuiz(quiz.id, 'answer', e.target.value)}
                                                                     required
                                                                     className={styles.formInput}
                                                                 />
@@ -707,18 +711,6 @@ const CreateCourse = () => {
                                                                 />
                                                             </div>
                                                             
-                                                            <div className={styles.formGroup}>
-                                                                <label htmlFor={`quizAnswer-${quiz.id}`}>Correct Answer *</label>
-                                                                <input
-                                                                    type="text"
-                                                                    id={`quizAnswer-${quiz.id}`}
-                                                                    value={quiz.answer}
-                                                                    onChange={(e) => updateQuiz(quiz.id, 'answer', e.target.value)}
-                                                                    required
-                                                                    className={styles.formInput}
-                                                                />
-                                                            </div>
-                                                            
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeQuiz(quiz.id, lesson.id)}
@@ -728,6 +720,13 @@ const CreateCourse = () => {
                                                             </button>
                                                         </div>
                                                     ))}
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => addQuizToLesson(index)}
+                                                        className={styles.addButton}
+                                                    >
+                                                        + Add Quiz
+                                                    </button>
                                                 </div>
                                                 
                                                 <button
