@@ -1012,8 +1012,12 @@ button.deleteButton:hover {
     margin-top: 20px; /* เพิ่มระยะห่างด้านบน */
     width: 100%; /* ทำให้ container กว้างเต็มที่ */
 }
+.insbtn {
+    display: flex;
+    justify-content: space-between;
+}
 
-.enrollButton, .cancelButton {
+.enrollButton, .cancelButton, .editButton, .deleteButton{
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -1026,15 +1030,21 @@ button.deleteButton:hover {
     background-color: #8288eb;
     color: white;
 }
-
-.enrollButton:hover {
-    background-color: #8288eb;
-}
-
 .cancelButton {
     background-color: #fa5252;
     color: white;
     margin-left: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+}
+.editButton {
+    background-color: #fec765;
+    color: rgb(0, 0, 0);
+    margin-left: 10px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+}
+.enrollButton:hover {
+    background-color: #8288eb;
+}
+.editButton:hover {
+    background-color: rgb(207, 170, 106);
 }
 
 .cancelButton:hover {
