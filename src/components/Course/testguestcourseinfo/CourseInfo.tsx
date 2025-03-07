@@ -843,7 +843,22 @@ const CourseInfo = () => {
                                                 >
                                                     Cancel Enrollment
                                                 </button>
+                                            ) : userRole == 'instructor' ? (
+                                                <div className={styles.insbtn}>
+                                                    <div>
+                                                        <button 
+                                                            className={styles.editButton}
+                                                            // onClick={handleEnroll}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    </div>
+                                                    <div>
+                                                        <button className={styles.cancelButton}>Delete</button>
+                                                    </div>
+                                                </div>
                                             ) : null}
+
                                         </div>
                                     </div>
                                 </div>
