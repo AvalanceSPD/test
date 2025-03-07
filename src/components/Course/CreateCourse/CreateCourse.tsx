@@ -203,6 +203,24 @@ const CreateCourse = () => {
     const removeLesson = (index: number) => {
         const updatedLessons = lessons.filter((_, i) => i !== index);
         setLessons(updatedLessons);
+        
+        // ปรับค่า currentLessonIndex เมื่อลบ lesson
+        if (currentLessonIndex !== null) {
+            if (updatedLessons.length === 0) {
+                // ถ้าไม่มี lesson เหลือ ให้ตั้งค่าเป็น null
+                setCurrentLessonIndex(null);
+            } else if (currentLessonIndex === index) {
+                // ถ้าลบ lesson ที่กำลังดูอยู่
+                // ให้เลือก lesson ก่อนหน้า หรือ lesson แรกถ้าลบ lesson แรก
+                setCurrentLessonIndex(index === 0 ? 0 : index - 1);
+            } else if (currentLessonIndex > index) {
+                // ถ้าลบ lesson ที่อยู่ก่อนหน้า lesson ที่กำลังดูอยู่
+                // ให้ปรับ index ลง 1
+                setCurrentLessonIndex(currentLessonIndex - 1);
+            }
+            // ถ้าลบ lesson ที่อยู่หลัง lesson ที่กำลังดูอยู่ ไม่ต้องปรับ currentLessonIndex
+        }
+        
         setExpandedLesson(null);
     };
 
@@ -543,7 +561,9 @@ const CreateCourse = () => {
                     <Row className={styles.contentRow}>
                         <Col xs={16} className={styles.mainContentCol}>
                             <div className={styles.videoContainer}>
-                                {lessons.length > 0 && currentLessonIndex !== null && lessons[currentLessonIndex].media && isValidYoutubeUrl(lessons[currentLessonIndex].media) ? (
+                                {lessons.length > 0 && currentLessonIndex !== null && 
+                                 lessons[currentLessonIndex] && lessons[currentLessonIndex].media && 
+                                 isValidYoutubeUrl(lessons[currentLessonIndex].media) ? (
                                     <iframe
                                         src={getYoutubeEmbedUrl(lessons[currentLessonIndex].media)}
                                         frameBorder="0"
@@ -557,7 +577,7 @@ const CreateCourse = () => {
                                 )}
                             </div>
                             
-                            {lessons.length > 0 && currentLessonIndex !== null && (
+                            {lessons.length > 0 && currentLessonIndex !== null && lessons[currentLessonIndex] && (
                                 <div className={styles.lessonList}>
                                     <div className={styles.descriptionText}>
                                         <h2>{lessons[currentLessonIndex].title || 'Lesson Title'}</h2>
