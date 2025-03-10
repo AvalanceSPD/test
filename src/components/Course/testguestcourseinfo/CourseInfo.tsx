@@ -7,7 +7,6 @@ import { Grid, Row, Col } from 'rsuite';
 import { useWallet } from '@solana/wallet-adapter-react'; // เพิ่ม import
 import Swal from 'sweetalert2';
 
-
 interface Course {
     id: number;
     title: string;
@@ -822,8 +821,8 @@ const CourseInfo = () => {
                                 <div className={styles.lessonTitle}>
                                     <h1>{course.title}</h1>
                                     <div className={styles.courseInfo}>
-                                        <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p>
-                                        <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p>
+                                        {/* <p>Create at: {new Date(course.create_at).toLocaleDateString('th-TH')}</p> */}
+                                        {/* <p>Update at: {new Date(course.update_at).toLocaleDateString('th-TH')}</p> */}
                                         <p>Create by: {instructorName || 'Loading...'}</p>
                                     </div>
                                     <div className={styles.descriptionText}>
@@ -856,7 +855,7 @@ const CourseInfo = () => {
                                 <div>
                                     <button 
                                         className={styles.editButton}
-                                        // onClick={handleEnroll}
+                                        // onClick={handleEdit}
                                     >
                                         Edit
                                     </button>
@@ -917,7 +916,7 @@ const CourseInfo = () => {
                         {!selectedVideoUrl && ( //: edit to have no selectedVideoUrl
                             <p>There are no videos to show.</p>
                     )}
-                </div>)}
+                    </div>)}
                     {selectedVideoUrl && showvideo && ( //: edit show when 
                         <div className={styles.lessonList}>
                             <div className={styles.descriptionText}>

@@ -62,6 +62,7 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
   border-radius: 8px; /* มุมโค้ง */
   background-color: #fff; /* สีพื้นหลัง */
+  position: relative;
 }
 
 .profileHeader {
@@ -338,4 +339,20 @@ body {
 .button:hover {
   background-color: #636AE8; /* เปลี่ยนสีเมื่อ hover */
   transform: scale(1.05); /* ขยายขนาดเมื่อ hover */
+}
+
+.editButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background-color: #45a049;
 }

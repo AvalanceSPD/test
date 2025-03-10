@@ -35,8 +35,9 @@ body {
 }
 
 .thumbnailContainer {
-    flex: 0 0 30%;
+    flex: 30% 0 30%;
     margin-bottom: 50px;
+    min-width: 280px;
     max-width: 280px;
     margin-right: 50px;
     aspect-ratio: 1/1;
@@ -54,7 +55,7 @@ body {
 
 .lessonTitle {
     flex: 1;
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 .lessonTitle h1 {

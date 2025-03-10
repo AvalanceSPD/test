@@ -15,6 +15,7 @@ import 'rsuite/Dropdown/styles/index.css';
 import 'rsuite/Card/styles/index.css';
 import 'rsuite/CardGroup/styles/index.css';
 import 'rsuite/Button/styles/index.css';
+import EditProfileModal from '../components/Course/Profile/EditProfileModal';
 
 interface profiledata {
   wallet_address: string,
@@ -42,6 +43,8 @@ const StudentProfile = () => {
   const [rpcData, setRpcData] = useState<rpcData[]>([]);
   const [nullData, setNulldata] = useState(false);
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState('/3.jpg');
 
   useEffect(() => {
     
@@ -151,6 +154,28 @@ const StudentProfile = () => {
         fetchBackgroundImage();
     }, []);
 
+    const handleSaveProfile = async (newName: string, newImageUrl: string) => {
+        try {
+            // อัพเดทชื่อใน database สำหรับ student
+            const { error: updateError } = await supabase
+                .from('students_list')
+                .update({ std_name: newName })
+                .eq('std_id', profiledata?.wallet_address);
+
+            if (updateError) throw updateError;
+
+            // อัพเดท state
+            setProfileImage(newImageUrl);
+            setProfiledata(prev => prev ? {
+                ...prev,
+                std_name: newName
+            } : null);
+
+        } catch (error) {
+            console.error('Error updating profile:', error);
+        }
+    };
+
     return (
       <div className={styles.container}>
         <div className={styles.backgroundSection}>
@@ -216,13 +241,19 @@ const StudentProfile = () => {
   
           <div className={styles.profileSidebar}>
             <div className={styles.profileCard}>
+              <button 
+                className={styles.editButton}
+                onClick={() => setIsEditModalOpen(true)}
+              >
+                Edit
+              </button>
               <div className={styles.profileHeader}>
                 <div className={styles.avatarContainer}>
-                  <img src="/3.jpg" alt="Profile" className={styles.avatar} />
+                  <img src={profileImage} alt="Profile" className={styles.avatar} />
                 </div>
-                <h2>{profiledata?.std_name || 'Instructor name'}</h2>
+                <h2>{profiledata?.std_name || 'Student name'}</h2>
                 <p className={styles.subtitle}>subtitle</p>
-                </div>
+              </div>
   
               <div className={styles.profileDetails}>
                 <div className={styles.detailItem}>
@@ -244,6 +275,14 @@ const StudentProfile = () => {
                 </div>
               </div>
             </div>
+
+            <EditProfileModal
+              isOpen={isEditModalOpen}
+              onClose={() => setIsEditModalOpen(false)}
+              currentName={profiledata?.std_name || ''}
+              currentImage={profileImage}
+              onSave={handleSaveProfile}
+            />
           </div>
         </div>
       </div>

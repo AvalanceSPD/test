@@ -7,6 +7,15 @@ import { RegisterModal } from '../Modal/RegisterModal';
 import styles from './Navbar.module.css';
 import { supabase } from '../../utils/supabaseClient';
 
+interface userdata {
+  image_profile: string;
+  wallet_address: string;
+  username: string
+  std_name: string
+  is_instructor: boolean;
+  is_student: boolean;
+}
+
 export const Navbar = () => {
   const { publicKey, disconnect } = useWallet();
   const navigate = useNavigate();
@@ -19,6 +28,8 @@ export const Navbar = () => {
   const [isRegistered, setIsRegistered] = useState<boolean | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [userData, setUserData] = useState<userdata>();
+  const [profile_img, setProfileImg] = useState<string | null>(null);
 
   //: ปิด dropdown เมื่อคลิกนอกพื้นที่
   useEffect(() => {
@@ -59,16 +70,18 @@ export const Navbar = () => {
           } if (data.is_instructor == true) {
             setIsRegistered(true);
             setUserRole('instructor');
-            console.log('instructor');
+            setUserData(data);
           } else if (data.is_student == true) {
             setIsRegistered(true);
             setUserRole('student');
-            console.log('student');
+            setUserData(data);
           } else {
             setShowLogin(false);
             setShowRegister(true);
-          }
-          
+            setUserData(data);
+          } 
+
+          setProfileImg(data.image_profile)
         } catch (error) {
           setIsRegistered(false);
           setUserRole(null);
@@ -80,6 +93,8 @@ export const Navbar = () => {
     };
 
     checkUser();
+    console.log(userData?.image_profile);
+    
   }, [publicKey, isRegistered]);
 
   useEffect(() => {
@@ -211,12 +226,12 @@ export const Navbar = () => {
         <div className={styles.rightSection}>
           {publicKey ? (
             <div className={styles.profileContainer} ref={dropdownRef}>
-              <img 
-                src="/default_profile.png"
-                alt="Profile"
-                className={styles.profileImage}
-                onClick={() => setShowDropdown(!showDropdown)}
-              />
+                <img 
+                  src={profile_img || '/default_profile.png'} 
+                  alt="Profile"
+                  className={styles.profileImage}
+                  onClick={() => setShowDropdown(!showDropdown)}
+                />
               {showDropdown && (
                 <div className={styles.dropdown}>
                   {isRegistered && (
