@@ -832,7 +832,7 @@ const CourseInfo = () => {
                                 </div>
                             </Col>
                         </Row>
-                                {userRole !== 'instructor' && !isEnrolled ? (
+                                {userRole === 'student' && !isEnrolled ? (
                                     <div className={styles.buttonContainer}>
                                     <button 
                                         className={styles.enrollButton}
