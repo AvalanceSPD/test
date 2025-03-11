@@ -18,11 +18,12 @@ import 'rsuite/Button/styles/index.css';
 import EditProfileModal from '../components/Course/Profile/EditProfileModal';
 
 interface profiledata {
-  wallet_address: string,
-  username: string,
-  std_name: string,
-  is_instructor: boolean,
-  is_student: boolean
+  image_profile: string;
+  wallet_address: string;
+  username: string
+  std_name: string
+  is_instructor: boolean;
+  is_student: boolean;
 }
 
 interface rpcData {
@@ -32,6 +33,10 @@ interface rpcData {
   thumbnail: string;
   ins_name: string;
   create_at: string;
+}
+
+interface users_id {
+  id: string;
 }
 
 const StudentProfile = () => {
@@ -45,6 +50,8 @@ const StudentProfile = () => {
   const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [profileImage, setProfileImage] = useState('/3.jpg');
+  const [profile_img, setProfileImg] = useState<string | null>(null);
+  const [usersID, setUserID] = useState<users_id | null>(null);
 
   useEffect(() => {
     
@@ -71,12 +78,14 @@ const StudentProfile = () => {
           //=      "ins_name": string,
           //=      "username": string,
           //=      "wallet_address": string
+          //=       image_profile: string;
           //=    }
         if (fetchError) {
           throw fetchError;
         }
         if (data) {
           setProfiledata(data);
+          setProfileImg(data.image_profile)
 
         } else {
           setError('คุณไม่มีสิทธิ์เข้าถึงหน้านี้ เนื่องจากไม่ใช่ผู้สอน');
@@ -84,6 +93,12 @@ const StudentProfile = () => {
             navigate('/profile');
           }, 3000);
         }
+
+        const { data: users, error } = await supabase
+        .from('users')
+        .select('id')
+        .eq('wallet_address', publicKey);
+            if (users) setUserID(users[0].id);
 
       } catch (err) {
         console.error('Error fetching profile:', err);
@@ -156,15 +171,14 @@ const StudentProfile = () => {
 
     const handleSaveProfile = async (newName: string, newImageUrl: string) => {
         try {
-            // อัพเดทชื่อใน database สำหรับ student
+            //: อัพเดทชื่อใน database สำหรับ student
             const { error: updateError } = await supabase
                 .from('students_list')
                 .update({ std_name: newName })
-                .eq('std_id', profiledata?.wallet_address);
-
+                .eq('std_id', usersID);
+            
             if (updateError) throw updateError;
 
-            // อัพเดท state
             setProfileImage(newImageUrl);
             setProfiledata(prev => prev ? {
                 ...prev,
@@ -235,8 +249,6 @@ const StudentProfile = () => {
                   </Grid>
                 </div>
               )}
-              {/* Grid สำหรับ lessons */}
-            
           </div>
   
           <div className={styles.profileSidebar}>
@@ -249,7 +261,9 @@ const StudentProfile = () => {
               </button>
               <div className={styles.profileHeader}>
                 <div className={styles.avatarContainer}>
-                  <img src={profileImage} alt="Profile" className={styles.avatar} />
+                  <img 
+                    src={profile_img || '/default_profile.png'} 
+                    alt="Profile" className={styles.avatar} />
                 </div>
                 <h2>{profiledata?.std_name || 'Student name'}</h2>
                 <p className={styles.subtitle}>subtitle</p>
@@ -281,6 +295,7 @@ const StudentProfile = () => {
               onClose={() => setIsEditModalOpen(false)}
               currentName={profiledata?.std_name || ''}
               currentImage={profileImage}
+              walletAddress={profiledata?.wallet_address || ''}
               onSave={handleSaveProfile}
             />
           </div>

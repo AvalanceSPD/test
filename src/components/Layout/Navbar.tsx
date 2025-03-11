@@ -8,6 +8,7 @@ import styles from './Navbar.module.css';
 import { supabase } from '../../utils/supabaseClient';
 
 interface userdata {
+  users_id: string;
   image_profile: string;
   wallet_address: string;
   username: string
@@ -93,7 +94,7 @@ export const Navbar = () => {
     };
 
     checkUser();
-    console.log(userData?.image_profile);
+    // console.log(userData?.image_profile);
     
   }, [publicKey, isRegistered]);
 
