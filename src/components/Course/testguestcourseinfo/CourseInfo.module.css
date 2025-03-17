@@ -48,8 +48,9 @@ body {
     flex: 30% 0 30%;
     margin-bottom: 50px;
     min-width: 280px;
-    max-width: 280px;
-    margin-right: 50px;
+    width: 280px;
+    height: 280px;
+    margin-right: 550px;
     aspect-ratio: 1/1;
     background: #ffffff;
     border-radius: 8px;
