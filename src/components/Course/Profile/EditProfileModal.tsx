@@ -32,11 +32,10 @@ const EditProfileModal = ({ isOpen, onClose, currentName, currentImage, walletAd
     const [imagePreview, setImagePreview] = useState('');
     const [isChanged, setIsChanged] = useState(false);
     const [loading, setLoading] = useState(false);
-
     const { publicKey,connected, disconnect } = useWallet();
     const [profiledata, setProfiledata] = useState<profiledata | null>(null);
-    const [profile_img, setProfileImg] = useState<string | null>(null);
-    const [usersID, setUserID] = useState<users_id | null>(null);
+    const [profile_img, setProfileImg] = useState('');
+    const [usersID, setUserID] = useState<string | null>(null);
 
     useEffect(() => {
         console.log(publicKey);
@@ -109,7 +108,7 @@ const EditProfileModal = ({ isOpen, onClose, currentName, currentImage, walletAd
 
     const handleCancel = () => {
         setName(currentName);
-        setImagePreview(currentImage);
+        setImagePreview(profile_img);
         setImage(null);
         setIsChanged(false);
         onClose();

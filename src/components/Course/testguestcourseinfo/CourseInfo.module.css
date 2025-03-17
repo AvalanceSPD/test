@@ -16,6 +16,10 @@ body {
     padding: 40px;
 }
 
+.contentRow {
+    min-width: 280px;
+}
+
 .headerBox {
     /* background: white; */
     border-radius: 12px;
@@ -32,6 +36,12 @@ body {
     display: flex;
     gap: 24px;
     flex: 1;
+}
+
+.thumbnailCol {
+    position:relative;
+    float: left;
+    min-width: 280px;
 }
 
 .thumbnailContainer {

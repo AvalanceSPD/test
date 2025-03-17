@@ -483,7 +483,7 @@ const CourseInfo = () => {
 
     const toggleLesson = (index: number) => {
         setExpandedLesson(expandedLesson === index ? null : index);
-        console.log(lessonID_);
+        // console.log(lessonID_);
         
         handlechecksubmited(lessonID_);
     };
@@ -604,7 +604,7 @@ const CourseInfo = () => {
         checkScore();
     }, [lessonID_]);
     
-    console.log(QuizeScore);
+    // console.log(QuizeScore);
 
     const handlechecksubmited = async (lessonId: number) => {
         const { data, error } = await supabase
@@ -801,7 +801,7 @@ const CourseInfo = () => {
             <Row className={styles.header}>
                 <Col xs={24}>
                     <div className={styles.headerBox}>
-                        <Row>
+                        <Row className={styles.contentRow}>
                             <Col xs={8} className={styles.thumbnailCol}>
                                 <div className={styles.thumbnailContainer}>
                                     {course.thumbnail && (
@@ -831,7 +831,7 @@ const CourseInfo = () => {
                                 </div>
                             </Col>
                         </Row>
-                                {userRole !== 'instructor' && !isEnrolled ? (
+                                {userRole == 'student' && !isEnrolled ? (
                                     <div className={styles.buttonContainer}>
                                     <button 
                                         className={styles.enrollButton}

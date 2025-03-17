@@ -213,15 +213,6 @@ export const Navbar = () => {
                 บทเรียนทั้งหมด
               </button> */}
             </div>
-          {/* //: instructor */}
-          {userRole === 'instructor' && (
-            <button 
-              onClick={() => navigate('/createcourse')}
-              className={styles.navButton}
-            >
-              Create Course
-            </button>
-          )}
         </div>
           {/* //: drop down */}
         <div className={styles.rightSection}>
